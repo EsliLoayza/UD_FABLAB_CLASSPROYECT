@@ -1,421 +1,420 @@
 <!DOCTYPE html>
-
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Módulo Interactivo: Introducción a la Fabricación Digital</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
-<!-- Chosen Palette: Calm Creator -->
-<!-- Application Structure Plan: Se ha diseñado una aplicación de una sola página con desplazamiento vertical y una barra de navegación fija. Esta estructura temática guía al usuario de forma lógica desde los conceptos más abstractos y fundamentales (qué es, por qué es importante) hacia los más concretos (el proceso, la historia y las aplicaciones). Se eligió este flujo para construir el conocimiento progresivamente. Las interacciones clave, como hacer clic para revelar detalles en el proceso y en la línea de tiempo, permiten mantener una interfaz limpia y evitan la sobrecarga de información, invitando al usuario a explorar a su propio ritmo. Este enfoque es superior a un dashboard, ya que el contenido es narrativo y educativo, no de monitoreo de datos. -->
-<!-- Visualization & Content Choices:
-- Comparación Tradicional vs. Digital: Report Info -> Comparar dos métodos de fabricación. Goal -> Comparar. Viz -> Tarjetas interactivas de dos caras. Interaction -> Clic para girar. Justification -> Más dinámico y memorable que una tabla estática. Library/Method -> HTML/CSS/JS.
-- Flujo de Trabajo CAD/CAM/CNC: Report Info -> Explicar un proceso de 3 etapas. Goal -> Organizar/Explicar. Viz -> Diagrama de flujo horizontal con tarjetas. Interaction -> Clic en cada tarjeta para expandir una sección de detalles debajo. Justification -> Permite una vista general limpia y un desglose detallado bajo demanda, mejorando la comprensión sin abrumar. Library/Method -> Tailwind Flexbox + JS.
-- Parámetros de "Slicing": Report Info -> Explicar ajustes abstractos como la altura de capa y el relleno. Goal -> Informar. Viz -> Gráfico de barras simple. Interaction -> Tooltips al pasar el ratón. Justification -> Visualiza datos conceptuales, haciéndolos más tangibles. Library/Method -> Chart.js.
-- Línea de Tiempo Histórica: Report Info -> Hitos clave en la historia de la fabricación digital. Goal -> Mostrar cambio. Viz -> Línea de tiempo vertical. Interaction -> Clic en un hito para resaltar y mostrar texto. Justification -> Fomenta la exploración activa en lugar de la lectura pasiva. Library/Method -> HTML/CSS/JS.
-- Beneficios de e-NABLE: Report Info -> Impacto en costo, tiempo y personalización. Goal -> Comparar/Informar. Viz -> Gráfico de Donut. Interaction -> Tooltips al pasar el ratón. Justification -> Visualización de alto impacto que resume cuantitativamente la ventaja disruptiva del proyecto. Library/Method -> Chart.js.
--->
-<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
-<style>
-body { font-family: 'Inter', sans-serif; background-color: #FDFBF8; }
-.sticky-nav { position: sticky; top: 0; z-index: 50; }
-.chart-container { position: relative; width: 100%; max-width: 600px; margin-left: auto; margin-right: auto; height: 300px; max-height: 400px; }
-@media (min-width: 768px) { .chart-container { height: 350px; } }
-.flip-card { perspective: 1000px; }
-.flip-card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.8s; transform-style: preserve-3d; }
-.flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
-.flip-card-front, .flip-card-back { position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 1.5rem; border-radius: 0.75rem; }
-.flip-card-back { transform: rotateY(180deg); }
-.step-card.active { border-color: #2563EB; box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); transform: translateY(-5px); }
-.timeline-item.active .timeline-content { border-color: #2563EB; }
-.timeline-item.active .timeline-dot { background-color: #2563EB; transform: scale(1.5); }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo Interactivo: Introducción a la Fabricación Digital</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Creator -->
+    <!-- Application Structure Plan: Se ha diseñado una aplicación de una sola página con desplazamiento vertical y una barra de navegación fija. Esta estructura temática guía al usuario de forma lógica desde los conceptos más abstractos y fundamentales (qué es, por qué es importante) hacia los más concretos (el proceso, la historia y las aplicaciones). Se eligió este flujo para construir el conocimiento progresivamente. Las interacciones clave, como hacer clic para revelar detalles en el proceso y en la línea de tiempo, permiten mantener una interfaz limpia y evitan la sobrecarga de información, invitando al usuario a explorar a su propio ritmo. Este enfoque es superior a un dashboard, ya que el contenido es narrativo y educativo, no de monitoreo de datos. -->
+    <!-- Visualization & Content Choices: 
+        - Comparación Tradicional vs. Digital: Report Info -> Comparar dos métodos de fabricación. Goal -> Comparar. Viz -> Tarjetas interactivas de dos caras. Interaction -> Clic para girar. Justification -> Más dinámico y memorable que una tabla estática. Library/Method -> HTML/CSS/JS.
+        - Flujo de Trabajo CAD/CAM/CNC: Report Info -> Explicar un proceso de 3 etapas. Goal -> Organizar/Explicar. Viz -> Diagrama de flujo horizontal con tarjetas. Interaction -> Clic en cada tarjeta para expandir una sección de detalles debajo. Justification -> Permite una vista general limpia y un desglose detallado bajo demanda, mejorando la comprensión sin abrumar. Library/Method -> Tailwind Flexbox + JS.
+        - Parámetros de "Slicing": Report Info -> Explicar ajustes abstractos como la altura de capa y el relleno. Goal -> Informar. Viz -> Gráfico de barras simple. Interaction -> Tooltips al pasar el ratón. Justification -> Visualiza datos conceptuales, haciéndolos más tangibles. Library/Method -> Chart.js.
+        - Línea de Tiempo Histórica: Report Info -> Hitos clave en la historia de la fabricación digital. Goal -> Mostrar cambio. Viz -> Línea de tiempo vertical. Interaction -> Clic en un hito para resaltar y mostrar texto. Justification -> Fomenta la exploración activa en lugar de la lectura pasiva. Library/Method -> HTML/CSS/JS.
+        - Beneficios de e-NABLE: Report Info -> Impacto en costo, tiempo y personalización. Goal -> Comparar/Informar. Viz -> Gráfico de Donut. Interaction -> Tooltips al pasar el ratón. Justification -> Visualización de alto impacto que resume cuantitativamente la ventaja disruptiva del proyecto. Library/Method -> Chart.js.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #FDFBF8; }
+        .sticky-nav { position: sticky; top: 0; z-index: 50; }
+        .chart-container { position: relative; width: 100%; max-width: 600px; margin-left: auto; margin-right: auto; height: 300px; max-height: 400px; }
+        @media (min-width: 768px) { .chart-container { height: 350px; } }
+        .flip-card { perspective: 1000px; }
+        .flip-card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.8s; transform-style: preserve-3d; }
+        .flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
+        .flip-card-front, .flip-card-back { position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 1.5rem; border-radius: 0.75rem; }
+        .flip-card-back { transform: rotateY(180deg); }
+        .step-card.active { border-color: #2563EB; box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); transform: translateY(-5px); }
+        .timeline-item.active .timeline-content { border-color: #2563EB; }
+        .timeline-item.active .timeline-dot { background-color: #2563EB; transform: scale(1.5); }
+    </style>
 </head>
 <body class="text-gray-800">
 
-<header class="sticky-nav bg-white/80 backdrop-blur-lg shadow-md">
-    <nav class="container mx-auto px-6 py-3">
-        <div class="flex justify-between items-center">
-            <div class="text-xl font-bold text-blue-800">FABLAB Sesión 01</div>
-            <div class="hidden md:flex space-x-8">
-                <a href="#inicio" class="nav-link text-gray-600 hover:text-blue-600">Inicio</a>
-                <a href="#conceptos" class="nav-link text-gray-600 hover:text-blue-600">Conceptos Clave</a>
-                <a href="#proceso" class="nav-link text-gray-600 hover:text-blue-600">El Proceso</a>
-                <a href="#historia" class="nav-link text-gray-600 hover:text-blue-600">Línea de Tiempo</a>
-                <a href="#aplicaciones" class="nav-link text-gray-600 hover:text-blue-600">Aplicaciones</a>
+    <header class="sticky-nav bg-white/80 backdrop-blur-lg shadow-md">
+        <nav class="container mx-auto px-6 py-3">
+            <div class="flex justify-between items-center">
+                <div class="text-xl font-bold text-blue-800">FABLAB Sesión 01</div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#inicio" class="nav-link text-gray-600 hover:text-blue-600">Inicio</a>
+                    <a href="#conceptos" class="nav-link text-gray-600 hover:text-blue-600">Conceptos Clave</a>
+                    <a href="#proceso" class="nav-link text-gray-600 hover:text-blue-600">El Proceso</a>
+                    <a href="#historia" class="nav-link text-gray-600 hover:text-blue-600">Línea de Tiempo</a>
+                    <a href="#aplicaciones" class="nav-link text-gray-600 hover:text-blue-600">Aplicaciones</a>
+                </div>
             </div>
-        </div>
-    </nav>
-</header>
+        </nav>
+    </header>
 
-<main>
-    <section id="inicio" class="bg-amber-50 py-20 px-6">
-        <div class="container mx-auto text-center">
-            <h1 class="text-4xl md:text-6xl font-extrabold text-blue-900 leading-tight">El Amanecer de la Creación</h1>
-            <p class="mt-4 text-lg md:text-xl text-gray-700 max-w-3xl mx-auto">Bienvenido al módulo que conecta tus ideas digitales con el mundo físico. Descubre cómo transformar un simple archivo en un objeto tangible, pasando del <span class="font-bold text-blue-700">Bit</span> al <span class="font-bold text-amber-700">Átomo</span>.</p>
-        </div>
-    </section>
+    <main>
+        <section id="inicio" class="bg-amber-50 py-20 px-6">
+            <div class="container mx-auto text-center">
+                <h1 class="text-4xl md:text-6xl font-extrabold text-blue-900 leading-tight">El Amanecer de la Creación</h1>
+                <p class="mt-4 text-lg md:text-xl text-gray-700 max-w-3xl mx-auto">Bienvenido al módulo que conecta tus ideas digitales con el mundo físico. Descubre cómo transformar un simple archivo en un objeto tangible, pasando del <span class="font-bold text-blue-700">Bit</span> al <span class="font-bold text-amber-700">Átomo</span>.</p>
+            </div>
+        </section>
 
-    <section id="conceptos" class="py-20 px-6">
-        <div class="container mx-auto">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl md:text-4xl font-bold text-blue-900">Conceptos Fundamentales</h2>
-                <p class="mt-2 text-gray-600 max-w-2xl mx-auto">Para construir, primero debemos entender los cimientos. Aquí desglosamos las ideas que revolucionaron la manufactura.</p>
-            </div>
+        <section id="conceptos" class="py-20 px-6">
+            <div class="container mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-blue-900">Conceptos Fundamentales</h2>
+                    <p class="mt-2 text-gray-600 max-w-2xl mx-auto">Para construir, primero debemos entender los cimientos. Aquí desglosamos las ideas que revolucionaron la manufactura.</p>
+                </div>
 
-            <div class="grid md:grid-cols-2 gap-8 items-center">
-                <div class="flip-card h-80 md:h-96" id="comparison-card">
-                    <div class="flip-card-inner">
-                        <div class="flip-card-front bg-white shadow-lg border border-gray-200">
-                            <h3 class="text-2xl font-bold text-blue-800 mb-2">Fabricación Tradicional</h3>
-                            <p class="text-center text-gray-600 mb-4">Basada en moldes y producción en masa. La complejidad y la personalización son costosas y lentas.</p>
-                            <ul class="text-left space-y-2 text-gray-700">
-                                <li><span class="font-bold text-red-600 mr-2">●</span>Enfocada en miles de objetos idénticos.</li>
-                                <li><span class="font-bold text-red-600 mr-2">●</span>Prototipado lento (semanas/meses).</li>
-                                <li><span class="font-bold text-red-600 mr-2">●</span>El costo aumenta con la complejidad.</li>
-                            </ul>
-                            <button class="mt-6 bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300">Comparar →</button>
-                        </div>
-                        <div class="flip-card-back bg-blue-800 text-white shadow-lg">
-                            <h3 class="text-2xl font-bold mb-2">Fabricación Digital</h3>
-                            <p class="text-center mb-4">Basada en archivos digitales. Permite la personalización masiva y la complejidad "gratuita".</p>
-                            <ul class="text-left space-y-2">
-                                <li><span class="font-bold text-green-400 mr-2">●</span>Cada objeto puede ser único.</li>
-                                <li><span class="font-bold text-green-400 mr-2">●</span>Prototipado rápido (horas/días).</li>
-                                <li><span class="font-bold text-green-400 mr-2">●</span>La complejidad no aumenta el costo.</li>
-                            </ul>
-                            <button class="mt-6 bg-blue-600 font-semibold py-2 px-4 rounded-lg hover:bg-blue-500">← Volver</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="text-left">
-                    <h3 class="text-2xl font-bold text-blue-900">Un Cambio de Paradigma</h3>
-                    <p class="mt-2 text-gray-600 leading-relaxed">La fabricación digital no es solo una nueva técnica, es una nueva forma de pensar. Permite a los creadores iterar rápidamente, fallar barato y personalizar productos a una escala nunca antes vista. Democratiza la innovación, poniendo el poder de una fábrica en manos de una sola persona.</p>
-                    <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div class="bg-amber-100 p-4 rounded-lg">
-                            <h4 class="font-bold text-amber-900">Fabricación Aditiva</h4>
-                            <p class="text-sm text-amber-800">Construye objetos añadiendo material capa por capa. (Ej: Impresión 3D)</p>
-                        </div>
-                        <div class="bg-blue-100 p-4 rounded-lg">
-                            <h4 class="font-bold text-blue-900">Fabricación Sustractiva</h4>
-                            <p class="text-sm text-blue-800">Esculpe objetos quitando material de un bloque. (Ej: Corte Láser, Fresado CNC)</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="proceso" class="py-20 px-6 bg-gray-50">
-        <div class="container mx-auto">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl md:text-4xl font-bold text-blue-900">El Proceso: Tu Idea Hecha Realidad</h2>
-                <p class="mt-2 text-gray-600 max-w-2xl mx-auto">Todo objeto fabricado digitalmente sigue una receta de tres pasos. Haz clic en cada etapa para explorar los detalles.</p>
-            </div>
-            
-            <div class="flex flex-col md:flex-row justify-center items-center gap-4 md:gap-0">
-                <div class="step-card w-full md:w-1/3 p-6 bg-white rounded-lg shadow-md border-2 border-transparent cursor-pointer transition-all duration-300" data-step="cad">
-                    <div class="text-center">
-                        <div class="text-5xl mb-2">✏️</div>
-                        <h3 class="text-xl font-bold text-blue-800">1. CAD</h3>
-                        <p class="text-sm text-gray-500 font-semibold">Diseño Asistido por Computadora</p>
-                    </div>
-                </div>
-                <div class="text-2xl text-gray-300 mx-4 hidden md:block">→</div>
-                <div class="step-card w-full md:w-1/3 p-6 bg-white rounded-lg shadow-md border-2 border-transparent cursor-pointer transition-all duration-300" data-step="cam">
-                    <div class="text-center">
-                        <div class="text-5xl mb-2">📠</div>
-                        <h3 class="text-xl font-bold text-blue-800">2. CAM</h3>
-                        <p class="text-sm text-gray-500 font-semibold">Fabricación Asistida por Computadora</p>
-                    </div>
-                </div>
-                <div class="text-2xl text-gray-300 mx-4 hidden md:block">→</div>
-                <div class="step-card w-full md:w-1/3 p-6 bg-white rounded-lg shadow-md border-2 border-transparent cursor-pointer transition-all duration-300" data-step="cnc">
-                    <div class="text-center">
-                        <div class="text-5xl mb-2">⚙️</div>
-                        <h3 class="text-xl font-bold text-blue-800">3. CNC</h3>
-                        <p class="text-sm text-gray-500 font-semibold">Control Numérico Computarizado</p>
-                    </div>
-                </div>
-            </div>
-
-            <div id="step-details" class="mt-12">
-                <div id="cad-detail" class="step-detail hidden p-8 bg-white rounded-lg shadow-xl">
-                    <h3 class="text-2xl font-bold text-blue-900 mb-4">Paso 1: CAD - El Arquitecto Digital</h3>
-                    <p class="text-gray-600 mb-4">Aquí nace la idea. Usando software especializado, creas un modelo 3D preciso de tu objeto. Es el plano digital. Programas como <strong>TinkerCAD</strong> son ideales para empezar, permitiendo construir modelos complejos a partir de formas simples.</p>
-                    <div class="mt-4 p-4 bg-gray-100 rounded-md">
-                        <p class="font-bold">Resultado:</p>
-                        <p class="font-mono text-blue-700">Archivo de diseño 3D (.STL, .OBJ)</p>
-                    </div>
-                </div>
-                <div id="cam-detail" class="step-detail hidden p-8 bg-white rounded-lg shadow-xl">
-                    <h3 class="text-2xl font-bold text-blue-900 mb-4">Paso 2: CAM - El Traductor Estratégico</h3>
-                    <div class="grid md:grid-cols-2 gap-8">
-                        <div>
-                            <p class="text-gray-600 mb-4">El software CAM traduce tu modelo 3D al lenguaje de la máquina. Para la impresión 3D, este proceso se llama <strong>"slicing"</strong> (rebanado), donde el modelo se divide en miles de capas finas. Aquí se definen parámetros clave que afectan la calidad, tiempo y resistencia de la pieza.</p>
-                            <div class="mt-4 p-4 bg-gray-100 rounded-md">
-                                <p class="font-bold">Resultado:</p>
-                                <p class="font-mono text-blue-700">Archivo de instrucciones (.gcode)</p>
-                            </div>
-                        </div>
-                        <div>
-                            <p class="text-sm text-center text-gray-500 mb-2">Visualización de Parámetros del Slicer</p>
-                            <div class="chart-container">
-                                <canvas id="slicerChart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div id="cnc-detail" class="step-detail hidden p-8 bg-white rounded-lg shadow-xl">
-                    <h3 class="text-2xl font-bold text-blue-900 mb-4">Paso 3: CNC - El Obrero Robótico</h3>
-                    <p class="text-gray-600 mb-4">La máquina (impresora 3D, cortadora láser) lee el archivo G-Code y ejecuta las instrucciones con precisión milimétrica. El controlador CNC mueve los motores y herramientas para construir el objeto físico, capa por capa o corte por corte.</p>
-                    <div class="mt-4 p-4 bg-gray-100 rounded-md">
-                        <p class="font-bold">Resultado:</p>
-                        <p class="font-mono text-amber-700">Un objeto físico tangible</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    <section id="historia" class="py-20 px-6">
-        <div class="container mx-auto">
-            <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold text-blue-900">Un Viaje en el Tiempo</h2>
-                <p class="mt-2 text-gray-600 max-w-2xl mx-auto">La fabricación personal no surgió de la nada. Fue una evolución de décadas. Haz clic en los hitos para conocer la historia.</p>
-            </div>
-            <div class="relative wrap overflow-hidden p-10 h-full">
-                <div class="absolute h-full border border-dashed border-gray-300" style="left: 50%"></div>
-                <div class="timeline-item mb-8 flex justify-between items-center w-full right-timeline" data-year="1950">
-                    <div class="order-1 w-5/12"></div>
-                    <div class="z-20 flex items-center order-1 bg-gray-200 shadow-xl w-12 h-12 rounded-full timeline-dot cursor-pointer">
-                        <h1 class="mx-auto font-semibold text-lg text-gray-700">1950s</h1>
-                    </div>
-                    <div class="timeline-content order-1 bg-white rounded-lg shadow-xl w-5/12 px-6 py-4 border-2 border-transparent">
-                        <h3 class="font-bold text-gray-800 text-xl">Nace el CNC</h3>
-                        <p class="text-sm leading-snug tracking-wide text-gray-600 text-opacity-100">En el MIT se desarrolla la primera fresadora controlada por cinta perforada. Una tecnología militar, masiva y costosa.</p>
-                    </div>
-                </div>
-                <div class="timeline-item mb-8 flex justify-between flex-row-reverse items-center w-full left-timeline" data-year="1980">
-                    <div class="order-1 w-5/12"></div>
-                    <div class="z-20 flex items-center order-1 bg-gray-200 shadow-xl w-12 h-12 rounded-full timeline-dot cursor-pointer">
-                        <h1 class="mx-auto font-semibold text-lg text-gray-700">1980s</h1>
-                    </div>
-                    <div class="timeline-content order-1 bg-white rounded-lg shadow-xl w-5/12 px-6 py-4 border-2 border-transparent">
-                        <h3 class="font-bold text-gray-800 text-xl">Invención de la Impresión 3D</h3>
-                        <p class="text-sm leading-snug tracking-wide text-gray-600 text-opacity-100">Chuck Hull inventa la Estereolitografía (SLA). Nace el "Prototipado Rápido", pero sigue siendo tecnología industrial.</p>
-                    </div>
-                </div>
-                <div class="timeline-item mb-8 flex justify-between items-center w-full right-timeline" data-year="2005">
-                    <div class="order-1 w-5/12"></div>
-                    <div class="z-20 flex items-center order-1 bg-gray-200 shadow-xl w-12 h-12 rounded-full timeline-dot cursor-pointer">
-                        <h1 class="mx-auto font-semibold text-lg text-gray-700">2005</h1>
-                    </div>
-                    <div class="timeline-content order-1 bg-white rounded-lg shadow-xl w-5/12 px-6 py-4 border-2 border-transparent">
-                        <h3 class="font-bold text-gray-800 text-xl">¡La Revolución "Maker"!</h3>
-                        <p class="text-sm leading-snug tracking-wide text-gray-600 text-opacity-100">El proyecto RepRap (impresoras que se auto-replican) y la expiración de patentes clave abren la caja de Pandora de la impresión 3D personal.</p>
-                    </div>
-                </div>
-                 <div class="timeline-item flex justify-between flex-row-reverse items-center w-full left-timeline" data-year="hoy">
-                    <div class="order-1 w-5/12"></div>
-                    <div class="z-20 flex items-center order-1 bg-gray-200 shadow-xl w-12 h-12 rounded-full timeline-dot cursor-pointer">
-                        <h1 class="mx-auto font-semibold text-lg text-gray-700">Hoy</h1>
-                    </div>
-                    <div class="timeline-content order-1 bg-white rounded-lg shadow-xl w-5/12 px-6 py-4 border-2 border-transparent">
-                        <h3 class="font-bold text-gray-800 text-xl">Era de la Creación Personal</h3>
-                        <p class="text-sm leading-snug tracking-wide text-gray-600 text-opacity-100">Gracias a los FabLabs y la caída de precios, la fabricación digital está en escuelas, hogares y pequeños negocios, impulsando la innovación.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="aplicaciones" class="py-20 px-6 bg-blue-50">
-        <div class="container mx-auto">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl md:text-4xl font-bold text-blue-900">Aplicaciones: El Impacto Real</h2>
-                <p class="mt-2 text-gray-600 max-w-2xl mx-auto">La tecnología solo importa por lo que nos permite hacer. Analicemos un caso de estudio que demuestra el poder de la fabricación digital para cambiar vidas.</p>
-            </div>
-            <div class="bg-white p-8 rounded-lg shadow-lg">
                 <div class="grid md:grid-cols-2 gap-8 items-center">
-                    <div>
-                        <h3 class="text-2xl font-bold text-blue-800">Caso de Estudio: e-NABLE</h3>
-                        <p class="mt-2 text-gray-600 leading-relaxed">La comunidad "e-NABLE" utiliza una red global de voluntarios para diseñar, imprimir en 3D y entregar prótesis de manos y brazos a niños y adultos que las necesitan, de forma gratuita. Es un ejemplo perfecto de innovación disruptiva.</p>
-                        <div class="mt-6 space-y-4">
-                            <div class="p-4 bg-gray-100 rounded-md">
-                                <h4 class="font-bold">El Problema</h4>
-                                <p class="text-sm text-gray-700">Las prótesis tradicionales son extremadamente caras (miles de dólares), tardan meses en fabricarse y los niños las superan rápidamente.</p>
+                    <div class="flip-card h-80 md:h-96" id="comparison-card">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front bg-white shadow-lg border border-gray-200">
+                                <h3 class="text-2xl font-bold text-blue-800 mb-2">Fabricación Tradicional</h3>
+                                <p class="text-center text-gray-600 mb-4">Basada en moldes y producción en masa. La complejidad y la personalización son costosas y lentas.</p>
+                                <ul class="text-left space-y-2 text-gray-700">
+                                    <li><span class="font-bold text-red-600 mr-2">●</span>Enfocada en miles de objetos idénticos.</li>
+                                    <li><span class="font-bold text-red-600 mr-2">●</span>Prototipado lento (semanas/meses).</li>
+                                    <li><span class="font-bold text-red-600 mr-2">●</span>El costo aumenta con la complejidad.</li>
+                                </ul>
+                                <button class="mt-6 bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300">Comparar →</button>
                             </div>
-                            <div class="p-4 bg-gray-100 rounded-md">
-                                <h4 class="font-bold">La Solución Digital</h4>
-                                <p class="text-sm text-gray-700">Manos protésicas impresas en 3D, funcionales, ligeras y personalizables con colores de superhéroes. El diseño se ajusta y se fabrica localmente en cualquier parte del mundo.</p>
+                            <div class="flip-card-back bg-blue-800 text-white shadow-lg">
+                                <h3 class="text-2xl font-bold mb-2">Fabricación Digital</h3>
+                                <p class="text-center mb-4">Basada en archivos digitales. Permite la personalización masiva y la complejidad "gratuita".</p>
+                                <ul class="text-left space-y-2">
+                                    <li><span class="font-bold text-green-400 mr-2">●</span>Cada objeto puede ser único.</li>
+                                    <li><span class="font-bold text-green-400 mr-2">●</span>Prototipado rápido (horas/días).</li>
+                                    <li><span class="font-bold text-green-400 mr-2">●</span>La complejidad no aumenta el costo.</li>
+                                </ul>
+                                <button class="mt-6 bg-blue-600 font-semibold py-2 px-4 rounded-lg hover:bg-blue-500">← Volver</button>
                             </div>
                         </div>
                     </div>
-                    <div>
-                        <p class="text-sm text-center text-gray-500 mb-2">Impacto Disruptivo vs. Prótesis Tradicional</p>
-                         <div class="chart-container">
-                            <canvas id="enableChart"></canvas>
+                    <div class="text-left">
+                        <h3 class="text-2xl font-bold text-blue-900">Un Cambio de Paradigma</h3>
+                        <p class="mt-2 text-gray-600 leading-relaxed">La fabricación digital no es solo una nueva técnica, es una nueva forma de pensar. Permite a los creadores iterar rápidamente, fallar barato y personalizar productos a una escala nunca antes vista. Democratiza la innovación, poniendo el poder de una fábrica en manos de una sola persona.</p>
+                        <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="bg-amber-100 p-4 rounded-lg">
+                                <h4 class="font-bold text-amber-900">Fabricación Aditiva</h4>
+                                <p class="text-sm text-amber-800">Construye objetos añadiendo material capa por capa. (Ej: Impresión 3D)</p>
+                            </div>
+                            <div class="bg-blue-100 p-4 rounded-lg">
+                                <h4 class="font-bold text-blue-900">Fabricación Sustractiva</h4>
+                                <p class="text-sm text-blue-800">Esculpe objetos quitando material de un bloque. (Ej: Corte Láser, Fresado CNC)</p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
-</main>
+        </section>
 
-<footer class="bg-blue-900 text-white py-10 px-6">
-    <div class="container mx-auto text-center">
-        <p class="font-bold text-lg">Recursos para Expandir Horizontes</p>
-        <div class="mt-4 flex justify-center space-x-6">
-            <a href="[https://www.tinkercad.com](https://www.tinkercad.com)" target="_blank" class="hover:text-amber-300">TinkerCAD</a>
-            <a href="[https://www.thingiverse.com](https://www.thingiverse.com)" target="_blank" class="hover:text-amber-300">Thingiverse</a>
-            <a href="[https://www.prusa3d.com/page/printables_733/](https://www.prusa3d.com/page/printables_733/)" target="_blank" class="hover:text-amber-300">Printables</a>
-        </div>
-        <p class="mt-6 text-sm text-blue-200">Módulo Interactivo creado para el IEST "Carlos Salazar Romero" | 2025</p>
-    </div>
-</footer>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const navLinks = document.querySelectorAll('.nav-link');
-        navLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const targetId = e.currentTarget.getAttribute('href');
-                const targetElement = document.querySelector(targetId);
-                if (targetElement) {
-                    window.scrollTo({
-                        top: targetElement.offsetTop - 70,
-                        behavior: 'smooth'
-                    });
-                }
-            });
-        });
-
-        const comparisonCard = document.getElementById('comparison-card');
-        if (comparisonCard) {
-            comparisonCard.addEventListener('click', () => {
-                comparisonCard.classList.toggle('flipped');
-            });
-        }
-
-        const stepCards = document.querySelectorAll('.step-card');
-        const stepDetails = document.querySelectorAll('.step-detail');
-        let activeStep = null;
-
-        stepCards.forEach(card => {
-            card.addEventListener('click', () => {
-                const step = card.dataset.step;
+        <section id="proceso" class="py-20 px-6 bg-gray-50">
+            <div class="container mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-blue-900">El Proceso: Tu Idea Hecha Realidad</h2>
+                    <p class="mt-2 text-gray-600 max-w-2xl mx-auto">Todo objeto fabricado digitalmente sigue una receta de tres pasos. Haz clic en cada etapa para explorar los detalles.</p>
+                </div>
                 
-                if (activeStep === step) {
-                    card.classList.remove('active');
-                    document.getElementById(`${step}-detail`).classList.add('hidden');
-                    activeStep = null;
-                    return;
-                }
-                
-                stepCards.forEach(c => c.classList.remove('active'));
-                stepDetails.forEach(d => d.classList.add('hidden'));
+                <div class="flex flex-col md:flex-row justify-center items-center gap-4 md:gap-0">
+                    <div class="step-card w-full md:w-1/3 p-6 bg-white rounded-lg shadow-md border-2 border-transparent cursor-pointer transition-all duration-300" data-step="cad">
+                        <div class="text-center">
+                            <div class="text-5xl mb-2">✏️</div>
+                            <h3 class="text-xl font-bold text-blue-800">1. CAD</h3>
+                            <p class="text-sm text-gray-500 font-semibold">Diseño Asistido por Computadora</p>
+                        </div>
+                    </div>
+                    <div class="text-2xl text-gray-300 mx-4 hidden md:block">→</div>
+                    <div class="step-card w-full md:w-1/3 p-6 bg-white rounded-lg shadow-md border-2 border-transparent cursor-pointer transition-all duration-300" data-step="cam">
+                        <div class="text-center">
+                            <div class="text-5xl mb-2">📠</div>
+                            <h3 class="text-xl font-bold text-blue-800">2. CAM</h3>
+                            <p class="text-sm text-gray-500 font-semibold">Fabricación Asistida por Computadora</p>
+                        </div>
+                    </div>
+                    <div class="text-2xl text-gray-300 mx-4 hidden md:block">→</div>
+                    <div class="step-card w-full md:w-1/3 p-6 bg-white rounded-lg shadow-md border-2 border-transparent cursor-pointer transition-all duration-300" data-step="cnc">
+                        <div class="text-center">
+                            <div class="text-5xl mb-2">⚙️</div>
+                            <h3 class="text-xl font-bold text-blue-800">3. CNC</h3>
+                            <p class="text-sm text-gray-500 font-semibold">Control Numérico Computarizado</p>
+                        </div>
+                    </div>
+                </div>
 
-                card.classList.add('active');
-                document.getElementById(`${step}-detail`).classList.remove('hidden');
-                activeStep = step;
-
-                if (step === 'cam' && !window.slicerChartInstance) {
-                    createSlicerChart();
-                }
-            });
-        });
+                <div id="step-details" class="mt-12">
+                    <div id="cad-detail" class="step-detail hidden p-8 bg-white rounded-lg shadow-xl">
+                        <h3 class="text-2xl font-bold text-blue-900 mb-4">Paso 1: CAD - El Arquitecto Digital</h3>
+                        <p class="text-gray-600 mb-4">Aquí nace la idea. Usando software especializado, creas un modelo 3D preciso de tu objeto. Es el plano digital. Programas como <strong>TinkerCAD</strong> son ideales para empezar, permitiendo construir modelos complejos a partir de formas simples.</p>
+                        <div class="mt-4 p-4 bg-gray-100 rounded-md">
+                            <p class="font-bold">Resultado:</p>
+                            <p class="font-mono text-blue-700">Archivo de diseño 3D (.STL, .OBJ)</p>
+                        </div>
+                    </div>
+                    <div id="cam-detail" class="step-detail hidden p-8 bg-white rounded-lg shadow-xl">
+                        <h3 class="text-2xl font-bold text-blue-900 mb-4">Paso 2: CAM - El Traductor Estratégico</h3>
+                        <div class="grid md:grid-cols-2 gap-8">
+                            <div>
+                                <p class="text-gray-600 mb-4">El software CAM traduce tu modelo 3D al lenguaje de la máquina. Para la impresión 3D, este proceso se llama <strong>"slicing"</strong> (rebanado), donde el modelo se divide en miles de capas finas. Aquí se definen parámetros clave que afectan la calidad, tiempo y resistencia de la pieza.</p>
+                                <div class="mt-4 p-4 bg-gray-100 rounded-md">
+                                    <p class="font-bold">Resultado:</p>
+                                    <p class="font-mono text-blue-700">Archivo de instrucciones (.gcode)</p>
+                                </div>
+                            </div>
+                            <div>
+                                <p class="text-sm text-center text-gray-500 mb-2">Visualización de Parámetros del Slicer</p>
+                                <div class="chart-container">
+                                    <canvas id="slicerChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="cnc-detail" class="step-detail hidden p-8 bg-white rounded-lg shadow-xl">
+                        <h3 class="text-2xl font-bold text-blue-900 mb-4">Paso 3: CNC - El Obrero Robótico</h3>
+                        <p class="text-gray-600 mb-4">La máquina (impresora 3D, cortadora láser) lee el archivo G-Code y ejecuta las instrucciones con precisión milimétrica. El controlador CNC mueve los motores y herramientas para construir el objeto físico, capa por capa o corte por corte.</p>
+                        <div class="mt-4 p-4 bg-gray-100 rounded-md">
+                            <p class="font-bold">Resultado:</p>
+                            <p class="font-mono text-amber-700">Un objeto físico tangible</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
         
-        const timelineItems = document.querySelectorAll('.timeline-item');
-        timelineItems.forEach(item => {
-            item.addEventListener('click', () => {
-                timelineItems.forEach(i => i.classList.remove('active'));
-                item.classList.add('active');
-            });
-        });
+        <section id="historia" class="py-20 px-6">
+            <div class="container mx-auto">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold text-blue-900">Un Viaje en el Tiempo</h2>
+                    <p class="mt-2 text-gray-600 max-w-2xl mx-auto">La fabricación personal no surgió de la nada. Fue una evolución de décadas. Haz clic en los hitos para conocer la historia.</p>
+                </div>
+                <div class="relative wrap overflow-hidden p-10 h-full">
+                    <div class="absolute h-full border border-dashed border-gray-300" style="left: 50%"></div>
+                    <div class="timeline-item mb-8 flex justify-between items-center w-full right-timeline" data-year="1950">
+                        <div class="order-1 w-5/12"></div>
+                        <div class="z-20 flex items-center order-1 bg-gray-200 shadow-xl w-12 h-12 rounded-full timeline-dot cursor-pointer">
+                            <h1 class="mx-auto font-semibold text-lg text-gray-700">1950s</h1>
+                        </div>
+                        <div class="timeline-content order-1 bg-white rounded-lg shadow-xl w-5/12 px-6 py-4 border-2 border-transparent">
+                            <h3 class="font-bold text-gray-800 text-xl">Nace el CNC</h3>
+                            <p class="text-sm leading-snug tracking-wide text-gray-600 text-opacity-100">En el MIT se desarrolla la primera fresadora controlada por cinta perforada. Una tecnología militar, masiva y costosa.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item mb-8 flex justify-between flex-row-reverse items-center w-full left-timeline" data-year="1980">
+                        <div class="order-1 w-5/12"></div>
+                        <div class="z-20 flex items-center order-1 bg-gray-200 shadow-xl w-12 h-12 rounded-full timeline-dot cursor-pointer">
+                            <h1 class="mx-auto font-semibold text-lg text-gray-700">1980s</h1>
+                        </div>
+                        <div class="timeline-content order-1 bg-white rounded-lg shadow-xl w-5/12 px-6 py-4 border-2 border-transparent">
+                            <h3 class="font-bold text-gray-800 text-xl">Invención de la Impresión 3D</h3>
+                            <p class="text-sm leading-snug tracking-wide text-gray-600 text-opacity-100">Chuck Hull inventa la Estereolitografía (SLA). Nace el "Prototipado Rápido", pero sigue siendo tecnología industrial.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item mb-8 flex justify-between items-center w-full right-timeline" data-year="2005">
+                        <div class="order-1 w-5/12"></div>
+                        <div class="z-20 flex items-center order-1 bg-gray-200 shadow-xl w-12 h-12 rounded-full timeline-dot cursor-pointer">
+                            <h1 class="mx-auto font-semibold text-lg text-gray-700">2005</h1>
+                        </div>
+                        <div class="timeline-content order-1 bg-white rounded-lg shadow-xl w-5/12 px-6 py-4 border-2 border-transparent">
+                            <h3 class="font-bold text-gray-800 text-xl">¡La Revolución "Maker"!</h3>
+                            <p class="text-sm leading-snug tracking-wide text-gray-600 text-opacity-100">El proyecto RepRap (impresoras que se auto-replican) y la expiración de patentes clave abren la caja de Pandora de la impresión 3D personal.</p>
+                        </div>
+                    </div>
+                     <div class="timeline-item flex justify-between flex-row-reverse items-center w-full left-timeline" data-year="hoy">
+                        <div class="order-1 w-5/12"></div>
+                        <div class="z-20 flex items-center order-1 bg-gray-200 shadow-xl w-12 h-12 rounded-full timeline-dot cursor-pointer">
+                            <h1 class="mx-auto font-semibold text-lg text-gray-700">Hoy</h1>
+                        </div>
+                        <div class="timeline-content order-1 bg-white rounded-lg shadow-xl w-5/12 px-6 py-4 border-2 border-transparent">
+                            <h3 class="font-bold text-gray-800 text-xl">Era de la Creación Personal</h3>
+                            <p class="text-sm leading-snug tracking-wide text-gray-600 text-opacity-100">Gracias a los FabLabs y la caída de precios, la fabricación digital está en escuelas, hogares y pequeños negocios, impulsando la innovación.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-        function createSlicerChart() {
-            const ctx = document.getElementById('slicerChart').getContext('2d');
-            window.slicerChartInstance = new Chart(ctx, {
-                type: 'bar',
+        <section id="aplicaciones" class="py-20 px-6 bg-blue-50">
+            <div class="container mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-blue-900">Aplicaciones: El Impacto Real</h2>
+                    <p class="mt-2 text-gray-600 max-w-2xl mx-auto">La tecnología solo importa por lo que nos permite hacer. Analicemos un caso de estudio que demuestra el poder de la fabricación digital para cambiar vidas.</p>
+                </div>
+                <div class="bg-white p-8 rounded-lg shadow-lg">
+                    <div class="grid md:grid-cols-2 gap-8 items-center">
+                        <div>
+                            <h3 class="text-2xl font-bold text-blue-800">Caso de Estudio: e-NABLE</h3>
+                            <p class="mt-2 text-gray-600 leading-relaxed">La comunidad "e-NABLE" utiliza una red global de voluntarios para diseñar, imprimir en 3D y entregar prótesis de manos y brazos a niños y adultos que las necesitan, de forma gratuita. Es un ejemplo perfecto de innovación disruptiva.</p>
+                            <div class="mt-6 space-y-4">
+                                <div class="p-4 bg-gray-100 rounded-md">
+                                    <h4 class="font-bold">El Problema</h4>
+                                    <p class="text-sm text-gray-700">Las prótesis tradicionales son extremadamente caras (miles de dólares), tardan meses en fabricarse y los niños las superan rápidamente.</p>
+                                </div>
+                                <div class="p-4 bg-gray-100 rounded-md">
+                                    <h4 class="font-bold">La Solución Digital</h4>
+                                    <p class="text-sm text-gray-700">Manos protésicas impresas en 3D, funcionales, ligeras y personalizables con colores de superhéroes. El diseño se ajusta y se fabrica localmente en cualquier parte del mundo.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="text-sm text-center text-gray-500 mb-2">Impacto Disruptivo vs. Prótesis Tradicional</p>
+                             <div class="chart-container">
+                                <canvas id="enableChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-blue-900 text-white py-10 px-6">
+        <div class="container mx-auto text-center">
+            <p class="font-bold text-lg">Navegación del Curso</p>
+            <div class="mt-4 flex justify-center space-x-6">
+                <span class="text-gray-500 cursor-not-allowed">← Sesión Anterior</span>
+                <span class="text-blue-400">|</span>
+                <a href="sesion-02.html" class="hover:text-amber-300">Ir a Sesión 02 →</a>
+            </div>
+            <p class="mt-6 text-sm text-blue-200">Módulo Interactivo creado para el IEST "Carlos Salazar Romero" | 2025</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = e.currentTarget.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 70,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+
+            const comparisonCard = document.getElementById('comparison-card');
+            if (comparisonCard) {
+                comparisonCard.addEventListener('click', () => {
+                    comparisonCard.classList.toggle('flipped');
+                });
+            }
+
+            const stepCards = document.querySelectorAll('.step-card');
+            const stepDetails = document.querySelectorAll('.step-detail');
+            let activeStep = null;
+
+            stepCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    const step = card.dataset.step;
+                    
+                    if (activeStep === step) {
+                        card.classList.remove('active');
+                        document.getElementById(`${step}-detail`).classList.add('hidden');
+                        activeStep = null;
+                        return;
+                    }
+                    
+                    stepCards.forEach(c => c.classList.remove('active'));
+                    stepDetails.forEach(d => d.classList.add('hidden'));
+
+                    card.classList.add('active');
+                    document.getElementById(`${step}-detail`).classList.remove('hidden');
+                    activeStep = step;
+
+                    if (step === 'cam' && !window.slicerChartInstance) {
+                        createSlicerChart();
+                    }
+                });
+            });
+            
+            const timelineItems = document.querySelectorAll('.timeline-item');
+            timelineItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    timelineItems.forEach(i => i.classList.remove('active'));
+                    item.classList.add('active');
+                });
+            });
+
+            function createSlicerChart() {
+                const ctx = document.getElementById('slicerChart').getContext('2d');
+                window.slicerChartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Altura de Capa (mm)', 'Relleno (%)', 'Velocidad (mm/s)'],
+                        datasets: [{
+                            label: 'Ajuste Típico',
+                            data: [0.2, 20, 60],
+                            backgroundColor: ['rgba(251, 191, 36, 0.6)', 'rgba(59, 130, 246, 0.6)', 'rgba(16, 185, 129, 0.6)'],
+                            borderColor: ['rgba(251, 191, 36, 1)', 'rgba(59, 130, 246, 1)', 'rgba(16, 185, 129, 1)'],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) { label += ': '; }
+                                        if (context.parsed.y !== null) {
+                                            label += context.parsed.y;
+                                            if(context.label.includes('%')) label += '%';
+                                            if(context.label.includes('mm')) label += ' mm';
+                                        }
+                                        return label;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: { beginAtZero: true, suggestedMax: 100 }
+                        }
+                    }
+                });
+            }
+
+            const enableCtx = document.getElementById('enableChart').getContext('2d');
+            new Chart(enableCtx, {
+                type: 'doughnut',
                 data: {
-                    labels: ['Altura de Capa (mm)', 'Relleno (%)', 'Velocidad (mm/s)'],
+                    labels: ['Reducción de Costo', 'Reducción de Tiempo', 'Nivel de Personalización'],
                     datasets: [{
-                        label: 'Ajuste Típico',
-                        data: [0.2, 20, 60],
-                        backgroundColor: ['rgba(251, 191, 36, 0.6)', 'rgba(59, 130, 246, 0.6)', 'rgba(16, 185, 129, 0.6)'],
-                        borderColor: ['rgba(251, 191, 36, 1)', 'rgba(59, 130, 246, 1)', 'rgba(16, 185, 129, 1)'],
-                        borderWidth: 1
+                        data: [98, 95, 100],
+                        backgroundColor: ['#3B82F6', '#10B981', '#F59E0B'],
+                        hoverOffset: 4
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: { display: false },
+                        legend: { position: 'bottom' },
                         tooltip: {
-                            callbacks: {
+                             callbacks: {
                                 label: function(context) {
-                                    let label = context.dataset.label || '';
+                                    let label = context.label || '';
                                     if (label) { label += ': '; }
-                                    if (context.parsed.y !== null) {
-                                        label += context.parsed.y;
-                                        if(context.label.includes('%')) label += '%';
-                                        if(context.label.includes('mm')) label += ' mm';
+                                    let value = context.parsed;
+                                    if(context.label.includes('Costo') || context.label.includes('Tiempo')) {
+                                        label += `~${value}% más bajo/rápido`;
+                                    } else {
+                                        label += `${value}% (Total)`;
                                     }
                                     return label;
                                 }
                             }
                         }
-                    },
-                    scales: {
-                        y: { beginAtZero: true, suggestedMax: 100 }
                     }
                 }
             });
-        }
-
-        const enableCtx = document.getElementById('enableChart').getContext('2d');
-        new Chart(enableCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Reducción de Costo', 'Reducción de Tiempo', 'Nivel de Personalización'],
-                datasets: [{
-                    data: [98, 95, 100],
-                    backgroundColor: ['#3B82F6', '#10B981', '#F59E0B'],
-                    hoverOffset: 4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { position: 'bottom' },
-                    tooltip: {
-                         callbacks: {
-                            label: function(context) {
-                                let label = context.label || '';
-                                if (label) { label += ': '; }
-                                let value = context.parsed;
-                                if(context.label.includes('Costo') || context.label.includes('Tiempo')) {
-                                    label += `~${value}% más bajo/rápido`;
-                                } else {
-                                    label += `${value}% (Total)`;
-                                }
-                                return label;
-                            }
-                        }
-                    }
-                }
-            }
         });
-    });
-</script>
+    </script>
 </body>
 </html>
