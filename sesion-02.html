@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Módulo Interactivo: El Arsenal del Creador</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<!-- Chosen Palette: Calm Creator -->
+<!-- Application Structure Plan: Se ha creado un archivo HTML separado para la Sesión 02 para mantener la modularidad y la rapidez de carga. La estructura sigue siendo una SPA de desplazamiento vertical con navegación fija para mantener la consistencia con la Sesión 01. La arquitectura de la información se centra en una sección de "Anatomía de las Máquinas" con una interfaz de pestañas (tabs). Esta estructura es ideal porque permite al usuario comparar fácilmente las tres tecnologías principales sin sentirse abrumado, pudiendo profundizar en cada una a voluntad. La sesión culmina con un escenario interactivo ("El Brief del Cliente") que funciona como un micro-quiz, forzando la aplicación activa del conocimiento adquirido. Este flujo de "aprender -> comparar -> aplicar" es pedagógicamente muy efectivo. -->
+<!-- Visualization & Content Choices:
+- Anatomía de Máquinas: Report Info -> Componentes y funcionamiento de cada máquina. Goal -> Organizar/Informar. Viz -> Diagramas simplificados creados con HTML/CSS (divs estilizados). Interaction -> Hover sobre un componente para resaltar y mostrar su nombre. Justification -> Evita imágenes externas, es ligero y la interactividad fomenta la exploración activa de las partes de la máquina. Library/Method -> HTML/CSS/JS.
+- Comparativa de Atributos: Report Info -> Fortalezas y debilidades de cada tecnología. Goal -> Comparar. Viz -> Gráfico de Radar (Radar Chart). Interaction -> Tooltips al pasar el ratón sobre los puntos de datos. Justification -> Un gráfico de radar es la mejor herramienta para comparar múltiples entidades (las 3 máquinas) a través de múltiples variables cuantitativas o cualitativas (precisión, velocidad, etc.) en una sola vista compacta. Library/Method -> Chart.js.
+- Escenario de Decisión: Report Info -> Casos de uso prácticos para cada máquina. Goal -> Aplicar conocimiento. Viz -> Escenario de quiz interactivo. Interaction -> El usuario hace clic en un botón para seleccionar una máquina y recibe retroalimentación instantánea (correcto/incorrecto) con una explicación. Justification -> Transforma una actividad pasiva de la ficha de trabajo en un desafío de aprendizaje activo, mejorando la retención del conocimiento. Library/Method -> HTML/JS.
+- Materiales Prohibidos: Report Info -> Reglas de seguridad sobre materiales. Goal -> Informar/Alertar. Viz -> Tarjeta de alerta con un diseño visualmente impactante (rojo, ícono de advertencia). Interaction -> Ninguna, el objetivo es la claridad y el impacto inmediato. Justification -> El uso de color y diseño de alerta asegura que la información de seguridad más crítica sea notada y recordada. Library/Method -> Tailwind CSS.
+-->
+<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+<style>
+body { font-family: 'Inter', sans-serif; background-color: #FDFBF8; }
+.sticky-nav { position: sticky; top: 0; z-index: 50; }
+.chart-container { position: relative; width: 100%; max-width: 450px; margin-left: auto; margin-right: auto; height: 300px; max-height: 400px; }
+@media (min-width: 768px) { .chart-container { height: 350px; } }
+.tab-button.active { border-color: #2563EB; background-color: #DBEAFE; color: #1E40AF; }
+.diagram-part { transition: all 0.2s ease-in-out; }
+.diagram-part:hover { transform: scale(1.1); background-color: #FFC425; }
+.quiz-option:hover { transform: translateY(-2px); box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); }
+.feedback { transition: opacity 0.5s; }
+</style>
+</head>
+<body class="text-gray-800">
+
+<header class="sticky-nav bg-white/80 backdrop-blur-lg shadow-md">
+    <nav class="container mx-auto px-6 py-3">
+        <div class="flex justify-between items-center">
+            <div class="text-xl font-bold text-blue-800">FABLAB Sesión 02</div>
+            <div class="hidden md:flex space-x-8">
+                <a href="#inicio" class="nav-link text-gray-600 hover:text-blue-600">Inicio</a>
+                <a href="#anatomia" class="nav-link text-gray-600 hover:text-blue-600">Anatomía</a>
+                <a href="#escenario" class="nav-link text-gray-600 hover:text-blue-600">Escenario</a>
+                <a href="#seguridad" class="nav-link text-gray-600 hover:text-blue-600">Seguridad</a>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<main>
+    <section id="inicio" class="bg-blue-50 py-20 px-6">
+        <div class="container mx-auto text-center">
+            <h1 class="text-4xl md:text-6xl font-extrabold text-blue-900 leading-tight">El Arsenal del Creador Moderno</h1>
+            <p class="mt-4 text-lg md:text-xl text-gray-700 max-w-3xl mx-auto">Ahora que conoces el proceso, es hora de abrir la caja de herramientas. Hoy diseccionaremos las máquinas que dan vida a tus diseños, entendiendo sus fortalezas, debilidades y su lenguaje secreto.</p>
+        </div>
+    </section>
+
+    <section id="anatomia" class="py-20 px-6">
+        <div class="container mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-blue-900">Anatomía de las Máquinas</h2>
+                <p class="mt-2 text-gray-600 max-w-2xl mx-auto">Selecciona una tecnología para explorar su funcionamiento interno, sus materiales y sus superpoderes.</p>
+            </div>
+
+            <div class="mb-8 border-b border-gray-200 flex justify-center">
+                <div class="flex flex-wrap -mb-px space-x-4">
+                    <button class="tab-button active inline-block p-4 border-b-2 rounded-t-lg text-lg font-semibold" data-tab="impresora3d">Impresora 3D</button>
+                    <button class="tab-button inline-block p-4 border-b-2 rounded-t-lg text-lg font-semibold" data-tab="laser">Cortadora Láser</button>
+                    <button class="tab-button inline-block p-4 border-b-2 rounded-t-lg text-lg font-semibold" data-tab="cnc">Fresadora CNC</button>
+                </div>
+            </div>
+
+            <div id="tab-content" class="bg-white p-8 rounded-lg shadow-xl">
+                <!-- Impresora 3D Content -->
+                <div id="impresora3d-content" class="tab-pane">
+                    <div class="grid md:grid-cols-2 gap-8 items-center">
+                        <div>
+                            <h3 class="text-2xl font-bold text-blue-800">Impresora 3D (FDM)</h3>
+                            <p class="font-semibold text-amber-700 mt-1">Analogía: Una tejedora de plástico de alta precisión.</p>
+                            <p class="mt-4 text-gray-600">Construye objetos añadiendo capas de plástico fundido. Es la reina de la complejidad geométrica interna y los prototipos rápidos.</p>
+                            <h4 class="font-bold mt-6 mb-2">Materiales Comunes:</h4>
+                            <div class="flex space-x-2">
+                                <span class="bg-green-100 text-green-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded">PLA</span>
+                                <span class="bg-red-100 text-red-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded">ABS</span>
+                                <span class="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded">PETG</span>
+                            </div>
+                            <h4 class="font-bold mt-6 mb-2">Anatomía (Pasa el cursor sobre las partes):</h4>
+                            <div class="relative w-full h-48 bg-gray-100 rounded-lg p-4 flex flex-col justify-between">
+                                <div class="diagram-part absolute top-2 right-10 w-24 h-8 bg-gray-300 rounded text-center text-xs flex items-center justify-center cursor-pointer" data-label="Extrusor"></div>
+                                <div class="diagram-part absolute top-12 right-12 w-4 h-12 bg-gray-400 rounded-b-lg cursor-pointer" data-label="Hotend/Boquilla"></div>
+                                <div class="w-full h-12 bg-gray-500 rounded diagram-part cursor-pointer" data-label="Cama de Impresión"></div>
+                                <div id="diagram-label" class="absolute bottom-2 left-2 text-blue-800 font-bold"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="chart-container">
+                                <canvas id="chart3d"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Cortadora Láser Content -->
+                <div id="laser-content" class="tab-pane hidden">
+                    <div class="grid md:grid-cols-2 gap-8 items-center">
+                        <div>
+                            <h3 class="text-2xl font-bold text-blue-800">Cortadora Láser</h3>
+                            <p class="font-semibold text-amber-700 mt-1">Analogía: Un pincel de luz que vaporiza material.</p>
+                            <p class="mt-4 text-gray-600">Utiliza un rayo láser enfocado para cortar o grabar con una precisión increíble. Ideal para trabajos 2D detallados.</p>
+                            <h4 class="font-bold mt-6 mb-2">Materiales Compatibles:</h4>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="bg-yellow-100 text-yellow-800 text-sm font-medium px-2.5 py-0.5 rounded">MDF</span>
+                                <span class="bg-purple-100 text-purple-800 text-sm font-medium px-2.5 py-0.5 rounded">Acrílico</span>
+                                <span class="bg-gray-200 text-gray-800 text-sm font-medium px-2.5 py-0.5 rounded">Cartón</span>
+                                <span class="bg-orange-100 text-orange-800 text-sm font-medium px-2.5 py-0.5 rounded">Cuero</span>
+                            </div>
+                            <div class="mt-6 bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-r-lg">
+                                <p class="font-bold">¡MATERIALES PROHIBIDOS!</p>
+                                <p class="text-sm">Nunca cortar PVC (libera gas tóxico) ni metales reflectantes (dañan la máquina).</p>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="chart-container">
+                                <canvas id="chartLaser"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Fresadora CNC Content -->
+                <div id="cnc-content" class="tab-pane hidden">
+                    <div class="grid md:grid-cols-2 gap-8 items-center">
+                        <div>
+                            <h3 class="text-2xl font-bold text-blue-800">Fresadora CNC</h3>
+                            <p class="font-semibold text-amber-700 mt-1">Analogía: Una escultora robótica de alta fuerza.</p>
+                            <p class="mt-4 text-gray-600">Usa una herramienta giratoria para remover material de un bloque sólido. Es la elección para piezas funcionales y estructurales que requieren alta resistencia.</p>
+                            <h4 class="font-bold mt-6 mb-2">Materiales Típicos:</h4>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="bg-yellow-100 text-yellow-800 text-sm font-medium px-2.5 py-0.5 rounded">Maderas</span>
+                                <span class="bg-blue-100 text-blue-800 text-sm font-medium px-2.5 py-0.5 rounded">Plásticos Duros</span>
+                                <span class="bg-gray-300 text-gray-800 text-sm font-medium px-2.5 py-0.5 rounded">Aluminio</span>
+                            </div>
+                            <p class="mt-6 text-sm text-gray-500">Requiere una sujeción muy firme del material y genera más ruido y virutas que las otras tecnologías.</p>
+                        </div>
+                        <div>
+                            <div class="chart-container">
+                                <canvas id="chartCNC"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="escenario" class="py-20 px-6 bg-amber-50">
+        <div class="container mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-blue-900">Escenario Interactivo: El Brief del Cliente</h2>
+                <p class="mt-2 text-gray-600 max-w-2xl mx-auto">Has recibido tres pedidos. Tu misión: elegir la herramienta correcta para cada trabajo y demostrar tu pericia como estratega de fabricación.</p>
+            </div>
+
+            <div id="quiz-container" class="space-y-10">
+                <!-- Pregunta 1 -->
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <p class="font-semibold text-gray-700 mb-4">Pedido 1: "Necesito 50 llaveros con el logo de mi empresa, cortados y grabados en madera MDF de 3mm."</p>
+                    <div class="flex flex-wrap gap-4 quiz-options" data-correct="laser">
+                        <button class="quiz-option flex-1 bg-gray-200 p-3 rounded-lg font-semibold" data-answer="impresora3d">Impresora 3D</button>
+                        <button class="quiz-option flex-1 bg-gray-200 p-3 rounded-lg font-semibold" data-answer="laser">Cortadora Láser</button>
+                        <button class="quiz-option flex-1 bg-gray-200 p-3 rounded-lg font-semibold" data-answer="cnc">Fresadora CNC</button>
+                    </div>
+                    <div class="feedback hidden mt-4 p-3 rounded-lg text-sm"></div>
+                </div>
+                <!-- Pregunta 2 -->
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <p class="font-semibold text-gray-700 mb-4">Pedido 2: "Requiero el prototipo de una carcasa para un dron. Debe ser ligera, tener curvas complejas y espacio para la electrónica en su interior."</p>
+                    <div class="flex flex-wrap gap-4 quiz-options" data-correct="impresora3d">
+                        <button class="quiz-option flex-1 bg-gray-200 p-3 rounded-lg font-semibold" data-answer="impresora3d">Impresora 3D</button>
+                        <button class="quiz-option flex-1 bg-gray-200 p-3 rounded-lg font-semibold" data-answer="laser">Cortadora Láser</button>
+                        <button class="quiz-option flex-1 bg-gray-200 p-3 rounded-lg font-semibold" data-answer="cnc">Fresadora CNC</button>
+                    </div>
+                    <div class="feedback hidden mt-4 p-3 rounded-lg text-sm"></div>
+                </div>
+                <!-- Pregunta 3 -->
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <p class="font-semibold text-gray-700 mb-4">Pedido 3: "Debo fabricar una pieza estructural de aluminio que servirá como soporte para un motor. La precisión es crítica."</p>
+                    <div class="flex flex-wrap gap-4 quiz-options" data-correct="cnc">
+                        <button class="quiz-option flex-1 bg-gray-200 p-3 rounded-lg font-semibold" data-answer="impresora3d">Impresora 3D</button>
+                        <button class="quiz-option flex-1 bg-gray-200 p-3 rounded-lg font-semibold" data-answer="laser">Cortadora Láser</button>
+                        <button class="quiz-option flex-1 bg-gray-200 p-3 rounded-lg font-semibold" data-answer="cnc">Fresadora CNC</button>
+                    </div>
+                    <div class="feedback hidden mt-4 p-3 rounded-lg text-sm"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="seguridad" class="py-20 px-6">
+        <div class="container mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-blue-900">La Seguridad es Innegociable</h2>
+                <p class="mt-2 text-gray-600 max-w-2xl mx-auto">Un gran creador es un creador seguro. Estas reglas no son sugerencias, son la base para un trabajo profesional y sin accidentes.</p>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-amber-500">
+                    <h3 class="font-bold text-lg">1. Gafas de Seguridad Siempre</h3>
+                    <p class="text-sm text-gray-600 mt-1">Fragmentos de material o herramientas pueden saltar. Tus ojos son irremplazables.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-amber-500">
+                    <h3 class="font-bold text-lg">2. Conoce la Parada de Emergencia</h3>
+                    <p class="text-sm text-gray-600 mt-1">Antes de empezar, ubica el gran botón rojo. Es tu mejor amigo en una crisis.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-amber-500">
+                    <h3 class="font-bold text-lg">3. Ventilación Adecuada</h3>
+                    <p class="text-sm text-gray-600 mt-1">El corte láser y la impresión 3D generan humos. Trabaja siempre en un área bien ventilada.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-red-500">
+                    <h3 class="font-bold text-lg">4. Nunca Dejes una Máquina Sola</h3>
+                    <p class="text-sm text-gray-600 mt-1">Especialmente la cortadora láser. Un pequeño incendio puede convertirse en un desastre.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-amber-500">
+                    <h3 class="font-bold text-lg">5. Cuidado con Ropa y Pelo</h3>
+                    <p class="text-sm text-gray-600 mt-1">La ropa suelta o el pelo largo pueden ser atrapados por partes móviles, especialmente en la fresadora CNC.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-amber-500">
+                    <h3 class="font-bold text-lg">6. Sujeta Bien tu Material</h3>
+                    <p class="text-sm text-gray-600 mt-1">En la fresadora CNC, una pieza mal sujeta puede salir disparada a gran velocidad.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer class="bg-blue-900 text-white py-10 px-6">
+    <div class="container mx-auto text-center">
+        <p class="font-bold text-lg">Navegación del Curso</p>
+        <div class="mt-4 flex justify-center space-x-6">
+            <a href="index.html" class="hover:text-amber-300">← Volver a Sesión 01</a>
+            <span class="text-blue-400">|</span>
+            <a href="#" class="text-gray-500 cursor-not-allowed">Ir a Sesión 03 →</a>
+        </div>
+        <p class="mt-6 text-sm text-blue-200">Módulo Interactivo creado para el IEST "Carlos Salazar Romero" | 2025</p>
+    </div>
+</footer>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = e.currentTarget.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({ top: targetElement.offsetTop - 70, behavior: 'smooth' });
+                }
+            });
+        });
+
+        const tabs = document.querySelectorAll('.tab-button');
+        const tabPanes = document.querySelectorAll('.tab-pane');
+        let charts = {};
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                const target = tab.dataset.tab;
+                
+                tabPanes.forEach(pane => {
+                    if (pane.id === `${target}-content`) {
+                        pane.classList.remove('hidden');
+                    } else {
+                        pane.classList.add('hidden');
+                    }
+                });
+
+                if (!charts[target]) {
+                    createChart(target);
+                }
+            });
+        });
+
+        const diagramParts = document.querySelectorAll('.diagram-part');
+        const diagramLabel = document.getElementById('diagram-label');
+        diagramParts.forEach(part => {
+            part.addEventListener('mouseover', () => {
+                diagramLabel.textContent = part.dataset.label;
+            });
+            part.addEventListener('mouseout', () => {
+                diagramLabel.textContent = '';
+            });
+        });
+
+        const quizContainers = document.querySelectorAll('.quiz-options');
+        quizContainers.forEach(container => {
+            const options = container.querySelectorAll('.quiz-option');
+            const correctAnswer = container.dataset.correct;
+            const feedbackEl = container.nextElementSibling;
+            
+            options.forEach(option => {
+                option.addEventListener('click', () => {
+                    const selectedAnswer = option.dataset.answer;
+                    
+                    options.forEach(opt => {
+                        opt.disabled = true;
+                        opt.classList.remove('bg-gray-200');
+                    });
+
+                    if (selectedAnswer === correctAnswer) {
+                        option.classList.add('bg-green-500', 'text-white');
+                        feedbackEl.textContent = '¡Correcto! ' + getExplanation(correctAnswer);
+                        feedbackEl.className = 'feedback mt-4 p-3 rounded-lg text-sm bg-green-100 text-green-800';
+                    } else {
+                        option.classList.add('bg-red-500', 'text-white');
+                        container.querySelector(`[data-answer="${correctAnswer}"]`).classList.add('bg-green-500', 'text-white');
+                        feedbackEl.textContent = 'Incorrecto. ' + getExplanation(correctAnswer);
+                        feedbackEl.className = 'feedback mt-4 p-3 rounded-lg text-sm bg-red-100 text-red-800';
+                    }
+                    feedbackEl.classList.remove('hidden');
+                });
+            });
+        });
+
+        function getExplanation(answer) {
+            const explanations = {
+                'laser': 'La cortadora láser es ideal para cortes 2D precisos y grabados en materiales como madera MDF.',
+                'impresora3d': 'La impresora 3D es perfecta para geometrías complejas, formas orgánicas y prototipos huecos como una carcasa de dron.',
+                'cnc': 'La fresadora CNC es la única opción para mecanizar metales como el aluminio y crear piezas estructurales de alta precisión y resistencia.'
+            };
+            return explanations[answer];
+        }
+
+        function createChart(type) {
+            const chartData = {
+                impresora3d: { id: 'chart3d', data: [3, 2, 5, 3, 3], title: 'Impresora 3D' },
+                laser: { id: 'chartLaser', data: [5, 5, 2, 2, 2], title: 'Cortadora Láser' },
+                cnc: { id: 'chartCNC', data: [4, 3, 4, 5, 5], title: 'Fresadora CNC' }
+            };
+            const labels = ['Precisión', 'Velocidad', 'Complejidad Geométrica', 'Costo de Material', 'Resistencia de Pieza'];
+            const data = chartData[type];
+            
+            const ctx = document.getElementById(data.id).getContext('2d');
+            charts[type] = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: data.title,
+                        data: data.data,
+                        fill: true,
+                        backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                        borderColor: 'rgb(59, 130, 246)',
+                        pointBackgroundColor: 'rgb(59, 130, 246)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgb(59, 130, 246)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 5,
+                            min: 0,
+                            ticks: { stepSize: 1 }
+                        }
+                    }
+                }
+            });
+        }
+        
+        createChart('impresora3d');
+    });
+</script>
+</body>
+</html>
