@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Semana 12: El Futuro de la Fabricación</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #111827; /* slate-900 */
+            color: #E5E7EB; /* gray-200 */
+        }
+        .gradient-text {
+            background-image: linear-gradient(to right, #22d3ee, #34d399);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .card {
+            background-color: #1f2937; /* slate-800 */
+            border: 1px solid #374151; /* slate-700 */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(34, 211, 238, 0.1);
+        }
+        .nav-button {
+            transition: all 0.3s ease;
+        }
+        .nav-button:hover {
+            box-shadow: 0 0 15px rgba(34, 211, 238, 0.5);
+        }
+        
+        /* 4D Printing Simulation */
+        #flat-shape {
+            width: 150px;
+            height: 150px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 1.5s ease-in-out;
+        }
+        #flat-shape.folded {
+            transform: rotateX(-90deg) translateZ(50px);
+        }
+        .face {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: rgba(34, 211, 238, 0.7);
+            border: 1px solid #22d3ee;
+        }
+        .center { top: 50px; left: 50px; transform: rotateX(90deg) translateZ(25px); }
+        .top { top: 0; left: 50px; transform-origin: bottom center; transition: transform 1.5s ease-in-out; }
+        .bottom { top: 100px; left: 50px; transform-origin: top center; transition: transform 1.5s ease-in-out; }
+        .left { top: 50px; left: 0; transform-origin: right center; transition: transform 1.5s ease-in-out; }
+        .right { top: 50px; left: 100px; transform-origin: left center; transition: transform 1.5s ease-in-out; }
+
+        #flat-shape.folded .top { transform: rotateX(-90deg); }
+        #flat-shape.folded .bottom { transform: rotateX(90deg); }
+        #flat-shape.folded .left { transform: rotateY(90deg); }
+        #flat-shape.folded .right { transform: rotateY(-90deg); }
+
+        .tech-tab {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .tech-tab.active {
+            background-color: #374151;
+            border-color: #22d3ee;
+        }
+
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-5xl mx-auto">
+
+        <!-- Encabezado -->
+        <header class="text-center mb-12">
+            <h3 class="text-lg text-cyan-400 font-semibold tracking-wider">FABRICACIÓN DIGITAL</h3>
+            <h1 class="text-4xl md:text-6xl font-bold mt-2 gradient-text">Semana 12</h1>
+            <h2 class="text-2xl md:text-3xl font-light text-gray-300 mt-2">Viaje al Futuro de la Fabricación</h2>
+        </header>
+
+        <main>
+            <!-- Sección 1: Impresión 4D -->
+            <section class="card rounded-xl p-6 md:p-8 mb-12">
+                <h3 class="text-2xl font-bold mb-4 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    Impresión 4D: La Dimensión del Tiempo
+                </h3>
+                <p class="text-gray-400 mb-6">
+                    Imagina objetos que se auto-ensamblan. La impresión 4D usa materiales inteligentes que reaccionan a un estímulo. Presiona el botón para aplicar calor y observa la magia.
+                </p>
+                <div class="h-64 flex flex-col md:flex-row items-center justify-around bg-slate-900 rounded-lg p-4">
+                    <div class="flex-1 flex items-center justify-center" style="perspective: 800px;">
+                        <div id="flat-shape">
+                           <div class="face center"></div>
+                           <div class="face top"></div>
+                           <div class="face bottom"></div>
+                           <div class="face left"></div>
+                           <div class="face right"></div>
+                        </div>
+                    </div>
+                    <div class="flex-1 text-center md:text-left">
+                        <p class="font-mono text-lg mb-4">`Objeto 3D + Estímulo = Cambio`</p>
+                        <button id="stimulus-btn" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-3 px-6 rounded-lg transition-transform hover:scale-105">
+                            Aplicar Estímulo (Calor)
+                        </button>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Sección 2: El Arsenal Avanzado -->
+            <section class="card rounded-xl p-6 md:p-8 mb-12">
+                <h3 class="text-2xl font-bold mb-4 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.293 2.293M17.707 5.293L15.414 7.586m-3.121 8.121l-2.293 2.293M7.586 15.414l2.293-2.293" /></svg>
+                    El Arsenal de Manufactura Avanzada
+                </h3>
+                <p class="text-gray-400 mb-6">
+                    La impresión FDM es solo el principio. Explora los "superpoderes" de otras tecnologías de manufactura aditiva.
+                </p>
+                <div class="flex flex-col md:flex-row gap-6">
+                    <div class="flex md:flex-col gap-2">
+                        <div class="tech-tab active border-l-4 p-4" data-tech="sla">
+                            <h4 class="font-bold">SLA / DLP</h4>
+                            <p class="text-sm text-gray-400">El poder del Hiper-Detalle</p>
+                        </div>
+                        <div class="tech-tab border-l-4 border-slate-700 p-4" data-tech="sls">
+                            <h4 class="font-bold">SLS</h4>
+                            <p class="text-sm text-gray-400">El poder de la Fortaleza Funcional</p>
+                        </div>
+                         <div class="tech-tab border-l-4 border-slate-700 p-4" data-tech="dmls">
+                            <h4 class="font-bold">DMLS / SLM</h4>
+                            <p class="text-sm text-gray-400">El poder del Metal</p>
+                        </div>
+                    </div>
+                    <div id="tech-display" class="flex-1 bg-slate-900 rounded-lg p-6 min-h-[200px]">
+                        <!-- Content will be injected by JS -->
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Sección 3: Laboratorio de Ideas del Futuro -->
+            <section class="card rounded-xl p-6 md:p-8 mb-12">
+                <h3 class="text-2xl font-bold mb-4 flex items-center">
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+                    Laboratorio de Ideas del Futuro
+                </h3>
+                <p class="text-gray-400 mb-6">
+                    Combina una necesidad con una tendencia emergente. Haz clic en un botón para generar un "pitch" de invención y encender tu creatividad.
+                </p>
+                <div class="flex flex-wrap justify-center gap-4 mb-6">
+                     <button class="idea-btn bg-slate-700 hover:bg-green-500 text-white font-bold py-2 px-4 rounded" data-idea="generative">Diseño Generativo</button>
+                     <button class="idea-btn bg-slate-700 hover:bg-green-500 text-white font-bold py-2 px-4 rounded" data-idea="bio">Bioprinting</button>
+                     <button class="idea-btn bg-slate-700 hover:bg-green-500 text-white font-bold py-2 px-4 rounded" data-idea="circular">Fabricación Circular</button>
+                </div>
+                <div id="idea-display" class="bg-slate-900 rounded-lg p-6 min-h-[200px] flex items-center justify-center text-center transition-opacity duration-500">
+                    <p class="text-gray-500">Selecciona una tendencia para generar una idea...</p>
+                </div>
+            </section>
+        </main>
+
+        <!-- Navegación -->
+        <footer class="mt-12 flex justify-between items-center">
+             <a href="#" class="nav-button bg-slate-700 hover:bg-cyan-600 text-white font-bold py-3 px-6 rounded-lg flex items-center space-x-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                <span>Semana 11</span>
+            </a>
+            <span class="text-sm text-gray-500">Módulo Interactivo</span>
+             <a href="#" class="nav-button bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-3 px-6 rounded-lg flex items-center space-x-2">
+                <span>Semana 13</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+            </a>
+        </footer>
+    </div>
+
+    <script>
+        // --- 4D Printing Simulation ---
+        const stimulusBtn = document.getElementById('stimulus-btn');
+        const flatShape = document.getElementById('flat-shape');
+        stimulusBtn.addEventListener('click', () => {
+            flatShape.classList.toggle('folded');
+            stimulusBtn.textContent = flatShape.classList.contains('folded') ? 'Revertir Estímulo' : 'Aplicar Estímulo (Calor)';
+        });
+
+        // --- Advanced Arsenal Tabs ---
+        const techTabs = document.querySelectorAll('.tech-tab');
+        const techDisplay = document.getElementById('tech-display');
+        const techContent = {
+            sla: {
+                title: 'SLA/DLP (Resina Líquida)',
+                text: 'Esta tecnología usa un láser UV para curar resina líquida capa por capa, logrando una resolución y un nivel de detalle inigualables. Es la elección de joyeros, ingenieros de precisión y artistas de miniaturas.',
+                img: 'https://placehold.co/150x100/1f2937/34d399?text=Miniatura+Detallada'
+            },
+            sls: {
+                title: 'SLS (Sinterizado Selectivo por Láser)',
+                text: 'Un láser funde partículas de polvo de nylon, creando piezas increíblemente resistentes y funcionales sin necesidad de estructuras de soporte. Ideal para prototipos que deben soportar estrés mecánico real.',
+                img: 'https://placehold.co/150x100/1f2937/34d399?text=Pieza+de+Dron+Resistente'
+            },
+            dmls: {
+                title: 'DMLS/SLM (Sinterizado Láser de Metal)',
+                text: 'La cima de la manufactura aditiva. Un láser de alta potencia funde polvo metálico (titanio, acero, aluminio) para crear piezas metálicas con geometrías internas complejas, imposibles de fabricar por métodos tradicionales.',
+                img: 'https://placehold.co/150x100/1f2937/34d399?text=Implante+de+Titanio'
+            }
+        };
+
+        function updateTechDisplay(techKey) {
+            const content = techContent[techKey];
+            techDisplay.innerHTML = `
+                <div class="flex flex-col md:flex-row gap-4 items-center">
+                    <img src="${content.img}" alt="[Imagen de ${content.title}]" class="rounded-lg w-full md:w-1/3">
+                    <div class="flex-1">
+                        <h5 class="text-xl font-bold text-green-400">${content.title}</h5>
+                        <p class="mt-2 text-gray-300">${content.text}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        techTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                techTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                updateTechDisplay(tab.dataset.tech);
+            });
+        });
+        
+        // Initial load
+        updateTechDisplay('sla');
+
+
+        // --- Idea Lab ---
+        const ideaBtns = document.querySelectorAll('.idea-btn');
+        const ideaDisplay = document.getElementById('idea-display');
+        const ideaPitches = {
+            generative: {
+                title: 'Pitch: Soporte de Titanio Ultraligero',
+                text: '<strong>Problema:</strong> Los soportes de satélites deben ser extremadamente fuertes pero ligeros. <br><strong>Solución:</strong> Usar Diseño Generativo para que una IA calcule la estructura óptima y luego imprimirla en 3D con titanio (DMLS). El resultado es un 40% más ligero y un 20% más resistente.',
+                img: 'https://placehold.co/150x100/1f2937/22d3ee?text=Soporte+Orgánico'
+            },
+            bio: {
+                title: 'Pitch: Parches de Piel Personalizados',
+                text: '<strong>Problema:</strong> Las quemaduras graves necesitan injertos de piel que pueden ser rechazados. <br><strong>Solución:</strong> Tomar una muestra de las propias células del paciente, cultivarlas en una "biotinta" e imprimir un parche de piel a medida que el cuerpo no rechazará.',
+                img: 'https://placehold.co/150x100/1f2937/22d3ee?text=Piel+Bioimpresa'
+            },
+            circular: {
+                 title: 'Pitch: Mobiliario Urbano Reciclado',
+                text: '<strong>Problema:</strong> Contaminación por plástico y falta de mobiliario en parques. <br><strong>Solución:</strong> Instalar centros locales que trituran botellas de plástico, las convierten en filamento y usan una impresora 3D a gran escala para fabricar bancas, papeleras y juegos infantiles, diseñados por la propia comunidad.',
+                 img: 'https://placehold.co/150x100/1f2937/22d3ee?text=Banca+Reciclada'
+            }
+        };
+        
+        ideaBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const ideaKey = btn.dataset.idea;
+                const content = ideaPitches[ideaKey];
+                ideaDisplay.style.opacity = '0';
+                setTimeout(() => {
+                    ideaDisplay.innerHTML = `
+                         <div class="flex flex-col items-center text-center gap-4">
+                            <img src="${content.img}" alt="[Imagen de ${content.title}]" class="rounded-lg">
+                            <div>
+                                <h5 class="text-xl font-bold text-cyan-400">${content.title}</h5>
+                                <p class="mt-2 text-gray-300">${content.text}</p>
+                            </div>
+                        </div>
+                    `;
+                    ideaDisplay.style.opacity = '1';
+                }, 500);
+            });
+        });
+    </script>
+
+</body>
+</html>

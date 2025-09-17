@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo Interactivo: Esculpiendo el Vacío con CAD</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Creator -->
+    <!-- Application Structure Plan: Este módulo para la Sesión 03 continúa con la estructura de SPA de desplazamiento vertical para mantener la coherencia. La arquitectura de la información está diseñada para ser un taller práctico virtual. Comienza con una introducción al entorno de diseño (TinkerCAD UI), seguido de una sección para practicar las transformaciones básicas. El núcleo del módulo es un "Sandbox Booleano", un simulador interactivo que permite a los usuarios experimentar con las operaciones de Agrupar y Agujero. Esta estructura de "aprender la interfaz -> practicar lo básico -> experimentar con lo avanzado" es un andamiaje pedagógico que construye la confianza y la competencia del estudiante de manera progresiva antes de enfrentarse al proyecto final de la sesión. -->
+    <!-- Visualization & Content Choices: 
+        - Interfaz de TinkerCAD: Report Info -> Componentes de la UI de TinkerCAD. Goal -> Informar/Orientar. Viz -> Diagrama interactivo hecho con HTML/CSS. Interaction -> Hover sobre un área para resaltar y mostrar su nombre. Justification -> Más ligero y más interactivo que una imagen estática, obliga al usuario a explorar activamente la interfaz. Library/Method -> HTML/CSS/JS.
+        - Transformaciones 3D: Report Info -> Mover, Escalar, Rotar. Goal -> Enseñar una habilidad. Viz -> Iconos y texto con animaciones sutiles. Interaction -> Hover sobre una tarjeta para ver una animación CSS que representa la transformación. Justification -> Las micro-animaciones refuerzan visualmente el concepto de cada transformación. Library/Method -> Tailwind CSS/JS.
+        - Sandbox Booleano: Report Info -> Operaciones de Agrupar y Agujero. Goal -> Permitir la experimentación. Viz -> Un simulador con dos formas (divs) y botones de control. Interaction -> Clic en los botones para ejecutar animaciones CSS que simulan la unión (cambio de color/borde) y la sustracción (uso de opacidad/posición). Justification -> Es la forma más efectiva de enseñar un concepto espacial abstracto. Transforma la lectura pasiva en un descubrimiento activo y es el "factor wow" de la sesión. Library/Method -> HTML/CSS/JS.
+        - Guía del Llavero: Report Info -> Pasos para crear un llavero. Goal -> Guiar un proyecto. Viz -> Un carrusel o "stepper" interactivo. Interaction -> Clic en botones "Siguiente/Anterior" para avanzar por los pasos, mostrando una imagen (recreada en HTML/CSS) y texto para cada etapa. Justification -> Divide una tarea compleja en pasos manejables, evitando que el estudiante se sienta abrumado. Library/Method -> HTML/CSS/JS.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #FDFBF8; }
+        .sticky-nav { position: sticky; top: 0; z-index: 50; }
+        .diagram-area { transition: background-color 0.3s; }
+        .diagram-area:hover { background-color: rgba(255, 196, 37, 0.3); }
+        .transform-card:hover .transform-icon { transform: scale(1.1); }
+        .sandbox-shape { transition: all 0.5s ease-in-out; border: 2px dashed transparent; }
+        #shape1.grouped { transform: translateX(25%); border-color: #3B82F6; background-color: #93C5FD; }
+        #shape2.grouped { transform: translateX(-25%); border-color: #3B82F6; background-color: #93C5FD; }
+        #shape2.hole { background-color: #9CA3AF; opacity: 0.5; }
+        #shape2.subtracted { opacity: 0; transform: scale(0.8); }
+        #shape1.subtracted-from { background-image: radial-gradient(circle at 100% 50%, transparent 49px, #60A5FA 50px); }
+        .step-card { display: none; }
+        .step-card.active { display: block; }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <header class="sticky-nav bg-white/80 backdrop-blur-lg shadow-md">
+        <nav class="container mx-auto px-6 py-3">
+            <div class="flex justify-between items-center">
+                <div class="text-xl font-bold text-blue-800">FABLAB Sesión 03</div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#inicio" class="nav-link text-gray-600 hover:text-blue-600">Inicio</a>
+                    <a href="#entorno" class="nav-link text-gray-600 hover:text-blue-600">Entorno CAD</a>
+                    <a href="#sandbox" class="nav-link text-gray-600 hover:text-blue-600">Sandbox</a>
+                    <a href="#proyecto" class="nav-link text-gray-600 hover:text-blue-600">Proyecto</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section id="inicio" class="bg-amber-50 py-20 px-6">
+            <div class="container mx-auto text-center">
+                <h1 class="text-4xl md:text-6xl font-extrabold text-blue-900 leading-tight">Esculpiendo el Vacío</h1>
+                <p class="mt-4 text-lg md:text-xl text-gray-700 max-w-3xl mx-auto">Hoy dejamos de ser gerentes para convertirnos en arquitectos. Bienvenidos al Diseño Asistido por Computadora (CAD), el universo virtual donde tus ideas cobran forma antes de nacer en el mundo real.</p>
+            </div>
+        </section>
+
+        <section id="entorno" class="py-20 px-6">
+            <div class="container mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-blue-900">Tu Estudio de Diseño: TinkerCAD</h2>
+                    <p class="mt-2 text-gray-600 max-w-2xl mx-auto">Explora la interfaz de nuestro taller digital. Pasa el cursor sobre las diferentes áreas para identificarlas.</p>
+                </div>
+                <div class="w-full max-w-4xl mx-auto bg-white p-4 rounded-lg shadow-xl border">
+                    <div class="relative h-[50vh] bg-gray-100 rounded-lg">
+                        <!-- Diagram Areas -->
+                        <div class="diagram-area absolute top-2 left-2 w-24 h-24 rounded-lg cursor-pointer" data-label="Cubo de Vistas"></div>
+                        <div class="diagram-area absolute top-2 right-2 w-1/4 h-full rounded-lg cursor-pointer" data-label="Panel de Formas"></div>
+                        <div class="diagram-area absolute top-2 left-1/4 w-1/2 h-12 rounded-lg cursor-pointer" data-label="Barra de Herramientas"></div>
+                        <div class="absolute bottom-0 left-0 w-3/4 h-3/4 flex items-center justify-center">
+                            <div class="w-full h-full p-8">
+                                <div class="diagram-area w-full h-full border-2 border-dashed border-blue-300 rounded-lg cursor-pointer flex items-center justify-center text-blue-400 font-bold text-2xl" data-label="Plano de Trabajo">
+                                </div>
+                            </div>
+                        </div>
+                        <div id="diagram-label-output" class="absolute bottom-4 left-4 text-2xl font-bold text-blue-800 bg-white/70 px-4 py-2 rounded-lg backdrop-blur-sm">Pasa el cursor para explorar</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sandbox" class="py-20 px-6 bg-gray-50">
+            <div class="container mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-blue-900">Sandbox Booleano: El Secreto del Modelado</h2>
+                    <p class="mt-2 text-gray-600 max-w-2xl mx-auto">Toda forma compleja nace de dos operaciones simples: unir y sustraer. ¡Experimenta con ellas!</p>
+                </div>
+                <div class="w-full max-w-3xl mx-auto bg-white p-8 rounded-lg shadow-xl">
+                    <div id="sandbox-viewport" class="relative w-full h-64 bg-gray-200 rounded-lg flex items-center justify-center overflow-hidden">
+                        <div id="shape1" class="sandbox-shape w-40 h-40 bg-blue-400 rounded-lg"></div>
+                        <div id="shape2" class="sandbox-shape w-24 h-24 bg-amber-400 rounded-full absolute"></div>
+                    </div>
+                    <div class="mt-6 flex flex-wrap justify-center gap-4">
+                        <button id="btn-group" class="bg-blue-600 text-white font-semibold py-2 px-5 rounded-lg hover:bg-blue-700">Agrupar (Unir)</button>
+                        <button id="btn-hole" class="bg-gray-600 text-white font-semibold py-2 px-5 rounded-lg hover:bg-gray-700">Convertir en Agujero</button>
+                        <button id="btn-subtract" class="bg-red-600 text-white font-semibold py-2 px-5 rounded-lg hover:bg-red-700">Agrupar (Sustraer)</button>
+                        <button id="btn-reset" class="bg-gray-300 text-gray-800 font-semibold py-2 px-5 rounded-lg hover:bg-gray-400">Reiniciar</button>
+                    </div>
+                    <div id="sandbox-status" class="text-center mt-4 text-gray-600 font-semibold h-6"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="proyecto" class="py-20 px-6">
+            <div class="container mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-blue-900">Proyecto Guiado: Tu Primer Llavero</h2>
+                    <p class="mt-2 text-gray-600 max-w-2xl mx-auto">Aplica lo aprendido creando tu primer objeto 3D listo para fabricar. Sigue los pasos.</p>
+                </div>
+                <div class="w-full max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-xl">
+                    <div class="flex">
+                        <div class="w-1/2 pr-8">
+                            <!-- Step 1 -->
+                            <div id="step-1" class="step-card active">
+                                <h3 class="text-2xl font-bold text-blue-800">Paso 1: Crear la Base</h3>
+                                <p class="mt-2 text-gray-600">Arrastra un Cubo desde el panel de formas. Usa los manejadores de escala para aplanarlo y darle una forma rectangular. Esta será la base de nuestro llavero.</p>
+                            </div>
+                            <!-- Step 2 -->
+                            <div id="step-2" class="step-card">
+                                <h3 class="text-2xl font-bold text-blue-800">Paso 2: Añadir Texto</h3>
+                                <p class="mt-2 text-gray-600">Selecciona la herramienta de Texto y escribe tus iniciales. Coloca el objeto de texto sobre la base. Puedes ajustar su tamaño y altura para que sobresalga.</p>
+                            </div>
+                            <!-- Step 3 -->
+                            <div id="step-3" class="step-card">
+                                <h3 class="text-2xl font-bold text-blue-800">Paso 3: Unir las Piezas</h3>
+                                <p class="mt-2 text-gray-600">Selecciona tanto la base como el texto (usa la tecla Shift o arrastra un cuadro de selección). Presiona el botón "Agrupar". Verás que ambos se convierten en un solo objeto del mismo color.</p>
+                            </div>
+                            <!-- Step 4 -->
+                            <div id="step-4" class="step-card">
+                                <h3 class="text-2xl font-bold text-blue-800">Paso 4: Crear el Agujero</h3>
+                                <p class="mt-2 text-gray-600">Arrastra un Cilindro. En su panel de propiedades, selecciónalo como "Agujero". Muévelo y escálalo para que atraviese una esquina de la base del llavero.</p>
+                            </div>
+                            <!-- Step 5 -->
+                            <div id="step-5" class="step-card">
+                                <h3 class="text-2xl font-bold text-blue-800">Paso 5: Finalizar y Exportar</h3>
+                                <p class="mt-2 text-gray-600">Selecciona el llavero y el cilindro-agujero. Presiona "Agrupar" de nuevo. ¡Se creará el agujero! Ahora, ve al botón "Exportar" y selecciona `.STL` para guardar tu diseño.</p>
+                            </div>
+                        </div>
+                        <div class="w-1/2 bg-gray-100 rounded-lg flex items-center justify-center p-4">
+                            <div id="visual-step" class="relative w-64 h-40">
+                                <!-- Visuals will be updated by JS -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-8 flex justify-between items-center">
+                        <button id="prev-step" class="bg-gray-300 text-gray-800 font-semibold py-2 px-5 rounded-lg hover:bg-gray-400 disabled:opacity-50" disabled>Anterior</button>
+                        <div id="step-indicator" class="text-gray-600 font-semibold">Paso 1 de 5</div>
+                        <button id="next-step" class="bg-blue-600 text-white font-semibold py-2 px-5 rounded-lg hover:bg-blue-700">Siguiente</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-blue-900 text-white py-10 px-6">
+        <div class="container mx-auto text-center">
+            <p class="font-bold text-lg">Navegación del Curso</p>
+            <div class="mt-4 flex justify-center space-x-6">
+                <a href="sesion-02.html" class="hover:text-amber-300">← Volver a Sesión 02</a>
+                <span class="text-blue-400">|</span>
+                <a href="#" class="text-gray-500 cursor-not-allowed">Ir a Sesión 04 →</a>
+            </div>
+            <p class="mt-6 text-sm text-blue-200">Módulo Interactivo creado para el IEST "Carlos Salazar Romero" | 2025</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = e.currentTarget.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({ top: targetElement.offsetTop - 70, behavior: 'smooth' });
+                    }
+                });
+            });
+
+            const diagramAreas = document.querySelectorAll('.diagram-area');
+            const diagramLabel = document.getElementById('diagram-label-output');
+            diagramAreas.forEach(area => {
+                area.addEventListener('mouseover', () => {
+                    diagramLabel.textContent = area.dataset.label;
+                });
+                area.addEventListener('mouseout', () => {
+                    diagramLabel.textContent = 'Pasa el cursor para explorar';
+                });
+            });
+
+            const shape1 = document.getElementById('shape1');
+            const shape2 = document.getElementById('shape2');
+            const sandboxStatus = document.getElementById('sandbox-status');
+            
+            function resetSandbox() {
+                shape1.className = 'sandbox-shape w-40 h-40 bg-blue-400 rounded-lg';
+                shape2.className = 'sandbox-shape w-24 h-24 bg-amber-400 rounded-full absolute';
+                sandboxStatus.textContent = '';
+            }
+            
+            document.getElementById('btn-reset').addEventListener('click', resetSandbox);
+            
+            document.getElementById('btn-group').addEventListener('click', () => {
+                resetSandbox();
+                setTimeout(() => {
+                    shape1.classList.add('grouped');
+                    shape2.classList.add('grouped');
+                    sandboxStatus.textContent = '¡Objetos agrupados en una sola forma!';
+                }, 100);
+            });
+
+            document.getElementById('btn-hole').addEventListener('click', () => {
+                shape2.classList.add('hole');
+                sandboxStatus.textContent = 'La forma amarilla ahora es un "Agujero".';
+            });
+
+            document.getElementById('btn-subtract').addEventListener('click', () => {
+                if (!shape2.classList.contains('hole')) {
+                    sandboxStatus.textContent = 'Primero convierte la segunda forma en "Agujero".';
+                    return;
+                }
+                shape1.classList.add('subtracted-from');
+                shape2.classList.add('subtracted');
+                sandboxStatus.textContent = '¡Agrupados! El agujero ha sustraído material.';
+            });
+
+            let currentStep = 1;
+            const totalSteps = 5;
+            const prevBtn = document.getElementById('prev-step');
+            const nextBtn = document.getElementById('next-step');
+            const stepIndicator = document.getElementById('step-indicator');
+            const visualStep = document.getElementById('visual-step');
+
+            const stepVisuals = [
+                `<div class="w-full h-16 bg-blue-300 rounded"></div>`,
+                `<div class="w-full h-16 bg-blue-300 rounded relative"><div class="absolute top-4 left-8 text-3xl font-bold text-blue-800">AB</div></div>`,
+                `<div class="w-full h-16 bg-blue-500 rounded relative"><div class="absolute top-4 left-8 text-3xl font-bold text-white">AB</div></div>`,
+                `<div class="w-full h-16 bg-blue-500 rounded relative"><div class="absolute top-4 left-8 text-3xl font-bold text-white">AB</div><div class="absolute top-1/2 right-4 -translate-y-1/2 w-6 h-6 bg-gray-400 rounded-full opacity-70"></div></div>`,
+                `<div class="w-full h-16 bg-blue-500 rounded relative"><div class="absolute top-4 left-8 text-3xl font-bold text-white">AB</div><div class="absolute top-1/2 right-4 -translate-y-1/2 w-6 h-6 bg-gray-100 rounded-full"></div></div>`
+            ];
+
+            function updateStepView() {
+                document.querySelectorAll('.step-card').forEach(card => card.classList.remove('active'));
+                document.getElementById(`step-${currentStep}`).classList.add('active');
+                stepIndicator.textContent = `Paso ${currentStep} de ${totalSteps}`;
+                visualStep.innerHTML = stepVisuals[currentStep - 1];
+                prevBtn.disabled = currentStep === 1;
+                nextBtn.disabled = currentStep === totalSteps;
+            }
+
+            nextBtn.addEventListener('click', () => {
+                if (currentStep < totalSteps) {
+                    currentStep++;
+                    updateStepView();
+                }
+            });
+
+            prevBtn.addEventListener('click', () => {
+                if (currentStep > 1) {
+                    currentStep--;
+                    updateStepView();
+                }
+            });
+            
+            updateStepView();
+        });
+    </script>
+</body>
+</html>

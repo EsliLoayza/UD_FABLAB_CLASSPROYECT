@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo Interactivo: El Traductor de Mundos (CAM)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Creator -->
+    <!-- Application Structure Plan: La estructura modular continúa con un archivo dedicado para la Sesión 04, garantizando una carga rápida y una organización clara. El diseño de una sola página con desplazamiento y navegación fija se mantiene por consistencia. El corazón pedagógico de este módulo es el "Simulador de Slicing Interactivo". Esta estructura de "aprender el concepto -> simular el impacto -> analizar el resultado" es un ciclo de aprendizaje activo. Se ha elegido un simulador en lugar de una exposición estática porque el objetivo principal del CAM es entender las consecuencias y los trueques de diferentes configuraciones, algo que solo se puede lograr mediante la experimentación directa. -->
+    <!-- Visualization & Content Choices: 
+        - Simulador de Slicing: Report Info -> Parámetros clave (altura capa, relleno, soportes, adhesión). Goal -> Permitir la experimentación de causa y efecto. Viz -> Un panel de control con sliders y botones junto a una representación visual del objeto. Interaction -> El usuario manipula los sliders/botones y ve cómo se actualizan en tiempo real los datos (tiempo, material) y la visualización (se añaden soportes, cambia el patrón de relleno). Justification -> Es la herramienta más potente para enseñar la optimización. Transforma conceptos abstractos en consecuencias tangibles y numéricas. Es el "factor wow" y la herramienta de aprendizaje principal. Library/Method -> HTML/CSS/JS.
+        - Visualización del Objeto 3D: Report Info -> Representación de los efectos de los parámetros. Goal -> Informar/Visualizar. Viz -> Un objeto simplificado construido con divs HTML/CSS. Se añaden/eliminan otros divs para representar soportes, adhesión y un patrón de relleno. Interaction -> La visualización es reactiva a los controles del simulador. Justification -> Ligero, rápido y evita el uso de librerías 3D complejas. Muestra claramente el impacto de cada ajuste. Library/Method -> HTML/CSS/JS.
+        - G-Code Demystified: Report Info -> El formato del archivo de salida (.gcode). Goal -> Demistificar/Informar. Viz -> Una pequeña caja de código con líneas de G-code resaltadas. Interaction -> Hover sobre una línea de código para mostrar un "tooltip" con una traducción en español simple de lo que significa ese comando. Justification -> Conecta la configuración abstracta del slicer con el resultado final tangible: las instrucciones que la máquina realmente lee. Library/Method -> HTML/CSS/JS.
+        - Tarjetas de Parámetros: Report Info -> Explicación de cada parámetro. Goal -> Informar. Viz -> Tarjetas de contenido con íconos y texto claro. Interaction -> Ninguna, están diseñadas para ser una referencia rápida y clara. Justification -> Organiza la información teórica de forma digerible antes de que el usuario entre al simulador. Library/Method -> Tailwind CSS.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #FDFBF8; }
+        .sticky-nav { position: sticky; top: 0; z-index: 50; }
+        .slider-thumb::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 20px; height: 20px; background: #2563EB; cursor: pointer; border-radius: 50%; }
+        .slider-thumb::-moz-range-thumb { width: 20px; height: 20px; background: #2563EB; cursor: pointer; border-radius: 50%; }
+        .sim-object-part { transition: all 0.3s ease-in-out; }
+        .support-structure { background-color: rgba(56, 189, 248, 0.5); border: 1px dashed #0284C7; }
+        .infill-pattern { background-image: linear-gradient(45deg, rgba(167, 139, 250, 0.4) 25%, transparent 25%), linear-gradient(-45deg, rgba(167, 139, 250, 0.4) 25%, transparent 25%), linear-gradient(45deg, transparent 75%, rgba(167, 139, 250, 0.4) 75%), linear-gradient(-45deg, transparent 75%, rgba(167, 139, 250, 0.4) 75%); background-size: 20px 20px; }
+        .adhesion-brim { box-shadow: 0 0 0 10px rgba(34, 197, 94, 0.3); }
+        .adhesion-raft { box-shadow: 0 0 0 10px rgba(34, 197, 94, 0.3), 0 0 0 20px rgba(34, 197, 94, 0.2); }
+        .gcode-line:hover .gcode-tooltip { opacity: 1; visibility: visible; transform: translateY(0); }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <header class="sticky-nav bg-white/80 backdrop-blur-lg shadow-md">
+        <nav class="container mx-auto px-6 py-3">
+            <div class="flex justify-between items-center">
+                <div class="text-xl font-bold text-blue-800">FABLAB Sesión 04</div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#inicio" class="nav-link text-gray-600 hover:text-blue-600">Inicio</a>
+                    <a href="#conceptos" class="nav-link text-gray-600 hover:text-blue-600">Conceptos</a>
+                    <a href="#simulador" class="nav-link text-gray-600 hover:text-blue-600">Simulador</a>
+                    <a href="#gcode" class="nav-link text-gray-600 hover:text-blue-600">G-Code</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section id="inicio" class="bg-blue-50 py-20 px-6">
+            <div class="container mx-auto text-center">
+                <h1 class="text-4xl md:text-6xl font-extrabold text-blue-900 leading-tight">El Traductor de Mundos</h1>
+                <p class="mt-4 text-lg md:text-xl text-gray-700 max-w-3xl mx-auto">Tu diseño CAD es un plano brillante, pero la máquina solo entiende un lenguaje de comandos. Hoy nos convertimos en el "Maestro de Obra" (CAM), traduciendo la visión del arquitecto en un manual de construcción perfecto.</p>
+            </div>
+        </section>
+
+        <section id="conceptos" class="py-20 px-6">
+            <div class="container mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-blue-900">Los 4 Pilares de la Impresión</h2>
+                    <p class="mt-2 text-gray-600 max-w-2xl mx-auto">El arte del "Slicing" se basa en balancear cuatro decisiones estratégicas. Cada una tiene un impacto directo en el resultado final.</p>
+                </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div class="bg-white p-6 rounded-lg shadow-md text-center">
+                        <div class="text-5xl">🎨</div>
+                        <h3 class="text-xl font-bold mt-4">Altura de Capa</h3>
+                        <p class="text-sm mt-2 text-gray-600">Define la resolución vertical. Capas finas para un acabado suave, capas gruesas para velocidad.</p>
+                        <p class="mt-4 font-bold text-blue-700">Impacta: Calidad vs. Tiempo</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md text-center">
+                        <div class="text-5xl">🏛️</div>
+                        <h3 class="text-xl font-bold mt-4">Relleno (Infill)</h3>
+                        <p class="text-sm mt-2 text-gray-600">El esqueleto interno de la pieza. Más relleno significa más fuerza, pero más costo y tiempo.</p>
+                        <p class="mt-4 font-bold text-amber-700">Impacta: Resistencia vs. Costo</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md text-center">
+                        <div class="text-5xl">🏗️</div>
+                        <h3 class="text-xl font-bold mt-4">Soportes</h3>
+                        <p class="text-sm mt-2 text-gray-600">Andamios temporales para las partes que se imprimen "en el aire". Permiten geometrías complejas.</p>
+                        <p class="mt-4 font-bold text-green-700">Impacta: Geometría vs. Post-Proceso</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md text-center">
+                        <div class="text-5xl">⚓</div>
+                        <h3 class="text-xl font-bold mt-4">Adhesión</h3>
+                        <p class="text-sm mt-2 text-gray-600">Los cimientos de la impresión. Asegura que la pieza no se despegue de la base durante la fabricación.</p>
+                        <p class="mt-4 font-bold text-red-700">Impacta: Fiabilidad vs. Material</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="simulador" class="py-20 px-6 bg-gray-50">
+            <div class="container mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-blue-900">Laboratorio de Slicing Interactivo</h2>
+                    <p class="mt-2 text-gray-600 max-w-2xl mx-auto">¡Toma el control! Ajusta los parámetros y observa en tiempo real cómo tus decisiones afectan el resultado de la impresión.</p>
+                </div>
+                <div class="w-full max-w-6xl mx-auto bg-white p-8 rounded-lg shadow-xl grid md:grid-cols-2 gap-8">
+                    <!-- Controls -->
+                    <div class="space-y-6">
+                        <div>
+                            <label for="layerHeight" class="font-bold text-gray-700">Altura de Capa: <span id="layerHeightValue" class="text-blue-600 font-mono">0.20mm</span></label>
+                            <input id="layerHeight" type="range" min="0.12" max="0.28" step="0.04" value="0.20" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-thumb">
+                        </div>
+                        <div>
+                            <label for="infill" class="font-bold text-gray-700">Relleno (Infill): <span id="infillValue" class="text-blue-600 font-mono">20%</span></label>
+                            <input id="infill" type="range" min="10" max="80" step="10" value="20" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-thumb">
+                        </div>
+                        <div>
+                            <label class="font-bold text-gray-700">Soportes</label>
+                            <div class="mt-2 flex items-center">
+                                <input type="checkbox" id="supports" class="h-6 w-6 rounded text-blue-600 focus:ring-blue-500">
+                                <label for="supports" class="ml-3 text-gray-600">Generar Soportes Automáticos</label>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="font-bold text-gray-700">Adhesión a la Cama</label>
+                            <div id="adhesionOptions" class="mt-2 flex flex-wrap gap-3">
+                                <button data-type="none" class="adhesion-btn bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold">Ninguna</button>
+                                <button data-type="brim" class="adhesion-btn bg-gray-200 text-gray-800 px-4 py-2 rounded-lg text-sm font-semibold">Borde (Brim)</button>
+                                <button data-type="raft" class="adhesion-btn bg-gray-200 text-gray-800 px-4 py-2 rounded-lg text-sm font-semibold">Balsa (Raft)</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Visualization and Results -->
+                    <div>
+                        <div class="w-full h-64 bg-gray-200 rounded-lg flex items-center justify-center p-4">
+                            <div id="sim-object" class="relative w-40 h-40">
+                                <div id="adhesion-visual" class="absolute inset-0 rounded-lg"></div>
+                                <div id="main-object" class="sim-object-part absolute w-full h-full bg-blue-400 rounded-lg overflow-hidden">
+                                     <div id="infill-visual" class="w-full h-full opacity-0"></div>
+                                </div>
+                               <div id="support-visual" class="sim-object-part absolute bottom-0 -left-12 w-10 h-28 opacity-0"></div>
+                               <div class="sim-object-part absolute w-24 h-10 bg-blue-400 top-0 left-1/2 -translate-x-1/2 rounded-t-lg"></div>
+                               <div class="sim-object-part absolute w-10 h-10 bg-blue-400 top-1/2 -left-12 rounded-l-lg"></div>
+                            </div>
+                        </div>
+                        <div class="mt-6 grid grid-cols-2 gap-4 text-center">
+                            <div class="bg-gray-100 p-4 rounded-lg">
+                                <p class="text-sm font-bold text-gray-500">TIEMPO ESTIMADO</p>
+                                <p id="time-output" class="text-2xl font-bold text-blue-800 font-mono">1h 35m</p>
+                            </div>
+                            <div class="bg-gray-100 p-4 rounded-lg">
+                                <p class="text-sm font-bold text-gray-500">MATERIAL USADO</p>
+                                <p id="material-output" class="text-2xl font-bold text-amber-800 font-mono">25g</p>
+                            </div>
+                             <div class="bg-gray-100 p-4 rounded-lg">
+                                <p class="text-sm font-bold text-gray-500">CALIDAD VISUAL</p>
+                                <p id="quality-output" class="text-xl font-bold text-green-800">Buena</p>
+                            </div>
+                             <div class="bg-gray-100 p-4 rounded-lg">
+                                <p class="text-sm font-bold text-gray-500">RESISTENCIA</p>
+                                <p id="strength-output" class="text-xl font-bold text-red-800">Estándar</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="gcode" class="py-20 px-6">
+            <div class="container mx-auto">
+                 <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-blue-900">Demistificando el G-Code</h2>
+                    <p class="mt-2 text-gray-600 max-w-2xl mx-auto">Este es el lenguaje que la máquina entiende. Pasa el cursor sobre los comandos para ver su traducción.</p>
+                </div>
+                <div class="max-w-2xl mx-auto font-mono text-sm bg-gray-800 text-white p-6 rounded-lg shadow-lg">
+                    <div class="gcode-line relative">M104 S205 ; Poner temperatura del extrusor a 205°C
+                        <span class="gcode-tooltip absolute -top-10 left-1/2 -translate-x-1/2 w-max bg-blue-600 text-white text-xs rounded py-1 px-2 opacity-0 visibility-hidden transition-all duration-300">Calentar la boquilla</span>
+                    </div>
+                    <div class="gcode-line relative">G28 ; Mover ejes X/Y/Z al origen
+                        <span class="gcode-tooltip absolute -top-10 left-1/2 -translate-x-1/2 w-max bg-blue-600 text-white text-xs rounded py-1 px-2 opacity-0 visibility-hidden transition-all duration-300">Ir a la posición inicial</span>
+                    </div>
+                    <div class="gcode-line relative text-green-400">G1 Z0.3 F3000 ; Mover boquilla a 0.3mm de altura
+                         <span class="gcode-tooltip absolute -top-10 left-1/2 -translate-x-1/2 w-max bg-blue-600 text-white text-xs rounded py-1 px-2 opacity-0 visibility-hidden transition-all duration-300">Posicionar para la primera capa</span>
+                    </div>
+                    <div class="gcode-line relative text-green-400">G1 X20 Y20 F1500 E15 ; Mover a (20,20) y extruir 15mm de filamento
+                        <span class="gcode-tooltip absolute -top-10 left-1/2 -translate-x-1/2 w-max bg-blue-600 text-white text-xs rounded py-1 px-2 opacity-0 visibility-hidden transition-all duration-300">¡Empezar a dibujar la pieza!</span>
+                    </div>
+                    <div class="gcode-line relative">M107 ; Apagar el ventilador de capa
+                         <span class="gcode-tooltip absolute -top-10 left-1/2 -translate-x-1/2 w-max bg-blue-600 text-white text-xs rounded py-1 px-2 opacity-0 visibility-hidden transition-all duration-300">Finalizar una instrucción</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-blue-900 text-white py-10 px-6">
+        <div class="container mx-auto text-center">
+            <p class="font-bold text-lg">Navegación del Curso</p>
+            <div class="mt-4 flex justify-center space-x-6">
+                <a href="sesion-03.html" class="hover:text-amber-300">← Volver a Sesión 03</a>
+                <span class="text-blue-400">|</span>
+                <a href="#" class="text-gray-500 cursor-not-allowed">Ir a Sesión 05 →</a>
+            </div>
+            <p class="mt-6 text-sm text-blue-200">Módulo Interactivo creado para el IEST "Carlos Salazar Romero" | 2025</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = e.currentTarget.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) { window.scrollTo({ top: targetElement.offsetTop - 70, behavior: 'smooth' }); }
+                });
+            });
+
+            const layerHeightSlider = document.getElementById('layerHeight');
+            const infillSlider = document.getElementById('infill');
+            const supportsCheckbox = document.getElementById('supports');
+            const adhesionBtns = document.querySelectorAll('.adhesion-btn');
+            
+            const layerHeightValue = document.getElementById('layerHeightValue');
+            const infillValue = document.getElementById('infillValue');
+            
+            const timeOutput = document.getElementById('time-output');
+            const materialOutput = document.getElementById('material-output');
+            const qualityOutput = document.getElementById('quality-output');
+            const strengthOutput = document.getElementById('strength-output');
+
+            const infillVisual = document.getElementById('infill-visual');
+            const supportVisual = document.getElementById('support-visual');
+            const adhesionVisual = document.getElementById('adhesion-visual');
+            
+            let adhesionType = 'none';
+
+            function updateSimulation() {
+                const layerHeight = parseFloat(layerHeightSlider.value);
+                const infill = parseInt(infillSlider.value);
+                const supports = supportsCheckbox.checked;
+
+                layerHeightValue.textContent = `${layerHeight.toFixed(2)}mm`;
+                infillValue.textContent = `${infill}%`;
+
+                // --- Calculation Logic (Simplified for demonstration) ---
+                const baseTime = 50; 
+                const baseMaterial = 15;
+
+                const layerHeightFactor = 0.20 / layerHeight;
+                const infillFactor = 1 + (infill / 100) * 2;
+                const supportFactor = supports ? 1.4 : 1;
+                const adhesionFactorTime = (adhesionType === 'raft') ? 1.15 : (adhesionType === 'brim') ? 1.05 : 1;
+                const adhesionFactorMaterial = (adhesionType === 'raft') ? 1.25 : (adhesionType === 'brim') ? 1.1 : 1;
+
+                let totalTime = baseTime * layerHeightFactor * infillFactor * supportFactor * adhesionFactorTime;
+                let totalMaterial = baseMaterial * infillFactor * supportFactor * adhesionFactorMaterial;
+
+                const hours = Math.floor(totalTime / 60);
+                const minutes = Math.round(totalTime % 60);
+                timeOutput.textContent = `${hours}h ${minutes}m`;
+                materialOutput.textContent = `${Math.round(totalMaterial)}g`;
+
+                // --- Descriptive Outputs ---
+                if(layerHeight <= 0.12) qualityOutput.textContent = 'Excepcional';
+                else if(layerHeight <= 0.20) qualityOutput.textContent = 'Buena';
+                else qualityOutput.textContent = 'Borrador';
+
+                if(infill >= 60) strengthOutput.textContent = 'Robusta';
+                else if(infill >= 30) strengthOutput.textContent = 'Estándar';
+                else strengthOutput.textContent = 'Frágil';
+
+                // --- Visual Updates ---
+                infillVisual.style.opacity = infill / 100;
+                infillVisual.classList.toggle('infill-pattern', infill > 10);
+                
+                supportVisual.style.opacity = supports ? 1 : 0;
+                supportVisual.classList.toggle('support-structure', supports);
+
+                adhesionVisual.className = 'absolute inset-0 rounded-lg transition-all duration-300';
+                if (adhesionType === 'brim') adhesionVisual.classList.add('adhesion-brim');
+                if (adhesionType === 'raft') adhesionVisual.classList.add('adhesion-raft');
+            }
+
+            adhesionBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    adhesionBtns.forEach(b => b.classList.replace('bg-blue-600', 'bg-gray-200'), b.classList.replace('text-white', 'text-gray-800'));
+                    btn.classList.replace('bg-gray-200', 'bg-blue-600');
+                    btn.classList.replace('text-gray-800', 'text-white');
+                    adhesionType = btn.dataset.type;
+                    updateSimulation();
+                });
+            });
+
+            layerHeightSlider.addEventListener('input', updateSimulation);
+            infillSlider.addEventListener('input', updateSimulation);
+            supportsCheckbox.addEventListener('change', updateSimulation);
+            
+            updateSimulation(); 
+        });
+    </script>
+</body>
+</html>

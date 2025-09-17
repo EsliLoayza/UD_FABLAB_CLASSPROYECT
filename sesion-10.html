@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Semana 10: Del Plan a la Pieza Real</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #111827; /* slate-900 */
+            color: #E5E7EB; /* gray-200 */
+        }
+        .gradient-text {
+            background-image: linear-gradient(to right, #60a5fa, #818cf8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .card {
+            background-color: #1f2937; /* slate-800 */
+            border: 1px solid #374151; /* slate-700 */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(96, 165, 250, 0.1);
+        }
+        .nav-button {
+            transition: all 0.3s ease;
+        }
+        .nav-button:hover {
+            box-shadow: 0 0 15px rgba(96, 165, 250, 0.5);
+        }
+        .gcode-line:hover {
+            background-color: #374151;
+            cursor: pointer;
+        }
+        .checklist-item {
+            border-left: 4px solid #4b5563;
+            transition: all 0.3s ease;
+        }
+        .checklist-item.completed {
+            border-left: 4px solid #22c55e;
+            background-color: #1f2937;
+        }
+        .action-button {
+            transition: all 0.3s ease;
+        }
+        /* Before-After Slider */
+        .comparison-slider {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            overflow: hidden;
+            border-radius: 0.5rem;
+        }
+        .comparison-slider img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        #image-after {
+            clip-path: polygon(50% 0, 100% 0, 100% 100%, 50% 100%);
+        }
+        #slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            background-color: transparent;
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            margin: 0;
+            cursor: ew-resize;
+        }
+        #slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 4px;
+            height: 100%;
+            background: white;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-5xl mx-auto">
+
+        <!-- Encabezado -->
+        <header class="text-center mb-12">
+            <h3 class="text-lg text-blue-400 font-semibold tracking-wider">FABRICACIÓN DIGITAL</h3>
+            <h1 class="text-4xl md:text-6xl font-bold mt-2 gradient-text">Semana 10</h1>
+            <h2 class="text-2xl md:text-3xl font-light text-gray-300 mt-2">Del Plan a la Pieza Real</h2>
+        </header>
+
+        <main>
+            <!-- Sección 1: G-Code Interactivo -->
+            <section class="card rounded-xl p-6 md:p-8 mb-12">
+                <h3 class="text-2xl font-bold mb-4 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
+                    G-Code: Traduciendo el Plan al Robot
+                </h3>
+                <p class="text-gray-400 mb-6">
+                    Tu software CAM convierte el plan en G-Code, el idioma de la máquina. Pasa el cursor sobre las líneas de código para ver qué instrucción representan.
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div class="bg-slate-900 rounded-lg p-4 font-mono text-sm">
+                        <p class="gcode-line p-1 rounded" data-action="move-fast">G00 X10 Y5 ; Moverse rápido a (10,5)</p>
+                        <p class="gcode-line p-1 rounded" data-action="plunge">G01 Z-2.0 F100 ; Bajar la fresa 2mm</p>
+                        <p class="gcode-line p-1 rounded" data-action="cut-x">G01 X50.0 ; Cortar hasta X=50</p>
+                        <p class="gcode-line p-1 rounded" data-action="cut-y">G01 Y30.0 ; Cortar hasta Y=30</p>
+                        <p class="gcode-line p-1 rounded" data-action="retract">G00 Z10.0 ; Levantar la fresa</p>
+                    </div>
+                    <div class="h-48 bg-slate-900 rounded-lg flex items-center justify-center p-4 relative">
+                        <div class="w-full h-full border-2 border-dashed border-slate-700 rounded-md"></div>
+                        <div id="gcode-tool" class="absolute w-4 h-4 bg-blue-400 rounded-full" style="top: 50%; left: 50%; transition: all 0.5s ease;"></div>
+                        <p id="gcode-feedback" class="absolute bottom-2 text-xs text-gray-500">Pasa el cursor sobre el código</p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Sección 2: Checklist del Operador -->
+            <section class="card rounded-xl p-6 md:p-8 mb-12">
+                <h3 class="text-2xl font-bold mb-4 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    El Ritual del Operador: Checklist de Fabricación
+                </h3>
+                <p class="text-gray-400 mb-6">
+                    Antes de presionar "Start", un operador profesional sigue un ritual. Completa esta checklist interactiva. El botón de inicio solo se activará cuando todo esté listo y seguro.
+                </p>
+                <div class="space-y-4">
+                    <div id="step1" class="checklist-item p-4 rounded-lg bg-slate-900">
+                        <h4 class="font-bold text-lg">Paso 1: Seguridad Personal</h4>
+                        <p class="text-sm text-gray-400 mb-3">Ponte el equipo de protección esencial.</p>
+                        <button id="safety-btn" class="action-button bg-slate-700 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">Equipar Gafas de Seguridad</button>
+                    </div>
+                     <div id="step2" class="checklist-item p-4 rounded-lg bg-slate-900">
+                        <h4 class="font-bold text-lg">Paso 2: Sujeción del Material</h4>
+                        <p class="text-sm text-gray-400 mb-3">Un material suelto es un proyectil. ¡Asegúralo!</p>
+                        <button id="clamp-btn" class="action-button bg-slate-700 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">Fijar Material</button>
+                    </div>
+                     <div id="step3" class="checklist-item p-4 rounded-lg bg-slate-900">
+                        <h4 class="font-bold text-lg">Paso 3: Calibración de Ceros</h4>
+                        <p class="text-sm text-gray-400 mb-3">Dile a la máquina dónde empezar a cortar.</p>
+                        <button id="zero-btn" class="action-button bg-slate-700 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">Establecer Ceros (X,Y,Z)</button>
+                    </div>
+                </div>
+                <div class="mt-8 text-center">
+                    <button id="start-btn" class="action-button bg-gray-500 text-white font-bold py-4 px-8 rounded-lg text-xl cursor-not-allowed" disabled>
+                        INICIAR MECANIZADO
+                    </button>
+                    <p id="status-text" class="text-sm mt-2 text-red-400">La máquina no está lista.</p>
+                </div>
+            </section>
+
+            <!-- Sección 3: El Arte del Acabado -->
+            <section class="card rounded-xl p-6 md:p-8 mb-12">
+                <h3 class="text-2xl font-bold mb-4 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+                    El Toque Final: La Magia del Post-Procesamiento
+                </h3>
+                <p class="text-gray-400 mb-6">
+                    Una pieza recién salida del CNC es solo el comienzo. El acabado la convierte en un producto profesional. Desliza para comparar el "antes" y el "después".
+                </p>
+                <div class="comparison-slider">
+                    <img id="image-before" src="https://placehold.co/1280x720/854d0e/ffffff?text=Pieza+en+Bruto+(con+marcas)" alt="[Imagen de una pieza de madera recién cortada con la fresadora CNC, mostrando marcas de herramienta y bordes ásperos]">
+                    <img id="image-after" src="https://placehold.co/1280x720/a16207/ffffff?text=Pieza+Acabada+(lijada+y+con+aceite)" alt="[Imagen de la misma pieza de madera después de ser lijada y tratada con aceite, con un acabado suave y profesional]">
+                    <input type="range" id="slider" class="slider" min="0" max="100" value="50">
+                </div>
+            </section>
+        </main>
+
+        <!-- Navegación -->
+        <footer class="mt-12 flex justify-between items-center">
+             <a href="#" class="nav-button bg-slate-700 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg flex items-center space-x-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                <span>Semana 9</span>
+            </a>
+            <span class="text-sm text-gray-500">Módulo Interactivo</span>
+             <a href="#" class="nav-button bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-6 rounded-lg flex items-center space-x-2">
+                <span>Semana 11</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+            </a>
+        </footer>
+    </div>
+
+    <script>
+        // --- G-Code Interactivo ---
+        const gcodeTool = document.getElementById('gcode-tool');
+        const gcodeFeedback = document.getElementById('gcode-feedback');
+        const gcodeLines = document.querySelectorAll('.gcode-line');
+        const initialPos = { top: '50%', left: '50%' };
+        
+        const gcodeActions = {
+            'move-fast': { top: '20%', left: '25%', text: 'Movimiento Rápido' },
+            'plunge': { transform: 'scale(1.2)', 'background-color': '#f87171', text: 'Bajando Fresa (Cortando)' },
+            'cut-x': { left: '80%', text: 'Cortando en Eje X' },
+            'cut-y': { top: '80%', text: 'Cortando en Eje Y' },
+            'retract': { transform: 'scale(1)', 'background-color': '#60a5fa', text: 'Levantando Fresa' },
+        };
+
+        gcodeLines.forEach(line => {
+            line.addEventListener('mouseenter', () => {
+                const action = gcodeActions[line.dataset.action];
+                Object.assign(gcodeTool.style, action);
+                gcodeFeedback.textContent = action.text;
+            });
+             line.addEventListener('mouseleave', () => {
+                gcodeTool.style.transform = 'scale(1)';
+                gcodeTool.style.backgroundColor = '#60a5fa';
+            });
+        });
+
+        // --- Checklist del Operador ---
+        const checklist = {
+            safety: false,
+            clamp: false,
+            zero: false
+        };
+
+        const safetyBtn = document.getElementById('safety-btn');
+        const clampBtn = document.getElementById('clamp-btn');
+        const zeroBtn = document.getElementById('zero-btn');
+        const startBtn = document.getElementById('start-btn');
+        const statusText = document.getElementById('status-text');
+
+        function updateMachineStatus() {
+            if (checklist.safety && checklist.clamp && checklist.zero) {
+                startBtn.disabled = false;
+                startBtn.classList.remove('bg-gray-500', 'cursor-not-allowed');
+                startBtn.classList.add('bg-green-600', 'hover:bg-green-500');
+                statusText.textContent = '¡Máquina lista para operar!';
+                statusText.classList.remove('text-red-400');
+                statusText.classList.add('text-green-400');
+            }
+        }
+        
+        function completeStep(step, button, stepName) {
+            checklist[stepName] = true;
+            document.getElementById(`step${step}`).classList.add('completed');
+            button.textContent = '✅ Completado';
+            button.disabled = true;
+            updateMachineStatus();
+        }
+
+        safetyBtn.addEventListener('click', () => completeStep(1, safetyBtn, 'safety'));
+        clampBtn.addEventListener('click', () => completeStep(2, clampBtn, 'clamp'));
+        zeroBtn.addEventListener('click', () => completeStep(3, zeroBtn, 'zero'));
+        
+        // --- Before-After Slider ---
+        const slider = document.getElementById('slider');
+        const imageAfter = document.getElementById('image-after');
+        slider.addEventListener('input', (e) => {
+            imageAfter.style.clipPath = `polygon(${e.target.value}% 0, 100% 0, 100% 100%, ${e.target.value}% 100%)`;
+        });
+
+    </script>
+
+</body>
+</html>

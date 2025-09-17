@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo Interactivo: El Corazón de la Máquina (Impresión 3D)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Creator -->
+    <!-- Application Structure Plan: Este módulo continúa la estructura de SPA modular. La arquitectura de información está diseñada como una exploración anatómica seguida de una aplicación práctica. Primero, una sección de "Anatomía Interactiva" que enlaza a una guía visual profesional para un estudio detallado. Luego, se presenta una comparativa de tecnologías. El núcleo es la sección "Laboratorio Forense", un quiz interactivo con 4 casos que enlaza a secciones específicas de la guía de All3DP, enseñando a los estudiantes a consultar documentación técnica real. Este flujo de "aprender las partes -> entender el contexto -> aplicar para diagnosticar" simula el proceso mental de un técnico experto. -->
+    <!-- Visualization & Content Choices: 
+        - Anatomía de la Impresora 3D: Se reemplaza el diagrama por un enlace directo a la base de conocimientos de Prusa. Interaction -> El usuario es dirigido a explorar un recurso externo de alta calidad. Justification -> Enseña la habilidad de consultar documentación oficial, es más detallado y elimina problemas de carga de imágenes. Library/Method -> HTML/CSS.
+        - Comparativa de Tecnologías: Tarjetas de características para FDM, SLA y SLS. Interaction -> Hover para efecto de zoom. Justification -> Facilita la comparación rápida en un formato visualmente digerible. Library/Method -> Tailwind CSS.
+        - Laboratorio Forense (Quiz de Diagnóstico): Carrusel de 4 casos con enlaces ancla directos a la sección relevante de la guía de All3DP. Interaction -> El usuario abre el enlace, observa la evidencia real, y luego selecciona diagnóstico/solución. El sistema da feedback. Justification -> Solución 100% fiable al problema de las imágenes. Enseña a usar documentación externa, una habilidad clave. Library/Method -> HTML/CSS/JS.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #FDFBF8; }
+        .sticky-nav { position: sticky; top: 0; z-index: 50; }
+        .case-card { display: none; }
+        .case-card.active { display: block; animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .feedback-correct { border: 2px solid #22C55E !important; background-color: #F0FDF4; }
+        .feedback-incorrect { border: 2px solid #EF4444 !important; background-color: #FEF2F2; }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <header class="sticky-nav bg-white/80 backdrop-blur-lg shadow-md">
+        <nav class="container mx-auto px-6 py-3">
+            <div class="flex justify-between items-center">
+                <div class="text-xl font-bold text-blue-800">FABLAB Sesión 05</div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#inicio" class="nav-link text-gray-600 hover:text-blue-600">Inicio</a>
+                    <a href="#anatomia" class="nav-link text-gray-600 hover:text-blue-600">Anatomía</a>
+                    <a href="#tecnologias" class="nav-link text-gray-600 hover:text-blue-600">Tecnologías</a>
+                    <a href="#forense" class="nav-link text-gray-600 hover:text-blue-600">Laboratorio Forense</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section id="inicio" class="bg-amber-50 py-20 px-6">
+            <div class="container mx-auto text-center">
+                <h1 class="text-4xl md:text-6xl font-extrabold text-blue-900 leading-tight">Bajo el Capó: El Corazón de la Máquina</h1>
+                <p class="mt-4 text-lg md:text-xl text-gray-700 max-w-3xl mx-auto">Ya somos arquitectos y maestros de obra. Hoy nos convertimos en ingenieros mecánicos. Desarmaremos virtualmente una impresora 3D para entender su alma y dominar el arte de su calibración.</p>
+            </div>
+        </section>
+
+        <section id="anatomia" class="py-20 px-6">
+            <div class="container mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-blue-900">Anatomía de una Impresora FDM</h2>
+                    <p class="mt-2 text-gray-600 max-w-2xl mx-auto">Un profesional conoce su herramienta. En lugar de un simple diagrama, usaremos la guía oficial de uno de los fabricantes más respetados para explorar cada componente en detalle.</p>
+                </div>
+                <div class="max-w-3xl mx-auto bg-white p-8 rounded-lg shadow-xl text-center border-l-4 border-blue-500">
+                    <div class="text-6xl mb-4">⚙️</div>
+                    <h3 class="text-2xl font-bold text-blue-800">Guía de Componentes de Prusa</h3>
+                    <p class="mt-2 text-gray-700">Prusa Research mantiene una de las bases de conocimiento más completas de la industria. Estudiaremos la anatomía de su impresora MK3S+, cuyos principios se aplican a la mayoría de las impresoras FDM del mercado.</p>
+                    <a href="https://help.prusa3d.com/article/printer-parts-terminology_1730" target="_blank" class="mt-6 inline-block bg-blue-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-blue-700 transition-transform hover:scale-105">
+                        Explorar Guía de Anatomía Profesional
+                    </a>
+                    <p class="mt-3 text-xs text-gray-500">(Se abrirá en una nueva pestaña)</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="tecnologias" class="py-20 px-6 bg-gray-50">
+            <div class="container mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-blue-900">Más Allá del Plástico Fundido</h2>
+                    <p class="mt-2 text-gray-600 max-w-2xl mx-auto">FDM es la tecnología más accesible, pero la industria utiliza otras para lograr resultados asombrosos.</p>
+                </div>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-blue-500 transition-transform hover:scale-105">
+                        <h3 class="text-2xl font-bold">FDM</h3>
+                        <p class="font-semibold text-blue-600">Modelado por Deposición Fundida</p>
+                        <ul class="mt-4 space-y-2 text-sm text-gray-600">
+                            <li><strong>Material:</strong> Filamento termoplástico.</li>
+                            <li><strong>Ventaja:</strong> Bajo costo, amplia variedad de materiales.</li>
+                            <li><strong>Ideal para:</strong> Prototipos, piezas funcionales, educación.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-amber-500 transition-transform hover:scale-105">
+                        <h3 class="text-2xl font-bold">SLA</h3>
+                        <p class="font-semibold text-amber-600">Estereolitografía</p>
+                        <ul class="mt-4 space-y-2 text-sm text-gray-600">
+                            <li><strong>Material:</strong> Resina líquida fotosensible.</li>
+                            <li><strong>Ventaja:</strong> Detalle y suavidad de superficie excepcionales.</li>
+                            <li><strong>Ideal para:</strong> Joyería, moldes, modelos dentales.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-gray-700 transition-transform hover:scale-105">
+                        <h3 class="text-2xl font-bold">SLS</h3>
+                        <p class="font-semibold text-gray-800">Sinterizado Selectivo por Láser</p>
+                        <ul class="mt-4 space-y-2 text-sm text-gray-600">
+                            <li><strong>Material:</strong> Polvo de polímero/metal.</li>
+                            <li><strong>Ventaja:</strong> Piezas de alta resistencia, no necesita soportes.</li>
+                            <li><strong>Ideal para:</strong> Piezas de uso final, geometrías complejas.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="forense" class="py-20 px-6">
+            <div class="container mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-blue-900">Laboratorio Forense de Impresión 3D</h2>
+                    <p class="mt-2 text-gray-600 max-w-2xl mx-auto">¡Conviértete en un detective! Analiza la evidencia en la guía profesional y elige el diagnóstico y la solución correctos.</p>
+                </div>
+
+                <div class="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-xl">
+                    <!-- Case 1: Warping -->
+                    <div class="case-card active" data-case="1">
+                        <h3 class="text-xl font-bold text-center mb-4">Caso #001: El Contrato Deformado</h3>
+                        <div class="text-center mb-6">
+                            <a href="https://all3dp.com/1/3d-printing-troubleshooting-guide/#warping" target="_blank" class="inline-block bg-amber-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-amber-600 transition-transform hover:scale-105">
+                                👁️ Ver Evidencia (Warping)
+                            </a>
+                        </div>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <select class="diagnosis-select w-full p-2 border border-gray-300 rounded-lg">
+                                <option value="">Elige un diagnóstico...</option>
+                                <option value="incorrecto">Mala extrusión (under-extrusion)</option>
+                                <option value="correcto">Contracción térmica (warping)</option>
+                                <option value="incorrecto">Correas flojas (layer shifting)</option>
+                            </select>
+                            <select class="solution-select w-full p-2 border border-gray-300 rounded-lg">
+                                <option value="">Elige una solución...</option>
+                                <option value="correcto">Aumentar la temperatura de la cama y usar adhesión (brim)</option>
+                                <option value="incorrecto">Ajustar la tensión de las correas</option>
+                                <option value="incorrecto">Aumentar el flujo de extrusión en el slicer</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Case 2: Stringing -->
+                    <div class="case-card" data-case="2">
+                        <h3 class="text-xl font-bold text-center mb-4">Caso #002: El Misterio de la Tela de Araña</h3>
+                        <div class="text-center mb-6">
+                            <a href="https://all3dp.com/2/3d-printing-troubleshooting-guide-all-problems-solutions/#stringing-oozing-or-hairy-prints" target="_blank" class="inline-block bg-amber-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-amber-600 transition-transform hover:scale-105">
+                                👁️ Ver Evidencia (Stringing)
+                            </a>
+                        </div>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <select class="diagnosis-select w-full p-2 border border-gray-300 rounded-lg">
+                                <option value="">Elige un diagnóstico...</option>
+                                <option value="incorrecto">Cama mal nivelada</option>
+                                <option value="incorrecto">Atasco en la boquilla</option>
+                                <option value="correcto">Ajustes de retracción incorrectos (stringing)</option>
+                            </select>
+                            <select class="solution-select w-full p-2 border border-gray-300 rounded-lg">
+                                <option value="">Elige una solución...</option>
+                                <option value="incorrecto">Nivelar la cama y ajustar Z-Offset</option>
+                                <option value="correcto">Aumentar la distancia y velocidad de retracción en el slicer</option>
+                                <option value="incorrecto">Limpiar o cambiar la boquilla</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                     <!-- Case 3: Layer Shifting -->
+                    <div class="case-card" data-case="3">
+                        <h3 class="text-xl font-bold text-center mb-4">Caso #003: El Terremoto Silencioso</h3>
+                        <div class="text-center mb-6">
+                            <a href="https://all3dp.com/2/3d-printing-troubleshooting-guide-all-problems-solutions/#layer-shifting" target="_blank" class="inline-block bg-amber-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-amber-600 transition-transform hover:scale-105">
+                                👁️ Ver Evidencia (Layer Shift)
+                            </a>
+                        </div>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <select class="diagnosis-select w-full p-2 border border-gray-300 rounded-lg">
+                                <option value="">Elige un diagnóstico...</option>
+                                <option value="correcto">Desplazamiento de capas (layer shifting)</option>
+                                <option value="incorrecto">Temperatura de impresión demasiado alta</option>
+                                <option value="incorrecto">Pata de elefante (elephant foot)</option>
+                            </select>
+                            <select class="solution-select w-full p-2 border border-gray-300 rounded-lg">
+                                <option value="">Elige una solución...</option>
+                                <option value="incorrecto">Reducir la temperatura del hotend</option>
+                                <option value="correcto">Revisar y tensar las correas de los ejes X/Y</option>
+                                <option value="incorrecto">Ajustar el Z-Offset y la temperatura de la cama</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Case 4: Elephant Foot -->
+                    <div class="case-card" data-case="4">
+                        <h3 class="text-xl font-bold text-center mb-4">Caso #004: La Base Aplastada</h3>
+                        <div class="text-center mb-6">
+                            <a href="https://all3dp.com/2/3d-printing-troubleshooting-guide-all-problems-solutions/#elephants-foot" target="_blank" class="inline-block bg-amber-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-amber-600 transition-transform hover:scale-105">
+                                👁️ Ver Evidencia (Pata de Elefante)
+                            </a>
+                        </div>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <select class="diagnosis-select w-full p-2 border border-gray-300 rounded-lg">
+                                <option value="">Elige un diagnóstico...</option>
+                                <option value="incorrecto">Exceso de enfriamiento de capa</option>
+                                <option value="incorrecto">Flujo de extrusión muy bajo</option>
+                                <option value="correcto">Boquilla demasiado cerca de la cama (Z-Offset bajo)</option>
+                            </select>
+                            <select class="solution-select w-full p-2 border border-gray-300 rounded-lg">
+                                <option value="">Elige una solución...</option>
+                                <option value="correcto">Nivelar la cama y aumentar ligeramente el Z-Offset</option>
+                                <option value="incorrecto">Aumentar la velocidad del ventilador de capa</option>
+                                <option value="incorrecto">Reducir la temperatura de la cama</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 flex justify-between items-center">
+                        <button id="prev-case" class="bg-gray-300 text-gray-800 font-semibold py-2 px-5 rounded-lg hover:bg-gray-400 disabled:opacity-50" disabled>Anterior</button>
+                        <button id="check-case" class="bg-blue-600 text-white font-bold py-2 px-5 rounded-lg hover:bg-blue-700">Resolver Caso</button>
+                        <button id="next-case" class="bg-gray-300 text-gray-800 font-semibold py-2 px-5 rounded-lg hover:bg-gray-400">Siguiente</button>
+                    </div>
+                    <p id="case-feedback" class="text-center mt-4 font-semibold h-6"></p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-blue-900 text-white py-10 px-6">
+        <div class="container mx-auto text-center">
+            <p class="font-bold text-lg">Navegación del Curso</p>
+            <div class="mt-4 flex justify-center space-x-6">
+                <a href="sesion-04.html" class="hover:text-amber-300">← Volver a Sesión 04</a>
+                <span class="text-blue-400">|</span>
+                <a href="sesion-06.html" class="hover:text-amber-300">Ir a Sesión 06 →</a>
+            </div>
+            <p class="mt-6 text-sm text-blue-200">Módulo Interactivo creado para el IEST "Carlos Salazar Romero" | 2025</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = e.currentTarget.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) { window.scrollTo({ top: targetElement.offsetTop - 70, behavior: 'smooth' }); }
+                });
+            });
+
+            const hotspots = document.querySelectorAll('.hotspot');
+            const infoCards = document.querySelectorAll('.info-card');
+            const defaultInfoCard = document.getElementById('info-default');
+            
+            hotspots.forEach(hotspot => {
+                hotspot.addEventListener('click', () => {
+                    const targetId = hotspot.dataset.target;
+                    
+                    hotspots.forEach(h => h.classList.remove('active'));
+                    hotspot.classList.add('active');
+
+                    infoCards.forEach(card => {
+                        if (card.id === targetId || card.id === 'info-default') {
+                            card.classList.toggle('active', card.id === targetId);
+                        }
+                    });
+                     if (targetId !== 'info-default') {
+                        defaultInfoCard.classList.remove('active');
+                     }
+                });
+            });
+            
+            let currentCase = 1;
+            const totalCases = 4;
+            const prevBtn = document.getElementById('prev-case');
+            const nextBtn = document.getElementById('next-case');
+            const checkBtn = document.getElementById('check-case');
+            const caseFeedback = document.getElementById('case-feedback');
+
+            function updateCaseView() {
+                document.querySelectorAll('.case-card').forEach(card => card.classList.remove('active'));
+                const activeCard = document.querySelector(`.case-card[data-case="${currentCase}"]`);
+                if(activeCard) {
+                    activeCard.classList.add('active');
+                }
+                
+                prevBtn.disabled = currentCase === 1;
+                nextBtn.disabled = currentCase === totalCases;
+                
+                caseFeedback.textContent = '';
+                checkBtn.disabled = false;
+                
+                if (activeCard) {
+                    activeCard.querySelectorAll('select').forEach(select => {
+                        select.classList.remove('feedback-correct', 'feedback-incorrect');
+                        select.disabled = false;
+                        select.value = "";
+                    });
+                }
+            }
+
+            nextBtn.addEventListener('click', () => {
+                if (currentCase < totalCases) {
+                    currentCase++;
+                    updateCaseView();
+                }
+            });
+
+            prevBtn.addEventListener('click', () => {
+                if (currentCase > 1) {
+                    currentCase--;
+                    updateCaseView();
+                }
+            });
+
+            checkBtn.addEventListener('click', () => {
+                const activeCard = document.querySelector('.case-card.active');
+                if(!activeCard) return;
+                
+                const diagnosisSelect = activeCard.querySelector('.diagnosis-select');
+                const solutionSelect = activeCard.querySelector('.solution-select');
+                
+                const isDiagnosisCorrect = diagnosisSelect.value === 'correcto';
+                const isSolutionCorrect = solutionSelect.value === 'correcto';
+
+                diagnosisSelect.classList.toggle('feedback-correct', isDiagnosisCorrect);
+                diagnosisSelect.classList.toggle('feedback-incorrect', !isDiagnosisCorrect);
+                
+                solutionSelect.classList.toggle('feedback-correct', isSolutionCorrect);
+                solutionSelect.classList.toggle('feedback-incorrect', !isSolutionCorrect);
+                
+                if (isDiagnosisCorrect && isSolutionCorrect) {
+                    caseFeedback.textContent = '¡Caso resuelto! Excelente diagnóstico, detective.';
+                    caseFeedback.classList.add('text-green-600');
+                    caseFeedback.classList.remove('text-red-600');
+                } else {
+                    caseFeedback.textContent = 'Casi... revisa tus conclusiones y vuelve a intentarlo.';
+                    caseFeedback.classList.add('text-red-600');
+                    caseFeedback.classList.remove('text-green-600');
+                }
+                
+                checkBtn.disabled = true;
+                diagnosisSelect.disabled = true;
+                solutionSelect.disabled = true;
+            });
+            
+            updateCaseView();
+        });
+    </script>
+</body>
+</html>
+

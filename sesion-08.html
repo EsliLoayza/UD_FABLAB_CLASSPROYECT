@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Semana 8: Técnicas Avanzadas de Corte Láser</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #111827; /* slate-900 */
+            color: #E5E7EB; /* gray-200 */
+        }
+        .gradient-text {
+            background-image: linear-gradient(to right, #84cc16, #22d3ee);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .card {
+            background-color: #1f2937; /* slate-800 */
+            border: 1px solid #374151; /* slate-700 */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(132, 204, 22, 0.1);
+        }
+        input[type=range] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 8px;
+            background: #374151; /* slate-700 */
+            outline: none;
+            border-radius: 4px;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            background: #84cc16; /* lime-500 */
+            cursor: pointer;
+            border-radius: 50%;
+            border: 3px solid #111827;
+        }
+        .nav-button {
+            transition: all 0.3s ease;
+        }
+        .nav-button:hover {
+            box-shadow: 0 0 15px rgba(132, 204, 22, 0.5);
+        }
+        .problem-option {
+            border: 2px solid #374151;
+            transition: all 0.2s ease-in-out;
+        }
+        .problem-option:hover {
+            background-color: #374151;
+            border-color: #84cc16;
+        }
+        .correct {
+            background-color: rgba(132, 204, 22, 0.2);
+            border-color: #84cc16 !important;
+        }
+        .incorrect {
+            background-color: rgba(239, 68, 68, 0.2);
+            border-color: #ef4444 !important;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-5xl mx-auto">
+
+        <!-- Encabezado -->
+        <header class="text-center mb-12">
+            <h3 class="text-lg text-lime-400 font-semibold tracking-wider">FABRICACIÓN DIGITAL</h3>
+            <h1 class="text-4xl md:text-6xl font-bold mt-2 gradient-text">Semana 08</h1>
+            <h2 class="text-2xl md:text-3xl font-light text-gray-300 mt-2">Corte Láser: Técnicas Avanzadas</h2>
+        </header>
+
+        <main>
+            <!-- Sección 1: El Kerf -->
+            <section class="card rounded-xl p-6 md:p-8 mb-12">
+                <h3 class="text-2xl font-bold mb-4 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 text-lime-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M12 21l-2-1m2 1l-2 1m2-1V18.5M12 2.5V5M4 7l2 1M4 7l2-1M4 7v2.5M7 16l-2 1m2-1l-2-1m2 1V18.5" /></svg>
+                    El Kerf: Dominando el Ensamble Perfecto
+                </h3>
+                <p class="text-gray-400 mb-6">
+                    El láser vaporiza material, creando un "surco" llamado **Kerf**. Si no lo compensas, tus ensambles a presión (press-fit) quedarán flojos. El objetivo es hacer la ranura un poco más pequeña que el grosor del material. ¡Usa el simulador para encontrar el ajuste perfecto!
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <!-- Simulador -->
+                    <div class="space-y-6">
+                        <div>
+                            <label class="font-bold text-lg">Grosor del Material: <span class="text-lime-400">3.00 mm</span></label>
+                        </div>
+                        <div>
+                            <label for="kerf" class="flex justify-between font-bold text-lg">Compensación de Kerf <span id="kerfValue" class="text-lime-400">0.15 mm</span></label>
+                            <input type="range" id="kerf" min="0" max="0.5" value="0.15" step="0.01" class="mt-2">
+                        </div>
+                         <div>
+                            <label class="font-bold text-lg">Ancho de Ranura Calculado: <span id="slotWidth" class="text-cyan-400">2.85 mm</span></label>
+                        </div>
+                    </div>
+                    <!-- Visualización -->
+                    <div class="bg-slate-900 rounded-lg p-4 flex flex-col items-center justify-center text-center h-48">
+                        <div class="flex items-end h-24">
+                            <!-- Pieza Fija -->
+                            <div class="w-16 h-16 bg-amber-700 border-2 border-amber-500 rounded-t-lg relative">
+                                <div id="slotVisual" class="absolute bottom-0 left-1/2 bg-slate-900 h-8 transition-all duration-200" style="width: 28.5px; transform: translateX(-50%);"></div>
+                            </div>
+                            <!-- Pieza Móvil -->
+                            <div id="tabVisual" class="w-8 h-10 bg-amber-600 border-2 border-amber-400 rounded-b-lg -ml-1 transition-all duration-200" style="margin-bottom: -16px;"></div>
+                        </div>
+                        <div id="fitResult" class="mt-4 text-xl font-bold text-white">Ensamble Perfecto</div>
+                        <p id="fitDesc" class="text-sm text-gray-400 mt-1">El ensamble es firme y no requiere adhesivo.</p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Sección 2: Nesting -->
+            <section class="card rounded-xl p-6 md:p-8 mb-12">
+                <h3 class="text-2xl font-bold mb-4 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 text-lime-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
+                    Nesting: El Tetris para Ahorrar Material
+                </h3>
+                <p class="text-gray-400 mb-6">
+                    El "Nesting" o anidado es el arte de organizar tus piezas para minimizar el desperdicio de material. Un buen nesting ahorra tiempo de corte y dinero. Compara los dos ejemplos.
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-center">
+                    <!-- Malo -->
+                    <div>
+                        <h4 class="font-bold text-lg text-red-400 mb-2">❌ Mal Anidado</h4>
+                        <div class="bg-slate-900 border-2 border-red-800 p-2 rounded-lg aspect-video flex justify-center items-center">
+                            <img src="https://placehold.co/300x150/7f1d1d/ffffff?text=Piezas+Esparcidas" alt="Piezas de corte láser mal organizadas" class="max-w-full h-auto rounded">
+                        </div>
+                        <p class="mt-2 text-2xl font-bold">Eficiencia: <span class="text-red-400">45%</span></p>
+                    </div>
+                    <!-- Bueno -->
+                    <div>
+                        <h4 class="font-bold text-lg text-green-400 mb-2">✅ Buen Anidado</h4>
+                        <div class="bg-slate-900 border-2 border-green-800 p-2 rounded-lg aspect-video flex justify-center items-center">
+                           <img src="https://placehold.co/300x150/166534/ffffff?text=Piezas+Compactas" alt="Piezas de corte láser bien organizadas" class="max-w-full h-auto rounded">
+                        </div>
+                        <p class="mt-2 text-2xl font-bold">Eficiencia: <span class="text-green-400">88%</span></p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sección 3: Troubleshooting -->
+            <section class="card rounded-xl p-6 md:p-8 mb-12">
+                <h3 class="text-2xl font-bold mb-4 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 text-lime-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+                    Cazadores de Problemas: Diagnóstico Interactivo
+                </h3>
+                <div id="troubleshooting-module" class="bg-slate-900 rounded-lg p-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+                        <img id="problem-image" src="https://placehold.co/400x300/1e293b/94a3b8?text=Corte+Incompleto" alt="Problema de corte láser" class="rounded-lg w-full">
+                        <div>
+                            <p class="font-bold text-lg mb-2" id="problem-title">Caso #1: El corte no atravesó</p>
+                            <p class="text-sm text-gray-400 mb-4" id="problem-desc">Has enviado el corte, pero la pieza no se ha separado completamente de la plancha.</p>
+                            <div id="problem-options" class="space-y-2">
+                                <!-- Opciones se generarán con JS -->
+                            </div>
+                        </div>
+                    </div>
+                    <p id="problem-feedback" class="mt-4 text-center font-semibold hidden p-2 rounded-lg"></p>
+                    <button id="next-problem" class="w-full mt-4 bg-lime-600 hover:bg-lime-500 text-white font-bold py-2 px-4 rounded-lg hidden">Siguiente Problema</button>
+                </div>
+            </section>
+        </main>
+
+        <!-- Navegación -->
+        <footer class="mt-12 flex justify-between items-center">
+             <a href="#" class="nav-button bg-slate-700 hover:bg-lime-500 text-white font-bold py-3 px-6 rounded-lg flex items-center space-x-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                <span>Semana 7</span>
+            </a>
+            <span class="text-sm text-gray-500">Módulo Interactivo</span>
+             <a href="#" class="nav-button bg-lime-600 hover:bg-lime-500 text-white font-bold py-3 px-6 rounded-lg flex items-center space-x-2">
+                <span>Semana 9</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+            </a>
+        </footer>
+    </div>
+
+    <script>
+        // --- Simulador de Kerf ---
+        const kerfSlider = document.getElementById('kerf');
+        const kerfValue = document.getElementById('kerfValue');
+        const slotWidth = document.getElementById('slotWidth');
+        const slotVisual = document.getElementById('slotVisual');
+        const tabVisual = document.getElementById('tabVisual');
+        const fitResult = document.getElementById('fitResult');
+        const fitDesc = document.getElementById('fitDesc');
+        const materialThickness = 3.00;
+
+        function updateKerfSimulator() {
+            const compensation = parseFloat(kerfSlider.value);
+            const calculatedWidth = materialThickness - compensation;
+            
+            kerfValue.textContent = `${compensation.toFixed(2)} mm`;
+            slotWidth.textContent = `${calculatedWidth.toFixed(2)} mm`;
+            
+            // La visualización es una aproximación para el efecto.
+            // Ancho de la ranura visual en pixeles
+            const visualSlotWidth = calculatedWidth * 9.5; // Factor de escala
+            slotVisual.style.width = `${visualSlotWidth}px`;
+            
+            if (compensation < 0.10) {
+                fitResult.textContent = 'Ensamble Flojo';
+                fitDesc.textContent = 'La pieza se caerá. Necesita más compensación.';
+                fitResult.style.color = '#f87171'; // red-400
+            } else if (compensation > 0.3) {
+                fitResult.textContent = 'Demasiado Apretado';
+                fitDesc.textContent = 'La pieza podría no entrar o romper el material.';
+                fitResult.style.color = '#facc15'; // yellow-400
+            } else {
+                fitResult.textContent = 'Ensamble Perfecto';
+                fitDesc.textContent = 'El ensamble es firme y no requiere adhesivo.';
+                fitResult.style.color = '#84cc16'; // lime-500
+            }
+        }
+        kerfSlider.addEventListener('input', updateKerfSimulator);
+        updateKerfSimulator();
+
+        // --- Simulador de Troubleshooting ---
+        const problems = [
+            {
+                title: "Caso #1: El corte no atravesó",
+                desc: "Has enviado el corte, pero la pieza no se ha separado completamente de la plancha.",
+                image: "https://placehold.co/400x300/1e293b/94a3b8?text=Corte+Incompleto",
+                options: ["Potencia muy alta", "Velocidad muy alta o lente desenfocada", "Material muy delgado"],
+                correct: 1,
+                feedback: "¡Correcto! Una velocidad muy alta no le da tiempo al láser para cortar. Un mal enfoque dispersa la energía."
+            },
+            {
+                title: "Caso #2: Bordes carbonizados",
+                desc: "La pieza se cortó, pero los bordes están muy quemados y negros.",
+                image: "https://placehold.co/400x300/1e293b/94a3b8?text=Bordes+Quemados",
+                options: ["Potencia muy baja o velocidad muy alta", "Asistencia de aire desactivada", "Ambas A y B son correctas"],
+                correct: 1,
+                feedback: "¡Exacto! Una velocidad muy lenta sobre-expone el material. La asistencia de aire ayuda a apagar las llamas y limpiar el corte."
+            },
+            {
+                title: "Caso #3: El grabado es inconsistente",
+                desc: "Algunas áreas del grabado se ven más profundas que otras.",
+                image: "https://placehold.co/400x300/1e293b/94a3b8?text=Grabado+Inconsistente",
+                options: ["La superficie del material no es plana", "La velocidad de grabado es muy alta", "El diseño tiene muchos detalles"],
+                correct: 0,
+                feedback: "¡Muy bien! Si el material está curvado, la distancia de enfoque varía, resultando en un grabado de potencia inconsistente."
+            }
+        ];
+
+        let currentProblemIndex = 0;
+        let answered = false;
+        const problemImage = document.getElementById('problem-image');
+        const problemTitle = document.getElementById('problem-title');
+        const problemDesc = document.getElementById('problem-desc');
+        const problemOptions = document.getElementById('problem-options');
+        const problemFeedback = document.getElementById('problem-feedback');
+        const nextProblemBtn = document.getElementById('next-problem');
+
+        function loadProblem(index) {
+            answered = false;
+            const problem = problems[index];
+            problemImage.src = problem.image;
+            problemTitle.textContent = problem.title;
+            problemDesc.textContent = problem.desc;
+            problemOptions.innerHTML = '';
+            
+            problem.options.forEach((option, i) => {
+                const button = document.createElement('button');
+                button.textContent = option;
+                button.classList.add('w-full', 'p-2', 'rounded-lg', 'text-left', 'problem-option');
+                button.dataset.index = i;
+                button.addEventListener('click', checkAnswer);
+                problemOptions.appendChild(button);
+            });
+            
+            problemFeedback.classList.add('hidden');
+            nextProblemBtn.classList.add('hidden');
+        }
+
+        function checkAnswer(e) {
+            if (answered) return;
+            answered = true;
+            
+            const selectedIndex = parseInt(e.target.dataset.index);
+            const correctIndex = problems[currentProblemIndex].correct;
+
+            Array.from(problemOptions.children).forEach((button, i) => {
+                if (i === correctIndex) {
+                    button.classList.add('correct');
+                } else if (i === selectedIndex) {
+                    button.classList.add('incorrect');
+                }
+            });
+
+            problemFeedback.textContent = problems[currentProblemIndex].feedback;
+            problemFeedback.classList.remove('hidden');
+            nextProblemBtn.classList.remove('hidden');
+        }
+
+        nextProblemBtn.addEventListener('click', () => {
+            currentProblemIndex = (currentProblemIndex + 1) % problems.length;
+            loadProblem(currentProblemIndex);
+        });
+
+        loadProblem(currentProblemIndex);
+    </script>
+
+</body>
+</html>

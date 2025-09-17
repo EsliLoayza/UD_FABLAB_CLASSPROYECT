@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Semana 15: El Escenario Final</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #111827; /* slate-900 */
+            color: #E5E7EB; /* gray-200 */
+        }
+        .gradient-text {
+            background-image: linear-gradient(to right, #facc15, #fb923c);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .card {
+            background-color: #1f2937; /* slate-800 */
+            border: 1px solid #374151; /* slate-700 */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(250, 204, 21, 0.1);
+        }
+        .nav-button {
+            transition: all 0.3s ease;
+        }
+        .nav-button:hover {
+            box-shadow: 0 0 15px rgba(250, 204, 21, 0.5);
+        }
+        /* Presentation Arena */
+        .stage-spotlight {
+            border: 2px solid #374151;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .stage-spotlight:hover, .stage-spotlight.active {
+            background-color: #374151;
+            border-color: #facc15;
+            transform: scale(1.05);
+        }
+        .arena-content {
+            transition: opacity 0.5s ease, max-height 0.5s ease;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .arena-content.visible {
+            max-height: 1000px;
+            opacity: 1;
+        }
+        .report-item {
+            transition: all 0.5s ease;
+            opacity: 0.5;
+        }
+        .report-item.inspected {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-5xl mx-auto">
+
+        <!-- Encabezado -->
+        <header class="text-center mb-12">
+            <h3 class="text-lg text-amber-400 font-semibold tracking-wider">PROYECTO FINAL</h3>
+            <h1 class="text-4xl md:text-6xl font-bold mt-2 gradient-text">Semana 15</h1>
+            <h2 class="text-2xl md:text-3xl font-light text-gray-300 mt-2">El Escenario Final: Presentación y Documentación</h2>
+        </header>
+
+        <main>
+            <!-- Sección 1: Entrenador de Presentaciones -->
+            <section class="card rounded-xl p-6 md:p-8 mb-12">
+                <h3 class="text-2xl font-bold mb-4 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.144-6.363a1.76 1.76 0 011.024-2.118l6.096-2.54A1.76 1.76 0 0111 5.882z" /></svg>
+                    Entrenador de "Pitch" Técnico
+                </h3>
+                <p class="text-gray-400 mb-6">
+                    Has construido un gran producto, ahora aprende a contar su historia. Sube a nuestro escenario virtual y practica cada parte de tu presentación de 7 minutos.
+                </p>
+                <div class="bg-slate-900 rounded-lg p-6">
+                    <div id="stage-nav" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="stage-spotlight active rounded-lg p-4 text-center" data-target="hook">
+                            <p class="font-bold">1. El Gancho</p><p class="text-sm text-gray-400">(1 min)</p>
+                        </div>
+                        <div class="stage-spotlight rounded-lg p-4 text-center" data-target="demo">
+                            <p class="font-bold">2. La Demo</p><p class="text-sm text-gray-400">(3 min)</p>
+                        </div>
+                        <div class="stage-spotlight rounded-lg p-4 text-center" data-target="process">
+                            <p class="font-bold">3. El Viaje</p><p class="text-sm text-gray-400">(2 min)</p>
+                        </div>
+                        <div class="stage-spotlight rounded-lg p-4 text-center" data-target="future">
+                            <p class="font-bold">4. El Futuro</p><p class="text-sm text-gray-400">(1 min)</p>
+                        </div>
+                    </div>
+                    <div class="mt-6">
+                        <!-- Hook Content -->
+                        <div id="hook-content" class="arena-content visible">
+                            <h4 class="text-xl font-bold text-amber-300">Causa un impacto inmediato.</h4>
+                            <p class="text-gray-400 mt-1">Empieza con una pregunta o un dato que haga que todos se identifiquen con el problema.</p>
+                             <textarea class="w-full bg-slate-800 p-2 rounded mt-4 h-24" placeholder="Escribe aquí tu borrador del 'Gancho'..."></textarea>
+                             <button id="hook-generator" class="mt-2 bg-slate-700 hover:bg-amber-600 text-white font-bold py-2 px-4 rounded">Generar Inspiración</button>
+                        </div>
+                        <!-- Demo Content -->
+                        <div id="demo-content" class="arena-content">
+                            <h4 class="text-xl font-bold text-amber-300">¡Que el prototipo sea la estrella!</h4>
+                            <p class="text-gray-400 mt-1">Una buena demo es clara, directa y demuestra el valor real de tu creación.</p>
+                            <div class="mt-4 space-y-2">
+                                <label class="flex items-center"><input type="checkbox" class="demo-check mr-2">Muestro el prototipo V2 físicamente.</label>
+                                <label class="flex items-center"><input type="checkbox" class="demo-check mr-2">Demuestro en vivo su función principal.</label>
+                                <label class="flex items-center"><input type="checkbox" class="demo-check mr-2">Menciono las tecnologías usadas en cada parte.</label>
+                            </div>
+                        </div>
+                        <!-- Process Content -->
+                         <div id="process-content" class="arena-content">
+                            <h4 class="text-xl font-bold text-amber-300">Demuestra tu aprendizaje.</h4>
+                             <p class="text-gray-400 mt-1">La evolución de V1 a V2 es la prueba de tu habilidad como ingeniero.</p>
+                             <div class="flex gap-4 mt-4 items-center">
+                                 <img src="https://placehold.co/200x150/1f2937/fca5a5?text=Prototipo+V1+(Fallido)" class="rounded w-1/3">
+                                 <img src="https://placehold.co/200x150/1f2937/a7f3d0?text=Prototipo+V2+(Exitoso)" class="rounded w-1/3">
+                                 <textarea class="w-1/3 bg-slate-800 p-2 rounded h-32" placeholder="Explica aquí qué falló en V1 y cómo lo solucionaste en V2..."></textarea>
+                             </div>
+                        </div>
+                        <!-- Future Content -->
+                         <div id="future-content" class="arena-content">
+                             <h4 class="text-xl font-bold text-amber-300">Deja a la audiencia con ganas de más.</h4>
+                             <p class="text-gray-400 mt-1">¿Cuál es el siguiente paso lógico para tu proyecto?</p>
+                             <div id="vision-board" class="mt-4 p-4 bg-slate-800 rounded min-h-[100px] flex flex-wrap gap-2 items-center">
+                                 <span class="p-2 bg-slate-700 rounded-lg">Carga Inalámbrica</span>
+                                 <span class="p-2 bg-slate-700 rounded-lg">Nuevos Materiales</span>
+                                  <span class="p-2 bg-slate-700 rounded-lg">Integración App</span>
+                             </div>
+                             <p class="text-xs text-gray-500 mt-1">Imagina y describe las mejoras que harías con más tiempo.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Sección 2: Inspector de Informe Final -->
+            <section class="card rounded-xl p-6 md:p-8 mb-12">
+                <h3 class="text-2xl font-bold mb-4 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+                    Inspector de Calidad del Informe
+                </h3>
+                <p class="text-gray-400 mb-6">
+                    Un buen informe es el legado de tu proyecto. Asegúrate de que el tuyo cumple con todos los estándares de calidad antes de la entrega final.
+                </p>
+                 <div class="text-center mb-6">
+                    <button id="inspect-btn" class="bg-amber-600 hover:bg-amber-500 text-white font-bold py-3 px-8 rounded-lg text-lg">Iniciar Inspección de Calidad</button>
+                </div>
+                <div class="bg-slate-900 rounded-lg p-6 space-y-3">
+                    <div id="report-item-1" class="report-item flex items-center gap-4">
+                        <div id="status-1" class="h-8 w-8 rounded-full bg-slate-700 flex items-center justify-center font-bold">1</div>
+                        <p>Resumen claro y conciso del proyecto.</p>
+                    </div>
+                    <div id="report-item-2" class="report-item flex items-center gap-4">
+                         <div id="status-2" class="h-8 w-8 rounded-full bg-slate-700 flex items-center justify-center font-bold">2</div>
+                        <p>Capturas de pantalla del modelo CAD.</p>
+                    </div>
+                     <div id="report-item-3" class="report-item flex items-center gap-4">
+                         <div id="status-3" class="h-8 w-8 rounded-full bg-slate-700 flex items-center justify-center font-bold">3</div>
+                        <p>Foto y análisis del prototipo V1.</p>
+                    </div>
+                     <div id="report-item-4" class="report-item flex items-center gap-4">
+                         <div id="status-4" class="h-8 w-8 rounded-full bg-slate-700 flex items-center justify-center font-bold">4</div>
+                        <p>Foto de alta calidad del prototipo V2 final.</p>
+                    </div>
+                     <div id="report-item-5" class="report-item flex items-center gap-4">
+                         <div id="status-5" class="h-8 w-8 rounded-full bg-slate-700 flex items-center justify-center font-bold">5</div>
+                        <p>Conclusión con aprendizajes clave.</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Navegación -->
+        <footer class="mt-12 flex justify-between items-center">
+             <a href="#" class="nav-button bg-slate-700 hover:bg-amber-600 text-white font-bold py-3 px-6 rounded-lg flex items-center space-x-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                <span>Semana 14</span>
+            </a>
+            <span class="text-sm text-gray-500">Módulo Interactivo</span>
+             <a href="#" class="nav-button bg-amber-600 hover:bg-amber-500 text-white font-bold py-3 px-6 rounded-lg flex items-center space-x-2">
+                <span>Fin del Curso</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+            </a>
+        </footer>
+    </div>
+
+    <script>
+        // --- Presentation Arena Logic ---
+        const spotlights = document.querySelectorAll('.stage-spotlight');
+        const arenaContents = document.querySelectorAll('.arena-content');
+        const hookGenerator = document.getElementById('hook-generator');
+        const hookTextarea = document.querySelector('#hook-content textarea');
+
+        spotlights.forEach(spotlight => {
+            spotlight.addEventListener('click', () => {
+                spotlights.forEach(s => s.classList.remove('active'));
+                spotlight.classList.add('active');
+
+                const targetId = `${spotlight.dataset.target}-content`;
+                arenaContents.forEach(content => {
+                    if (content.id === targetId) {
+                        content.classList.add('visible');
+                    } else {
+                        content.classList.remove('visible');
+                    }
+                });
+            });
+        });
+
+        const hookIdeas = [
+            "¿Alguna vez han deseado que sus dispositivos simplemente tuvieran un lugar designado? El 85% de nosotros pierde tiempo cada día buscando cargadores.",
+            "Imagina un escritorio donde cada cable, cada dispositivo, cada herramienta tiene su lugar. Hoy, esa visión se hace realidad.",
+            "Mi proyecto no nació de una idea compleja, sino de una simple frustración: el desorden."
+        ];
+        hookGenerator.addEventListener('click', () => {
+            const randomIdea = hookIdeas[Math.floor(Math.random() * hookIdeas.length)];
+            hookTextarea.value = randomIdea;
+        });
+
+        // --- Report Inspector Logic ---
+        const inspectBtn = document.getElementById('inspect-btn');
+        const reportItems = document.querySelectorAll('.report-item');
+
+        inspectBtn.addEventListener('click', () => {
+            inspectBtn.disabled = true;
+            inspectBtn.textContent = 'Inspeccionando...';
+            
+            reportItems.forEach((item, index) => {
+                const statusDiv = item.querySelector(`#status-${index + 1}`);
+                setTimeout(() => {
+                    item.classList.add('inspected');
+                    statusDiv.classList.remove('bg-slate-700');
+                    statusDiv.classList.add('bg-green-500');
+                    statusDiv.innerHTML = '✓';
+                }, (index + 1) * 700);
+            });
+
+            setTimeout(() => {
+                 inspectBtn.textContent = '¡Informe Completo y Aprobado!';
+                 inspectBtn.classList.remove('bg-amber-600', 'hover:bg-amber-500');
+                 inspectBtn.classList.add('bg-green-600');
+            }, (reportItems.length + 1) * 700);
+        });
+
+    </script>
+
+</body>
+</html>

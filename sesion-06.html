@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo Interactivo: El Alquimista Digital (Materiales y DfAM)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Creator -->
+    <!-- Application Structure Plan: Este módulo para la Sesión 06 utiliza una estructura temática que guía al estudiante a través de las decisiones de un ingeniero de diseño. 1) Sección de Materiales: Un selector interactivo que actualiza un gráfico de radar para una comparación visual e inmediata de las propiedades del filamento. 2) Sección DfAM: Un "Laboratorio de Anisotropía" que permite al usuario aplicar una fuerza virtual a una pieza en dos orientaciones distintas, visualizando el punto de ruptura. 3) Sección de Reglas de Diseño: Tarjetas interactivas que explican conceptos clave como voladizos y tolerancias. Este flujo "Elegir -> Probar -> Aprender Reglas" es altamente práctico y refuerza la toma de decisiones informadas, que es el núcleo de la lección. -->
+    <!-- Visualization & Content Choices: 
+        - Catálogo de Materiales: Report Info -> Propiedades de PLA, PETG, ABS, TPU. Goal -> Comparar/Informar. Viz -> Gráfico de Radar. Interaction -> El usuario hace clic en un material, y el gráfico de radar y el texto descriptivo se actualizan dinámicamente. Justification -> El radar es la mejor visualización para comparar múltiples atributos (fuerza, flexibilidad, etc.) entre varios elementos (materiales) de un vistazo. Library/Method -> Chart.js + Vanilla JS.
+        - Principio de Anisotropía: Report Info -> Resistencia de la pieza según la orientación de capa. Goal -> Demostrar/Explicar un concepto físico. Viz -> Diagrama interactivo de un gancho. Interaction -> El usuario hace clic en "Probar Resistencia" para dos orientaciones diferentes. Una animación CSS muestra la fuerza aplicada y una "fractura" visible en la orientación débil. Justification -> Esta simulación visual es mucho más impactante y memorable que una simple explicación textual. Library/Method -> HTML/CSS/JS.
+        - Reglas de Diseño (Voladizos/Tolerancias): Report Info -> Regla de 45°, Chaflanes, Agujeros de lágrima, Tolerancias. Goal -> Informar/Organizar. Viz -> Tarjetas de contenido con diagramas simples hechos en HTML/CSS. Interaction -> Clic para revelar/expandir detalles. Justification -> Mantiene la interfaz limpia y permite al estudiante enfocarse en un concepto a la vez. Library/Method -> Tailwind CSS + JS.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #FDFBF8; }
+        .sticky-nav { position: sticky; top: 0; z-index: 50; }
+        .material-card { transition: all 0.2s ease-in-out; }
+        .material-card.active { border-color: #2563EB; transform: translateY(-4px); box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); }
+        .chart-container { position: relative; width: 100%; max-width: 400px; margin-left: auto; margin-right: auto; height: 350px; max-height: 400px; }
+        .hook { display: flex; flex-direction: column; width: 100px; }
+        .hook-vertical .layer { width: 100%; height: 4px; background-color: #9CA3AF; border-bottom: 1px solid #E5E7EB; }
+        .hook-horizontal .layer { width: 4px; height: 100%; background-color: #9CA3AF; border-right: 1px solid #E5E7EB; }
+        .hook-container.fail .hook-vertical .layer:nth-child(10) { transform: translateX(15px); background-color: #EF4444; }
+        .force-arrow { transition: all 0.5s ease-out; }
+        .hook-container.testing .force-arrow { transform: translateY(20px); opacity: 1; }
+        .hook-container.fail .force-arrow { opacity: 0; }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <header class="sticky-nav bg-white/80 backdrop-blur-lg shadow-md">
+        <nav class="container mx-auto px-6 py-3">
+            <div class="flex justify-between items-center">
+                <div class="text-xl font-bold text-blue-800">FABLAB Sesión 06</div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#inicio" class="nav-link text-gray-600 hover:text-blue-600">Inicio</a>
+                    <a href="#materiales" class="nav-link text-gray-600 hover:text-blue-600">Materiales</a>
+                    <a href="#dfam" class="nav-link text-gray-600 hover:text-blue-600">Diseño Inteligente</a>
+                    <a href="#reglas" class="nav-link text-gray-600 hover:text-blue-600">Reglas de Diseño</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section id="inicio" class="bg-amber-50 py-20 px-6">
+            <div class="container mx-auto text-center">
+                <h1 class="text-4xl md:text-6xl font-extrabold text-blue-900 leading-tight">El Alquimista Digital</h1>
+                <p class="mt-4 text-lg md:text-xl text-gray-700 max-w-3xl mx-auto">Crear un objeto 3D es más que solo modelar. Es elegir el "ingrediente" correcto y aplicar la "receta" de diseño adecuada. Hoy aprenderás a pensar en capas para crear piezas no solo bellas, sino funcionales y resistentes.</p>
+            </div>
+        </section>
+
+        <section id="materiales" class="py-20 px-6">
+            <div class="container mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-blue-900">El Catálogo de Filamentos</h2>
+                    <p class="mt-2 text-gray-600 max-w-2xl mx-auto">Cada material tiene su propia personalidad y superpoder. Elige uno para ver sus características.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12" id="material-selector">
+                    <button class="material-card active text-left bg-white p-4 rounded-lg shadow border-2 border-transparent" data-material="pla">
+                        <h3 class="text-lg font-bold text-green-700">PLA</h3><p class="text-sm">El Amigable</p>
+                    </button>
+                    <button class="material-card text-left bg-white p-4 rounded-lg shadow border-2 border-transparent" data-material="petg">
+                        <h3 class="text-lg font-bold text-blue-700">PETG</h3><p class="text-sm">El Todo-Terreno</p>
+                    </button>
+                    <button class="material-card text-left bg-white p-4 rounded-lg shadow border-2 border-transparent" data-material="abs">
+                        <h3 class="text-lg font-bold text-red-700">ABS</h3><p class="text-sm">El Industrial</p>
+                    </button>
+                    <button class="material-card text-left bg-white p-4 rounded-lg shadow border-2 border-transparent" data-material="tpu">
+                        <h3 class="text-lg font-bold text-purple-700">TPU</h3><p class="text-sm">El Flexible</p>
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center bg-white p-8 rounded-lg shadow-xl">
+                    <div class="chart-container">
+                        <canvas id="materialChart"></canvas>
+                    </div>
+                    <div id="material-info">
+                        <h3 id="material-title" class="text-2xl font-bold text-green-700">PLA (Ácido Poliláctico)</h3>
+                        <p id="material-description" class="mt-2 text-gray-600">Rígido, quebradizo y fácil de imprimir. Hecho de recursos renovables como el maíz. Su baja resistencia al calor lo hace ideal para prototipos visuales y objetos decorativos que no sufrirán estrés mecánico.</p>
+                        <h4 class="font-bold mt-4">Ideal para:</h4>
+                        <p id="material-uses" class="text-gray-600">Figuras, maquetas, prototipos estéticos.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="dfam" class="py-20 px-6 bg-gray-50">
+            <div class="container mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-blue-900">Diseño Inteligente (DfAM)</h2>
+                    <p class="mt-2 text-gray-600 max-w-2xl mx-auto">Un gran diseñador no solo crea formas, piensa en capas. La orientación de tu pieza es la decisión más importante para su resistencia.</p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div class="hook-container text-center bg-white p-6 rounded-lg shadow-xl">
+                        <h3 class="font-bold text-lg mb-4">Orientación VERTICAL</h3>
+                        <p class="text-sm text-gray-600 mb-4">Las capas están apiladas. La fuerza se aplica <span class="text-red-600 font-bold">A TRAVÉS</span> de las uniones de capa.</p>
+                        <div class="h-48 flex justify-center items-center">
+                            <div class="hook hook-vertical">
+                                <div class="w-full h-12 bg-gray-300 rounded-t-lg"></div>
+                                <div class="w-4 h-24 bg-gray-300 mx-auto">
+                                    <!-- Visual representation of layers -->
+                                    <div class="layer"></div><div class="layer"></div><div class="layer"></div><div class="layer"></div><div class="layer"></div><div class="layer"></div><div class="layer"></div><div class="layer"></div><div class="layer"></div><div class="layer"></div><div class="layer"></div><div class="layer"></div>
+                                </div>
+                                <div class="w-12 h-4 bg-gray-300 mx-auto rounded-b-lg"></div>
+                                <div class="force-arrow text-red-500 text-4xl mt-2 opacity-0">↓</div>
+                            </div>
+                        </div>
+                        <button class="test-btn mt-4 bg-red-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-red-600">Probar Resistencia</button>
+                        <p class="result-text mt-2 h-6 font-semibold text-red-600"></p>
+                    </div>
+                     <div class="hook-container text-center bg-white p-6 rounded-lg shadow-xl">
+                        <h3 class="font-bold text-lg mb-4">Orientación HORIZONTAL</h3>
+                        <p class="text-sm text-gray-600 mb-4">Las capas son continuas. La fuerza se aplica <span class="text-green-600 font-bold">A LO LARGO</span> de las capas.</p>
+                        <div class="h-48 flex justify-center items-center" style="transform: rotate(-90deg);">
+                             <div class="hook hook-horizontal flex-row">
+                                <div class="w-12 h-full bg-gray-300 rounded-l-lg"></div>
+                                <div class="w-24 h-4 bg-gray-300 self-center"></div>
+                                <div class="w-4 h-12 bg-gray-300 self-center rounded-r-lg"></div>
+                                <div class="force-arrow text-green-500 text-4xl ml-2 opacity-0" style="transform: rotate(90deg);">↓</div>
+                            </div>
+                        </div>
+                        <button class="test-btn mt-4 bg-green-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-green-600">Probar Resistencia</button>
+                        <p class="result-text mt-2 h-6 font-semibold text-green-600"></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="reglas" class="py-20 px-6">
+            <div class="container mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-blue-900">Reglas de Diseño para DfAM</h2>
+                    <p class="mt-2 text-gray-600 max-w-2xl mx-auto">Diseña de forma inteligente para evitar soportes y asegurar ensamblajes perfectos.</p>
+                </div>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <h3 class="text-xl font-bold">La Regla de 45°</h3>
+                        <p class="mt-2 text-gray-600">Las impresoras pueden crear "voladizos" (partes en el aire) de hasta 45° sin soportes. Usa <span class="font-semibold text-blue-600">chaflanes</span> de 45° en tus diseños en lugar de ángulos de 90° para evitar la necesidad de soportes, ahorrando tiempo y material.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <h3 class="text-xl font-bold">Agujeros de Lágrima</h3>
+                        <p class="mt-2 text-gray-600">Un agujero circular horizontal es un puente que la impresora no puede hacer sin soporte. Modificando la parte superior del círculo a una forma de <span class="font-semibold text-blue-600">"lágrima"</span>, el ángulo nunca supera los 45° y se imprime perfectamente.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <h3 class="text-xl font-bold">Tolerancias de Ensamblaje</h3>
+                        <p class="mt-2 text-gray-600">Para que un pin de 10mm encaje en un agujero, el agujero NO debe medir 10mm. Debido a la expansión del plástico, diseña el agujero con un "huelgo" o tolerancia, por ejemplo, de <span class="font-semibold text-blue-600">10.4mm</span> para un encaje suave.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-blue-900 text-white py-10 px-6">
+        <div class="container mx-auto text-center">
+            <p class="font-bold text-lg">Navegación del Curso</p>
+            <div class="mt-4 flex justify-center space-x-6">
+                <a href="sesion-05.html" class="hover:text-amber-300">← Volver a Sesión 05</a>
+                <span class="text-blue-400">|</span>
+                <a href="sesion-07.html" class="hover:text-amber-300">Ir a Sesión 07 →</a>
+            </div>
+            <p class="mt-6 text-sm text-blue-200">Módulo Interactivo creado para el IEST "Carlos Salazar Romero" | 2025</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Smooth scrolling for nav links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = e.currentTarget.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({ top: targetElement.offsetTop - 70, behavior: 'smooth' });
+                    }
+                });
+            });
+
+            // Materials Chart Logic
+            const materialData = {
+                pla: { title: 'PLA (Ácido Poliláctico)', description: 'Rígido, quebradizo y fácil de imprimir. Hecho de recursos renovables. Ideal para prototipos visuales y objetos decorativos sin estrés mecánico.', uses: 'Figuras, maquetas, prototipos estéticos.', color: 'rgba(22, 163, 74, 0.7)', data: [5, 2, 1, 2, 5] },
+                petg: { title: 'PETG (Glicol de Polietileno)', description: 'Fuerte, duradero y con ligera flexibilidad. Resistente a químicos y más fácil de imprimir que el ABS. El todoterreno de la impresión 3D.', uses: 'Piezas mecánicas, contenedores, componentes funcionales.', color: 'rgba(37, 99, 235, 0.7)', data: [4, 4, 3, 4, 3] },
+                abs: { title: 'ABS (Acrilonitrilo Butadieno Estireno)', description: 'Muy resistente al impacto y a altas temperaturas. El plástico de los LEGOs. Requiere una impresora cerrada y experiencia.', uses: 'Piezas de coche, carcasas de electrónicos.', color: 'rgba(220, 38, 38, 0.7)', data: [5, 3, 2, 5, 2] },
+                tpu: { title: 'TPU (Poliuretano Termoplástico)', description: 'Extremadamente flexible y duradero, similar a la goma. Difícil de imprimir a altas velocidades. Absorbe vibraciones e impactos.', uses: 'Fundas de móvil, suelas, piezas flexibles.', color: 'rgba(126, 34, 206, 0.7)', data: [2, 5, 5, 3, 3] }
+            };
+
+            const ctx = document.getElementById('materialChart').getContext('2d');
+            let materialChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Resistencia', 'Flexibilidad', 'Facilidad de Impresión', 'Resistencia Térmica', 'Calidad Superficial'],
+                    datasets: [{
+                        label: 'PLA',
+                        data: materialData.pla.data,
+                        fill: true,
+                        backgroundColor: 'rgba(22, 163, 74, 0.2)',
+                        borderColor: 'rgb(22, 163, 74)',
+                        pointBackgroundColor: 'rgb(22, 163, 74)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgb(22, 163, 74)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        r: { beginAtZero: true, max: 5, min: 0, ticks: { stepSize: 1, display: false }, pointLabels: { font: { size: 14 } } }
+                    }
+                }
+            });
+
+            const materialSelector = document.getElementById('material-selector');
+            materialSelector.addEventListener('click', (e) => {
+                const card = e.target.closest('.material-card');
+                if (!card) return;
+
+                document.querySelectorAll('.material-card').forEach(c => c.classList.remove('active'));
+                card.classList.add('active');
+                
+                const material = card.dataset.material;
+                const info = materialData[material];
+                
+                document.getElementById('material-title').textContent = info.title;
+                document.getElementById('material-description').textContent = info.description;
+                document.getElementById('material-uses').textContent = info.uses;
+                
+                materialChart.data.datasets[0].label = info.title;
+                materialChart.data.datasets[0].data = info.data;
+                materialChart.data.datasets[0].backgroundColor = info.color.replace('0.7', '0.2');
+                materialChart.data.datasets[0].borderColor = info.color.replace('0.7', '1');
+                materialChart.data.datasets[0].pointBackgroundColor = info.color.replace('0.7', '1');
+                materialChart.update();
+            });
+
+            // Anisotropy Test Logic
+            document.querySelectorAll('.test-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const container = btn.closest('.hook-container');
+                    const resultText = container.querySelector('.result-text');
+                    container.classList.add('testing');
+                    
+                    setTimeout(() => {
+                        if (container.querySelector('.hook-vertical')) {
+                            container.classList.add('fail');
+                            resultText.textContent = "¡FALLA CRÍTICA!";
+                        } else {
+                            resultText.textContent = "¡RESISTENCIA ÓPTIMA!";
+                        }
+                    }, 800);
+
+                    setTimeout(() => {
+                        container.classList.remove('testing', 'fail');
+                        resultText.textContent = "";
+                    }, 3000);
+                });
+            });
+            
+            // DfAM Diagram Logic
+            const diagramAreas = document.querySelectorAll('.diagram-area');
+            const diagramLabel = document.getElementById('diagram-label-output');
+            diagramAreas.forEach(area => {
+                area.addEventListener('mouseover', () => { diagramLabel.textContent = area.dataset.label; });
+                area.addEventListener('mouseout', () => { diagramLabel.textContent = 'Pasa el cursor para explorar'; });
+            });
+        });
+    </script>
+</body>
+</html>
