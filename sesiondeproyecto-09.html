@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fabricación Digital - Sesión 09</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f7f6;
+        }
+        .card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .progress-bar-bg {
+            background-color: #e0e0e0;
+            border-radius: 999px;
+            height: 10px;
+        }
+        .progress-bar {
+            background-color: #007aff;
+            height: 10px;
+            border-radius: 999px;
+            transition: width 0.5s ease-in-out;
+        }
+        .input-field {
+            width: 100%;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 6px;
+        }
+        .label-text {
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.9rem;
+        }
+        .check-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .check-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #007aff;
+        }
+        .svg-icon {
+            stroke: #007aff;
+            stroke-width: 1.5;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- Header -->
+    <header class="bg-gray-900 text-white p-8 md:p-12 relative overflow-hidden">
+        <div class="relative z-10">
+            <h1 class="text-3xl md:text-5xl font-bold">Fabricación Digital: Guía de Proyecto</h1>
+            <p class="text-xl md:text-2xl mt-2 text-blue-300">Sesión 09: Refinamiento y Tolerancias (V2)</p>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto p-4 md:p-8">
+
+        <!-- Conexión con el Sílabo -->
+        <section class="card p-6 md:p-8 mb-8">
+            <h2 class="text-2xl font-bold text-blue-700 mb-4">Conexión con el Sílabo: Diseño para Fabricación (DfM)</h2>
+            <p class="mb-6">El sílabo de hoy nos introduce al <strong>Fresado CNC (Fabricación Sustractiva)</strong>. Una fresadora (end mill) tiene un diámetro y no puede crear esquinas internas de 90º perfectos; siempre deja un radio. Esto nos enseña una lección vital: <strong>El diseño DEBE adaptarse a las limitaciones de la máquina.</strong></p>
+            <p class="mb-6">Aplicaremos esto a nuestra <strong>Impresión 3D (Fabricación Aditiva)</strong>. Nuestra máquina también tiene limitaciones. La más importante es la <strong>tolerancia</strong> (la precisión de las piezas que encajan).</p>
+            
+            <div class="flex flex-col md:flex-row justify-around items-center gap-6 p-4 bg-blue-50 rounded-lg">
+                <!-- SVG CNC -->
+                <div class="text-center">
+                    <svg width="150" height="150" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <title>CNC - Radio Interno</title>
+                        <path d="M20 80 L 20 20 L 80 20" fill="none" stroke="#6b7280" stroke-width="3" stroke-dasharray="4 4" />
+                        <path d="M20 80 L 20 30 C 20 24.477 24.477 20 30 20 L 80 20" fill="none" stroke="#ef4444" stroke-width="4"/>
+                        <circle cx="30" cy="30" r="10" fill="none" stroke="#ef4444" stroke-width="2"/>
+                        <text x="50" y="95" font-size="10" fill="#1e3a8a" text-anchor="middle">CNC: No hay esquinas de 90º</text>
+                    </svg>
+                </div>
+                
+                <!-- SVG 3D Tolerancia -->
+                <div class="text-center">
+                    <svg width="150" height="150" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <title>Impresión 3D - Tolerancia</title>
+                        <!-- Pieza 1 (Agujero) -->
+                        <rect x="10" y="10" width="80" height="40" fill="#93c5fd" rx="5"/>
+                        <rect x="35" y="10" width="30" height="40" fill="white"/>
+                        <text x="50" y="25" font-size="9" fill="#1e3a8a" text-anchor="middle">8.4mm</text>
+                        <!-- Pieza 2 (Eje) -->
+                        <rect x="30" y="60" width="40" height="30" fill="#a78bfa" rx="5"/>
+                        <rect x="42.5" y="75" width="15" height="15" fill="#f4f7f6" class="animate-pulse"/>
+                        <text x="50" y="75" font-size="9" fill="#3730a3" text-anchor="middle">8.0mm</text>
+                        <path d="M50 50 L 50 60" stroke="#34d399" stroke-width="2" stroke-dasharray="3 3"/>
+                        <text x="50" y="95" font-size="10" fill="#1e3a8a" text-anchor="middle">3D: Requiere holgura (0.4mm)</text>
+                    </svg>
+                </div>
+            </div>
+        </section>
+
+        <!-- Hito de la Sesión 09 -->
+        <section class="mb-8">
+            <h2 class="text-3xl font-bold mb-4">Hito de la Sesión 09: Modelo Funcional (V2)</h2>
+            <p class="text-lg mb-6">¡Hora de refinar! Dejamos el "blocking" de Tinkercad y pasamos a un CAD paramétrico (como Fusion 360) para crear el modelo V2. El objetivo es que el modelo tenga las medidas y tolerancias listas para la primera impresión.</p>
+        </section>
+
+        <!-- Trackers de Proyecto -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            
+            <!-- Grupo MonoBits -->
+            <article class="card p-6 md:p-8" id="grupo-monobits-s9">
+                <h3 class="text-3xl font-bold mb-2 flex items-center gap-2">🐒 MonoBits</h3>
+                <p class="text-sm italic text-gray-500 mb-4">"Saltamos entre bugs y bananas."</p>
+                <p class="mb-4">Progreso del Hito S09: <span id="progress-text-monobits-s9">0%</span></p>
+                <div class="progress-bar-bg mb-6">
+                    <div id="progress-bar-monobits-s9" class="progress-bar" style="width: 0%;"></div>
+                </div>
+
+                <form id="form-monobits-s9" class="space-y-6">
+                    <!-- Tareas del Hito -->
+                    <div class="space-y-4">
+                        <div class="check-item">
+                            <input type="checkbox" id="monobits-check-s9-1" onchange="updateProgress('monobits-s9')">
+                            <label for="monobits-check-s9-1" class="label-text">1. Importar STL V1 a Fusion 360 (o similar).</label>
+                        </div>
+                        <div class="check-item">
+                            <input type="checkbox" id="monobits-check-s9-2" onchange="updateProgress('monobits-s9')">
+                            <label for="monobits-check-s9-2" class="label-text">2. ¡Medir de nuevo! (Ej. Diámetro real del lápiz).</label>
+                        </div>
+                        <div class="check-item">
+                            <input type="checkbox" id="monobits-check-s9-3" onchange="updateProgress('monobits-s9')">
+                            <label for="monobits-check-s9-3" class="label-text">3. Re-modelar con medidas precisas y tolerancias.</label>
+                        </div>
+                        <div class="check-item">
+                            <input type="checkbox" id="monobits-check-s9-4" onchange="updateProgress('monobits-s9')">
+                            <label for="monobits-check-s9-4" class="label-text">4. Añadir Redondeos (Fillets) y Chaflanes (Chamfers).</label>
+                        </div>
+                        <div class="check-item">
+                            <input type="checkbox" id="monobits-check-s9-5" onchange="updateProgress('monobits-s9')">
+                            <label for="monobits-check-s9-5" class="label-text">5. Exportar y subir el `.STL` (V2).</label>
+                        </div>
+                        <div class="check-item">
+                            <input type="checkbox" id="monobits-check-s9-6" onchange="updateProgress('monobits-s9')">
+                            <label for="monobits-check-s9-6" class="label-text">6. Subir el archivo fuente (ej: `.f3d`).</label>
+                        </div>
+                    </div>
+
+                    <!-- Entregables -->
+                    <hr>
+                    <div>
+                        <label for="monobits-software-s9" class="label-text">1. Software Usado:</label>
+                        <input type="text" id="monobits-software-s9" class="input-field" value="Fusion 360">
+                    </div>
+                    <div>
+                        <label for="monobits-tolerancia-s9" class="label-text">2. Tolerancia Clave Aplicada:</label>
+                        <input type="text" id="monobits-tolerancia-s9" class="input-field" placeholder="Ej: Lápiz (8mm) -> Agujero (8.4mm). Holgura de +0.4mm">
+                    </div>
+                    <div>
+                        <label for="monobits-link-stl-s9" class="label-text">3. Link al Archivo .STL (V2):</label>
+                        <input type="url" id="monobits-link-stl-s9" class="input-field" placeholder="https://drive.google.com/.../grip_v2.stl">
+                    </div>
+                    <div>
+                        <label for="monobits-link-source-s9" class="label-text">4. Link al Archivo Fuente (V2):</label>
+                        <input type="url" id="monobits-link-source-s9" class="input-field" placeholder="https://drive.google.com/.../grip_v2.f3d">
+                    </div>
+                </form>
+            </article>
+
+            <!-- Grupo RanaWare -->
+            <article class="card p-6 md:p-8" id="grupo-ranaware-s9">
+                <h3 class="text-3xl font-bold mb-2 flex items-center gap-2">🐸 RanaWare</h3>
+                <p class="text-sm italic text-gray-500 mb-4">"Croamos código, brincamos errores."</p>
+                <p class="mb-4">Progreso del Hito S09: <span id="progress-text-ranaware-s9">0%</span></p>
+                <div class="progress-bar-bg mb-6">
+                    <div id="progress-bar-ranaware-s9" class="progress-bar" style="width: 0%;"></div>
+                </div>
+
+                <form id="form-ranaware-s9" class="space-y-6">
+                    <!-- Tareas del Hito -->
+                    <div class="space-y-4">
+                        <div class="check-item">
+                            <input type="checkbox" id="ranaware-check-s9-1" onchange="updateProgress('ranaware-s9')">
+                            <label for="ranaware-check-s9-1" class="label-text">1. Importar STL V1 a Fusion 360 (o similar).</label>
+                        </div>
+                        <div class="check-item">
+                            <input type="checkbox" id="ranaware-check-s9-2" onchange="updateProgress('ranaware-s9')">
+                            <label for="ranaware-check-s9-2" class="label-text">2. ¡Medir de nuevo! (Ej. Grosor de la laptop).</label>
+                        </div>
+                        <div class="check-item">
+                            <input type="checkbox" id="ranaware-check-s9-3" onchange="updateProgress('ranaware-s9')">
+                            <label for="ranaware-check-s9-3" class="label-text">3. Re-modelar con medidas precisas y tolerancias.</label>
+                        </div>
+                        <div class="check-item">
+                            <input type="checkbox" id="ranaware-check-s9-4" onchange="updateProgress('ranaware-s9')">
+                            <label for="ranaware-check-s9-4" class="label-text">4. Añadir Redondeos (Fillets) y Chaflanes (Chamfers).</label>
+                        </div>
+                        <div class="check-item">
+                            <input type="checkbox" id="ranaware-check-s9-5" onchange="updateProgress('ranaware-s9')">
+                            <label for="ranaware-check-s9-5" class="label-text">5. Exportar y subir el `.STL` (V2).</label>
+                        </div>
+                        <div class="check-item">
+                            <input type="checkbox" id="ranaware-check-s9-6" onchange="updateProgress('ranaware-s9')">
+                            <label for="ranaware-check-s9-6" class="label-text">6. Subir el archivo fuente (ej: `.f3d`).</label>
+                        </div>
+                    </div>
+
+                    <!-- Entregables -->
+                    <hr>
+                    <div>
+                        <label for="ranaware-software-s9" class="label-text">1. Software Usado:</label>
+                        <input type="text" id="ranaware-software-s9" class="input-field" value="Fusion 360">
+                    </div>
+                    <div>
+                        <label for="ranaware-tolerancia-s9" class="label-text">2. Tolerancia Clave Aplicada:</label>
+                        <input type="text" id="ranaware-tolerancia-s9" class="input-field" placeholder="Ej: Pestaña (5mm) -> Ranura (5.5mm). Holgura de +0.5mm">
+                    </div>
+                    <div>
+                        <label for="ranaware-link-stl-s9" class="label-text">3. Link al Archivo .STL (V2):</label>
+                        <input type="url" id="ranaware-link-stl-s9" class="input-field" placeholder="https://drive.google.com/.../soporte_v2.stl">
+                    </div>
+                    <div>
+                        <label for="ranaware-link-source-s9" class="label-text">4. Link al Archivo Fuente (V2):</label>
+                        <input type="url" id="ranaware-link-source-s9" class="input-field" placeholder="https://drive.google.com/.../soporte_v2.f3d">
+                    </div>
+                </form>
+            </article>
+        </div>
+
+        <!-- Guía y Próximos Pasos -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+            <!-- Guía Técnica -->
+            <section class="card p-6 md:p-8">
+                <h2 class="text-2xl font-bold text-green-700 mb-4">Guía Técnica: Tolerancias, Fillets y Chamfers</h2>
+                <p class="mb-4"><strong>Tolerancia (Holgura):</strong> ¡La regla de oro! Para que dos piezas impresas en 3D (FDM) encajen, la pieza "hembra" (agujero) debe ser más grande que la "macho" (eje).</p>
+                <p class="mb-4 bg-green-50 p-3 rounded-lg border border-green-200"><strong>Regla Rápida:</strong> Para un encaje "justo pero suelto", añade entre <strong>+0.3mm y +0.5mm</strong> al diámetro del agujero.</p>
+                
+                <div class="flex justify-around items-center gap-4 mt-6">
+                    <div class="text-center">
+                        <svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                             <path d="M20 20 H 80 V 80 H 20 Z" fill="none" stroke="#6b7280" stroke-width="2"/>
+                             <path d="M20 30 C 25 20, 25 20, 30 20" fill="none" stroke="#007aff" stroke-width="4"/>
+                             <text x="50" y="95" font-size="10" fill="#1e3a8a" text-anchor="middle">Redondeo (Fuerza)</text>
+                        </svg>
+                    </div>
+                    <div class="text-center">
+                        <svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                             <path d="M20 20 H 80 V 80 H 20 Z" fill="none" stroke="#6b7280" stroke-width="2"/>
+                             <path d="M20 30 L 30 20" fill="none" stroke="#007aff" stroke-width="4"/>
+                             <text x="50" y="95" font-size="10" fill="#1e3a8a" text-anchor="middle">Chaflán (Ensamblaje)</text>
+                        </svg>
+                    </div>
+                </div>
+                 <p class="mt-4"><strong>Redondeos (Fillets):</strong> Suavizan esquinas. Añaden muchísima resistencia estructural a la pieza.</p>
+                 <p class="mt-2"><strong>Chaflanes (Chamfers):</strong> Crean un bisel. Son vitales para ayudar a que ejes o tornillos se guíen fácilmente dentro de un agujero.</p>
+            </section>
+
+            <!-- Próxima Semana -->
+            <section class="card p-6 md:p-8 bg-gray-800 text-white">
+                <h2 class="text-2xl font-bold text-yellow-300 mb-4">Próxima Parada: Sesión 10</h2>
+                <p class="mb-4"><strong>Tema del Sílabo:</strong> Fresado CNC - Práctica II (Programación y Operación).</p>
+                <p class="mb-4"><strong>Hito del Proyecto:</strong> ¡"Slicing" y Primera Impresión!</p>
+                <p class="mb-4">¡La próxima semana es el gran día! Llevaremos nuestros modelos V2 al *laminador* (slicer), como Ultimaker Cura. Aprenderemos a prepararlo (altura de capa, soportes, relleno) y lanzaremos la **primera impresión de prueba**.</p>
+                
+                <div class="flex justify-center mt-6">
+                    <svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <title>Impresora 3D en acción</title>
+                        <!-- Base -->
+                        <rect x="10" y="80" width="80" height="10" fill="#9ca3af" rx="2"/>
+                        <!-- Pieza (capas) -->
+                        <rect x="25" y="75" width="50" height="5" fill="#fde047" rx="1"/>
+                        <rect x="28" y="70" width="44" height="5" fill="#fde047" rx="1"/>
+                        <rect x="31" y="65" width="38" height="5" fill="#fde047" rx="1"/>
+                        <rect x="34" y="60" width="32" height="5" fill="#fde047" rx="1" class="animate-pulse"/>
+                        <!-- Nozzle -->
+                        <path d="M40 20 L 60 20 L 55 40 L 45 40 Z" fill="#e5e7eb"/>
+                        <path d="M48 40 L 52 40 L 50 58 Z" fill="#e5e7eb"/>
+                        <rect x="49" y="58" width="2" height="5" fill="#fde047"/>
+                    </svg>
+                </div>
+                <p class="text-center text-yellow-300 font-semibold mt-2">¡A laminar!</p>
+            </section>
+        </div>
+    </main>
+
+    <footer class="text-center p-8 mt-8 text-gray-500 text-sm">
+        <p>Instituto de Educación Superior Tecnológico Público "Carlos Salazar Romero"</p>
+        <p>Unidad Didáctica: Fabricación Digital | 2025-II</p>
+    </footer>
+
+    <script>
+        function updateProgress(groupId) {
+            // groupId será 'monobits-s9' o 'ranaware-s9'
+            const form = document.getElementById(`form-${groupId}`);
+            if (!form) {
+                console.error(`Form con ID 'form-${groupId}' no encontrado.`);
+                return;
+            }
+
+            const checkboxes = form.querySelectorAll(`input[type='checkbox']`);
+            const totalTasks = checkboxes.length;
+            let completedTasks = 0;
+
+            checkboxes.forEach(cb => {
+                if (cb.checked) {
+                    completedTasks++;
+                }
+            });
+
+            const progressPercentage = (totalTasks > 0) ? (completedTasks / totalTasks) * 100 : 0;
+            
+            const progressBar = document.getElementById(`progress-bar-${groupId}`);
+            const progressText = document.getElementById(`progress-text-${groupId}`);
+
+            if (progressBar) {
+                progressBar.style.width = `${progressPercentage}%`;
+            }
+            if (progressText) {
+                progressText.innerText = `${Math.round(progressPercentage)}%`;
+            }
+        }
+    </script>
+
+</body>
+</html>
+
