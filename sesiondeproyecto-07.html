@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fabricación Digital - Sesión 07</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f7f6;
+        }
+        .header-svg {
+            position: absolute;
+            top: 0;
+            right: 0;
+            opacity: 0.1;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease-in-out;
+        }
+        .card:hover {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            transform: translateY(-2px);
+        }
+        .btn-primary {
+            background-color: #007aff;
+            color: white;
+            font-weight: 600;
+            padding: 10px 20px;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: #005ecb;
+        }
+        .progress-bar-bg {
+            background-color: #e0e0e0;
+            border-radius: 999px;
+            height: 10px;
+        }
+        .progress-bar {
+            background-color: #007aff;
+            height: 10px;
+            border-radius: 999px;
+            transition: width 0.5s ease-in-out;
+        }
+        .input-field {
+            width: 100%;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 6px;
+        }
+        .label-text {
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.9rem;
+        }
+        .check-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .check-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #007aff;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- Header -->
+    <header class="bg-gray-900 text-white p-8 md:p-12 relative overflow-hidden">
+        <!-- SVG Decorativo -->
+        <svg class="header-svg" width="400" height="400" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path opacity="0.1" fill-rule="evenodd" clip-rule="evenodd" d="M100 0C155.228 0 200 44.7715 200 100C200 155.228 155.228 200 100 200C44.7715 200 0 155.228 0 100C0 44.7715 44.7715 0 100 0ZM100 180C144.183 180 180 144.183 180 100C180 55.8172 144.183 20 100 20C55.8172 20 20 55.8172 20 100C20 144.183 55.8172 180 100 180Z" fill="white"/>
+            <path opacity="0.1" d="M100 60C122.091 60 140 77.9086 140 100C140 122.091 122.091 140 100 140C77.9086 140 60 122.091 60 100C60 77.9086 77.9086 60 100 60Z" stroke="white" stroke-width="2"/>
+            <path opacity="0.1" d="M100 80C111.046 80 120 88.9543 120 100C120 111.046 111.046 120 100 120C88.9543 120 80 111.046 80 100C80 88.9543 88.9543 80 100 80Z" fill="white"/>
+        </svg>
+
+        <div class="relative z-10">
+            <h1 class="text-3xl md:text-5xl font-bold">Fabricación Digital: Guía de Proyecto</h1>
+            <p class="text-xl md:text-2xl mt-2 text-blue-300">Sesión 07: ¡Inicio de Proyectos!</p>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto p-4 md:p-8">
+
+        <!-- Conexión con el Sílabo -->
+        <section class="card p-6 md:p-8 mb-8">
+            <h2 class="text-2xl font-bold text-blue-700 mb-4">Conexión con el Sílabo: Aditivo vs. Sustractivo</h2>
+            <p class="mb-6">El sílabo de esta semana (Actividad N° 7) nos introduce al <strong>Corte y Grabado Láser</strong>. Esta es una técnica de <strong>fabricación sustractiva</strong>: empezamos con un bloque de material y *quitamos* partes (cortando o grabando) para crear el diseño.</p>
+            <p class="mb-6">Nuestros proyectos, en cambio, se centrarán en la <strong>Impresión 3D</strong>, la técnica de <strong>fabricación aditiva</strong> por excelencia. Aquí, *construimos* el objeto desde cero, capa por capa.</p>
+            
+            <div class="flex flex-col md:flex-row justify-around items-center gap-6">
+                <!-- SVG Fabricación Sustractiva -->
+                <div class="text-center">
+                    <svg width="150" height="150" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <title>Fabricación Sustractiva (Corte Láser)</title>
+                        <rect width="90" height="90" x="5" y="5" fill="#dbeafe" stroke="#60a5fa" stroke-width="2" rx="5"/>
+                        <circle cx="50" cy="50" r="25" fill="none" stroke="#ef4444" stroke-width="2" stroke-dasharray="4 4"/>
+                        <path d="M50 0 V 40" stroke="#ef4444" stroke-width="2" stroke-linecap="round"/>
+                        <circle cx="50" cy="40" r="3" fill="#ef4444" stroke="white" stroke-width="1"/>
+                        <text x="50" y="98" font-size="10" fill="#1e3a8a" text-anchor="middle">Sustractivo</text>
+                    </svg>
+                </div>
+                
+                <!-- SVG Fabricación Aditiva -->
+                <div class="text-center">
+                    <svg width="150" height="150" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <title>Fabricación Aditiva (Impresión 3D)</title>
+                        <rect width="90" height="10" x="5" y="80" fill="#dbeafe" stroke="#60a5fa" stroke-width="1" rx="2"/>
+                        <rect width="80" height="10" x="10" y="70" fill="#dbeafe" stroke="#60a5fa" stroke-width="1" rx="2"/>
+                        <rect width="70" height="10" x="15" y="60" fill="#dbeafe" stroke="#60a5fa" stroke-width="1" rx="2"/>
+                        <rect width="60" height="10" x="20" y="50" fill="#dbeafe" stroke="#60a5fa" stroke-width="1" rx="2"/>
+                        <rect width="50" height="10" x="25" y="40" fill="#93c5fd" stroke="#60a5fa" stroke-width="1" rx="2" class="animate-pulse"/>
+                        <path d="M50 0 V 35" stroke="#059669" stroke-width="2" stroke-linecap="round"/>
+                        <circle cx="50" cy="35" r="3" fill="#059669" stroke="white" stroke-width="1"/>
+                        <text x="50" y="98" font-size="10" fill="#1e3a8a" text-anchor="middle">Aditivo</text>
+                    </svg>
+                </div>
+            </div>
+            <p class="mt-6 text-sm bg-blue-50 p-4 rounded-lg border border-blue-200"><strong>Para reflexionar:</strong> ¿El prototipo que tienen en mente podría hacerse con corte láser? ¿Por qué la impresión 3D es (o no es) la mejor herramienta para su proyecto?</p>
+        </section>
+
+        <!-- Hito de la Sesión 07 -->
+        <section class="mb-8">
+            <h2 class="text-3xl font-bold mb-4">Hito de la Sesión 07: Definición del Proyecto</h2>
+            <p class="text-lg mb-6">El objetivo de hoy es completar la <strong>Fase de Ideación y Definición</strong>. Cada grupo debe rellenar su tarjeta de proyecto. ¡Esto no es un borrador, es su contrato de proyecto para esta semana!</p>
+        </section>
+
+        <!-- Trackers de Proyecto -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            
+            <!-- Grupo MonoBits -->
+            <article class="card p-6 md:p-8" id="grupo-monobits">
+                <h3 class="text-3xl font-bold mb-2 flex items-center gap-2">🐒 MonoBits</h3>
+                <p class="text-sm italic text-gray-500 mb-4">"Saltamos entre bugs y bananas."</p>
+                <p class="mb-4">Progreso del Hito S07: <span id="progress-text-monobits">0%</span></p>
+                <div class="progress-bar-bg mb-6">
+                    <div id="progress-bar-monobits" class="progress-bar" style="width: 0%;"></div>
+                </div>
+
+                <form id="form-monobits" class="space-y-6">
+                    <!-- Tareas del Hito -->
+                    <div class="space-y-4">
+                        <div class="check-item">
+                            <input type="checkbox" id="monobits-check-1" onchange="updateProgress('monobits')">
+                            <label for="monobits-check-1" class="label-text">1. Elegir líder de equipo (solo para esta sesión).</label>
+                        </div>
+                        <div class="check-item">
+                            <input type="checkbox" id="monobits-check-2" onchange="updateProgress('monobits')">
+                            <label for="monobits-check-2" class="label-text">2. Brainstorming y definición del PROBLEMA.</label>
+                        </div>
+                        <div class="check-item">
+                            <input type="checkbox" id="monobits-check-3" onchange="updateProgress('monobits')">
+                            <label for="monobits-check-3" class="label-text">3. Definición del USUARIO OBJETIVO.</label>
+                        </div>
+                        <div class="check-item">
+                            <input type="checkbox" id="monobits-check-4" onchange="updateProgress('monobits')">
+                            <label for="monobits-check-4" class="label-text">4. Lluvia de ideas de SOLUCIONES (Bocetos).</label>
+                        </div>
+                        <div class="check-item">
+                            <input type="checkbox" id="monobits-check-5" onchange="updateProgress('monobits')">
+                            <label for="monobits-check-5" class="label-text">5. Creación de carpeta compartida (Google Drive, etc.).</label>
+                        </div>
+                    </div>
+
+                    <!-- Entregables -->
+                    <hr>
+                    <div>
+                        <label for="monobits-nombre" class="label-text">Nombre del Proyecto:</label>
+                        <input type="text" id="monobits-nombre" class="input-field" placeholder="Ej: 'Grip Ergonómico para Lápiz'">
+                    </div>
+                    <div>
+                        <label for="monobits-problema" class="label-text">1. Problema (1 frase):</label>
+                        <input type="text" id="monobits-problema" class="input-field" placeholder="Ej: 'Niños con dificultades motrices no pueden agarrar lápices'">
+                    </div>
+                    <div>
+                        <label for="monobits-usuario" class="label-text">2. Usuario (1 frase):</label>
+                        <input type="text" id="monobits-usuario" class="input-field" placeholder="Ej: 'Niños de 5-7 años en terapia ocupacional'">
+                    </div>
+                    <div>
+                        <label for="monobits-bocetos" class="label-text">3. Descripción de Bocetos (ideas):</label>
+                        <textarea id="monobits-bocetos" rows="3" class="input-field" placeholder="Describan 2-3 ideas. Ej: Un grip triangular, un grip esférico..."></textarea>
+                    </div>
+                    <div>
+                        <label for="monobits-link" class="label-text">4. Link del Repositorio:</label>
+                        <input type="url" id="monobits-link" class="input-field" placeholder="https://drive.google.com/...">
+                    </div>
+                </form>
+            </article>
+
+            <!-- Grupo RanaWare -->
+            <article class="card p-6 md:p-8" id="grupo-ranaware">
+                <h3 class="text-3xl font-bold mb-2 flex items-center gap-2">🐸 RanaWare</h3>
+                <p class="text-sm italic text-gray-500 mb-4">"Croamos código, brincamos errores."</p>
+                <p class="mb-4">Progreso del Hito S07: <span id="progress-text-ranaware">0%</span></p>
+                <div class="progress-bar-bg mb-6">
+                    <div id="progress-bar-ranaware" class="progress-bar" style="width: 0%;"></div>
+                </div>
+
+                <form id="form-ranaware" class="space-y-6">
+                    <!-- Tareas del Hito -->
+                    <div class="space-y-4">
+                        <div class="check-item">
+                            <input type="checkbox" id="ranaware-check-1" onchange="updateProgress('ranaware')">
+                            <label for="ranaware-check-1" class="label-text">1. Elegir líder de equipo (solo para esta sesión).</label>
+                        </div>
+                        <div class="check-item">
+                            <input type="checkbox" id="ranaware-check-2" onchange="updateProgress('ranaware')">
+                            <label for="ranaware-check-2" class="label-text">2. Brainstorming y definición del PROBLEMA.</label>
+                        </div>
+                        <div class="check-item">
+                            <input type="checkbox" id="ranaware-check-3" onchange="updateProgress('ranaware')">
+                            <label for="ranaware-check-3" class="label-text">3. Definición del USUARIO OBJETIVO.</label>
+                        </div>
+                        <div class="check-item">
+                            <input type="checkbox" id="ranaware-check-4" onchange="updateProgress('ranaware')">
+                            <label for="ranaware-check-4" class="label-text">4. Lluvia de ideas de SOLUCIONES (Bocetos).</label>
+                        </div>
+                        <div class="check-item">
+                            <input type="checkbox" id="ranaware-check-5" onchange="updateProgress('ranaware')">
+                            <label for="ranaware-check-5" class="label-text">5. Creación de carpeta compartida (Google Drive, etc.).</label>
+                        </div>
+                    </div>
+
+                    <!-- Entregables -->
+                    <hr>
+                    <div>
+                        <label for="ranaware-nombre" class="label-text">Nombre del Proyecto:</label>
+                        <input type="text" id="ranaware-nombre" class="input-field" placeholder="Ej: 'Soporte de Laptop Plegable'">
+                    </div>
+                    <div>
+                        <label for="ranaware-problema" class="label-text">1. Problema (1 frase):</label>
+                        <input type="text" id="ranaware-problema" class="input-field" placeholder="Ej: 'Postura incorrecta y dolor de cuello por laptops en mesas bajas'">
+                    </div>
+                    <div>
+                        <label for="ranaware-usuario" class="label-text">2. Usuario (1 frase):</label>
+                        <input type="text" id="ranaware-usuario" class="input-field" placeholder="Ej: 'Estudiantes que trabajan en diferentes lugares (casa, biblioteca)'">
+                    </div>
+                    <div>
+                        <label for="ranaware-bocetos" class="label-text">3. Descripción de Bocetos (ideas):</label>
+                        <textarea id="ranaware-bocetos" rows="3" class="input-field" placeholder="Describan 2-3 ideas. Ej: Un soporte de 2 piezas, uno plegable tipo tijera..."></textarea>
+                    </div>
+                    <div>
+                        <label for="ranaware-link" class="label-text">4. Link del Repositorio:</label>
+                        <input type="url" id="ranaware-link" class="input-field" placeholder="https://drive.google.com/...">
+                    </div>
+                </form>
+            </article>
+        </div>
+
+        <!-- Guía y Próximos Pasos -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+            <!-- Guía del Docente -->
+            <section class="card p-6 md:p-8">
+                <h2 class="text-2xl font-bold text-green-700 mb-4">Guía del Docente: El "Problema"</h2>
+                <p class="mb-4">Un buen prototipo 3D no nace de "quiero hacer un llavero", nace de "necesito una solución para...". Enamórense del <strong>problema</strong>, no de la solución.</p>
+                <h4 class="font-semibold mb-2">Ejemplo de un MAL Problema:</h4>
+                <p class="mb-4 bg-red-50 p-3 rounded-lg border border-red-200">❌ "Quiero diseñar un case para mi celular."<br><em class="text-sm">(Muy genérico, no soluciona nada nuevo).</em></p>
+                
+                <h4 class="font-semibold mb-2">Ejemplo de un BUEN Problema:</h4>
+                <p class="mb-4 bg-green-50 p-3 rounded-lg border border-green-200">✅ "Mi abuela no puede sostener bien el celular debido a la artritis."<br><em class="text-sm">(Específico, centrado en el usuario, medible).</em></p>
+                
+                <p class="mt-4"><strong>Tip Técnico:</strong> Piensen en las limitaciones de la impresión 3D desde YA. ¿Su idea requiere soportes? ¿Es demasiado grande? ¿Necesita ser flexible?</p>
+
+                <p class="mt-6"><strong>Tip Pedagógico (Design Thinking):</strong></p>
+                <p class="mb-4 text-sm bg-indigo-50 p-3 rounded-lg border border-indigo-200">El "Buen Problema" (el de la abuela) funciona porque nace de la <strong>empatía</strong>. Antes de diseñar, pregunten: ¿Qué siente el usuario? ¿Qué le frustra? Pónganse en sus zapatos. Un diseño que resuelve una frustración real siempre será un gran proyecto.</p>
+            </section>
+
+            <!-- Próxima Semana -->
+            <section class="card p-6 md:p-8 bg-gray-800 text-white">
+                <h2 class="text-2xl font-bold text-yellow-300 mb-4">Próxima Parada: Sesión 08</h2>
+                <p class="mb-4"><strong>Tema del Sílabo:</strong> Corte y Grabado Láser - Práctica II.</p>
+                <p class="mb-4"><strong>Hito del Proyecto:</strong> ¡Del Boceto al CAD!</p>
+                <p class="mb-4">Para la próxima semana, cada grupo debe traer sus bocetos (dibujos) y empezar a traducirlos a un modelo 3D digital. Empezaremos con software básico (Tinkercad) para bloquear las formas principales.</p>
+                
+                <div class="flex justify-center mt-6">
+                    <svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <title>Modelado CAD</title>
+                        <path d="M20 30 L 80 30 L 80 70 L 20 70 L 20 30" fill="none" stroke="#fde047" stroke-width="2"/>
+                        <path d="M20 30 L 40 10 L 100 10 L 80 30" fill="none" stroke="#fde047" stroke-width="2"/>
+                        <path d="M80 70 L 100 50 L 100 10" fill="none" stroke="#fde047" stroke-width="2"/>
+                        <path d="M40 10 L 40 50 M 20 70 L 40 50 L 100 50" fill="none" stroke="#fde047" stroke-width="2" stroke-dasharray="3 3"/>
+                    </svg>
+                </div>
+                <p class="text-center text-yellow-300 font-semibold mt-2">¡A modelar se ha dicho!</p>
+            </section>
+        </div>
+    </main>
+
+    <footer class="text-center p-8 mt-8 text-gray-500 text-sm">
+        <p>Instituto de Educación Superior Tecnológico Público "Carlos Salazar Romero"</p>
+        <p>Unidad Didáctica: Fabricación Digital | 2025-II</p>
+    </footer>
+
+    <script>
+        function updateProgress(group) {
+            // group será 'monobits' o 'ranaware'
+            const checkboxes = document.querySelectorAll(`#form-${group} input[type='checkbox']`);
+            const totalTasks = checkboxes.length;
+            let completedTasks = 0;
+
+            checkboxes.forEach(cb => {
+                if (cb.checked) {
+                    completedTasks++;
+                }
+            });
+
+            const progressPercentage = (totalTasks > 0) ? (completedTasks / totalTasks) * 100 : 0;
+            
+            document.getElementById(`progress-bar-${group}`).style.width = `${progressPercentage}%`;
+            document.getElementById(`progress-text-${group}`).innerText = `${Math.round(progressPercentage)}%`;
+        }
+    </script>
+
+</body>
+</html>
+
