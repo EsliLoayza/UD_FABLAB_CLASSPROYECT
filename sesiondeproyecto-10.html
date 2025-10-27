@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fabricación Digital - Sesión 10</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f7f6;
+        }
+        .card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .progress-bar-bg {
+            background-color: #e0e0e0;
+            border-radius: 999px;
+            height: 10px;
+        }
+        .progress-bar {
+            background-color: #007aff;
+            height: 10px;
+            border-radius: 999px;
+            transition: width 0.5s ease-in-out;
+        }
+        .input-field {
+            width: 100%;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 6px;
+        }
+        .label-text {
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.9rem;
+        }
+        .check-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .check-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #007aff;
+        }
+        
+        /* Animación Slicer */
+        @keyframes slice-anim {
+            0% { transform: translateY(0); }
+            20% { transform: translateY(5px); }
+            40% { transform: translateY(10px); }
+            60% { transform: translateY(15px); }
+            80% { transform: translateY(20px); }
+            100% { transform: translateY(0); }
+        }
+        .slicer-line {
+            animation: slice-anim 3s ease-in-out infinite;
+            stroke: #ef4444;
+            stroke-width: 2;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- Header -->
+    <header class="bg-gray-900 text-white p-8 md:p-12 relative overflow-hidden">
+        <div class="relative z-10">
+            <h1 class="text-3xl md:text-5xl font-bold">Fabricación Digital: Guía de Proyecto</h1>
+            <p class="text-xl md:text-2xl mt-2 text-blue-300">Sesión 10: Slicing y Primera Impresión</p>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto p-4 md:p-8">
+
+        <!-- Conexión con el Sílabo -->
+        <section class="card p-6 md:p-8 mb-8">
+            <h2 class="text-2xl font-bold text-blue-700 mb-4">Conexión con el Sílabo: "Programando" la Impresora</h2>
+            <p class="mb-6">El tema de hoy es "Programación y Operación de Fresadoras CNC". Una CNC usa **G-Code** (un lenguaje de programación) para saber dónde moverse.</p>
+            <p class="mb-6">¡Nuestras impresoras 3D usan *exactamente* el mismo lenguaje! El software **"Slicer" (laminador)** es nuestro "programador". Convierte nuestro modelo `.STL` (el "Qué") en un archivo `.gcode` (el "Cómo"): miles de instrucciones de coordenadas y extrusión.</p>
+            
+            <div class="flex flex-col md:flex-row justify-around items-center gap-6 p-4 bg-blue-50 rounded-lg">
+                <!-- SVG 1: Modelo STL -->
+                <div class="text-center">
+                    <svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <title>Modelo .STL</title>
+                        <path d="M50 10 L 90 35 L 90 65 L 50 90 L 10 65 L 10 35 Z" fill="#93c5fd" stroke="#3b82f6" stroke-width="2"/>
+                        <path d="M50 10 L 50 90" fill="none" stroke="#3b82f6" stroke-width="2" stroke-dasharray="4 4"/>
+                        <path d="M10 35 L 90 65" fill="none" stroke="#3b82f6" stroke-width="2" stroke-dasharray="4 4"/>
+                        <path d="M10 65 L 90 35" fill="none" stroke="#3b82f6" stroke-width="2" stroke-dasharray="4 4"/>
+                        <text x="50" y="98" font-size="10" fill="#1e3a8a" text-anchor="middle">1. .STL (V2)</text>
+                    </svg>
+                </div>
+                
+                <!-- SVG 2: Slicer (Animado) -->
+                <div class="text-center">
+                    <svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <title>Proceso de Slicing</title>
+                        <path d="M50 10 L 90 35 L 90 65 L 50 90 L 10 65 L 10 35 Z" fill="none" stroke="#6b7280" stroke-width="1" stroke-dasharray="2 2"/>
+                        <!-- Capas -->
+                        <path d="M10 35 L 90 35" fill="none" stroke="#9ca3af" stroke-width="1"/>
+                        <path d="M10 45 L 90 45" fill="none" stroke="#9ca3af" stroke-width="1"/>
+                        <path d="M10 55 L 90 55" fill="none" stroke="#9ca3af" stroke-width="1"/>
+                        <path d="M10 65 L 90 65" fill="none" stroke="#9ca3af" stroke-width="1"/>
+                        <!-- Línea de corte animada -->
+                        <path d="M5 30 L 95 30" class="slicer-line"/>
+                        <text x="50" y="98" font-size="10" fill="#1e3a8a" text-anchor="middle">2. Slicer (Cura)</text>
+                    </svg>
+                </div>
+                
+                <!-- SVG 3: G-Code -->
+                <div class="text-center">
+                    <svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                         <title>Archivo G-Code</title>
+                         <path d="M30 20 L 70 20 L 70 80 L 30 80 Z" fill="#f3f4f6" stroke="#d1d5db" stroke-width="2" rx="5"/>
+                         <path d="M35 30 L 65 30" fill="none" stroke="#6b7280" stroke-width="2"/>
+                         <path d="M35 40 L 65 40" fill="none" stroke="#6b7280" stroke-width="2" stroke-dasharray="3 3"/>
+                         <path d="M35 50 L 55 50" fill="none" stroke="#6b7280" stroke-width="2"/>
+                         <path d="M35 60 L 60 60" fill="none" stroke="#6b7280" stroke-width="2" stroke-dasharray="3 3"/>
+                         <path d="M35 70 L 65 70" fill="none" stroke="#6b7280" stroke-width="2"/>
+                         <text x="50" y="98" font-size="10" fill="#1e3a8a" text-anchor="middle">3. .gcode</text>
+                    </svg>
+                </div>
+            </div>
+        </section>
+
+        <!-- Hito de la Sesión 10 -->
+        <section class="mb-8">
+            <h2 class="text-3xl font-bold mb-4">Hito de la Sesión 10: Impresión de Validación (V2.1)</h2>
+            <p class="text-lg mb-6">¡El momento de la verdad! Llevaremos nuestro `.STL` (V2) al Slicer (Cura), definiremos los parámetros de impresión y lanzaremos una **impresión de prueba rápida** (Draft Print) para validar el diseño.</p>
+        </section>
+
+        <!-- Trackers de Proyecto -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            
+            <!-- Grupo MonoBits -->
+            <article class="card p-6 md:p-8" id="grupo-monobits-s10">
+                <h3 class="text-3xl font-bold mb-2 flex items-center gap-2">🐒 MonoBits</h3>
+                <p class="text-sm italic text-gray-500 mb-4">"Saltamos entre bugs y bananas."</p>
+                <p class="mb-4">Progreso del Hito S10: <span id="progress-text-monobits-s10">0%</span></p>
+                <div class="progress-bar-bg mb-6">
+                    <div id="progress-bar-monobits-s10" class="progress-bar" style="width: 0%;"></div>
+                </div>
+
+                <form id="form-monobits-s10" class="space-y-6">
+                    <!-- Tareas del Hito -->
+                    <div class="space-y-4">
+                        <div class="check-item">
+                            <input type="checkbox" id="monobits-check-s10-1" onchange="updateProgress('monobits-s10')">
+                            <label for="monobits-check-s10-1" class="label-text">1. Importar `.STL (V2)` a Cura.</label>
+                        </div>
+                        <div class="check-item">
+                            <input type="checkbox" id="monobits-check-s10-2" onchange="updateProgress('monobits-s10')">
+                            <label for="monobits-check-s10-2" class="label-text">2. **Orientar** la pieza en la cama de impresión.</label>
+                        </div>
+                        <div class="check-item">
+                            <input type="checkbox" id="monobits-check-s10-3" onchange="updateProgress('monobits-s10')">
+                            <label for="monobits-check-s10-3" class="label-text">3. Definir perfil "Draft" (Borrador Rápido).</label>
+                        </div>
+                        <div class="check-item">
+                            <input type="checkbox" id="monobits-check-s10-4" onchange="updateProgress('monobits-s10')">
+                            <label for="monobits-check-s10-4" class="label-text">4. Analizar y (si es necesario) añadir Soportes.</label>
+                        </div>
+                        <div class="check-item">
+                            <input type="checkbox" id="monobits-check-s10-5" onchange="updateProgress('monobits-s10')">
+                            <label for="monobits-check-s10-5" class="label-text">5. Laminar (Slice) y guardar `.gcode`.</label>
+                        </div>
+                        <div class="check-item">
+                            <input type="checkbox" id="monobits-check-s10-6" onchange="updateProgress('monobits-s10')">
+                            <label for="monobits-check-s10-6" class="label-text">6. Lanzar impresión (supervisada).</label>
+                        </div>
+                        <div class="check-item">
+                            <input type="checkbox" id="monobits-check-s10-7" onchange="updateProgress('monobits-s10')">
+                            <label for="monobits-check-s10-7" class="label-text">7. ¡TESTEAR! Probar el encaje del lápiz.</label>
+                        </div>
+                    </div>
+
+                    <!-- Entregables -->
+                    <hr>
+                    <div>
+                        <label for="monobits-altura-s10" class="label-text">1. Altura de Capa (Draft):</label>
+                        <input type="text" id="monobits-altura-s10" class="input-field" placeholder="Ej: 0.28 mm">
+                    </div>
+                    <div>
+                        <label for="monobits-relleno-s10" class="label-text">2. Relleno (Infill):</label>
+                        <input type="text" id="monobits-relleno-s10" class="input-field" placeholder="Ej: 15%">
+                    </div>
+                    <div>
+                        <label for="monobits-tiempo-s10" class="label-text">3. Tiempo Estimado:</label>
+                        <input type="text" id="monobits-tiempo-s10" class="input-field" placeholder="Ej: 45 minutos">
+                    </div>
+                    <div>
+                        <label for="monobits-resultado-s10" class="label-text">4. Resultado del Test (¡Lo más importante!):</label>
+                        <textarea id="monobits-resultado-s10" rows="2" class="input-field" placeholder="Ej: 'El lápiz entra, pero queda muy suelto. La holgura de +0.4mm fue excesiva. Reducir a +0.2mm para V3.'"></textarea>
+                    </div>
+                </form>
+            </article>
+
+            <!-- Grupo RanaWare -->
+            <article class="card p-6 md:p-8" id="grupo-ranaware-s10">
+                <h3 class="text-3xl font-bold mb-2 flex items-center gap-2">🐸 RanaWare</h3>
+                <p class="text-sm italic text-gray-500 mb-4">"Croamos código, brincamos errores."</p>
+                <p class="mb-4">Progreso del Hito S10: <span id="progress-text-ranaware-s10">0%</span></p>
+                <div class="progress-bar-bg mb-6">
+                    <div id="progress-bar-ranaware-s10" class="progress-bar" style="width: 0%;"></div>
+                </div>
+
+                <form id="form-ranaware-s10" class="space-y-6">
+                    <!-- Tareas del Hito -->
+                    <div class="space-y-4">
+                         <div class="check-item">
+                            <input type="checkbox" id="ranaware-check-s10-1" onchange="updateProgress('ranaware-s10')">
+                            <label for="ranaware-check-s10-1" class="label-text">1. Importar `.STL (V2)` a Cura.</label>
+                        </div>
+                        <div class="check-item">
+                            <input type="checkbox" id="ranaware-check-s10-2" onchange="updateProgress('ranaware-s10')">
+                            <label for="ranaware-check-s10-2" class="label-text">2. **Orientar** la pieza en la cama de impresión.</label>
+                        </div>
+                        <div class="check-item">
+                            <input type="checkbox" id="ranaware-check-s10-3" onchange="updateProgress('ranaware-s10')">
+                            <label for="ranaware-check-s10-3" class="label-text">3. Definir perfil "Draft" (Borrador Rápido).</label>
+                        </div>
+                        <div class="check-item">
+                            <input type="checkbox" id="ranaware-check-s10-4" onchange="updateProgress('ranaware-s10')">
+                            <label for="ranaware-check-s10-4" class="label-text">4. Analizar y (si es necesario) añadir Soportes.</label>
+                        </div>
+                        <div class="check-item">
+                            <input type="checkbox" id="ranaware-check-s10-5" onchange="updateProgress('ranaware-s10')">
+                            <label for="ranaware-check-s10-5" class="label-text">5. Laminar (Slice) y guardar `.gcode`.</label>
+                        </div>
+                        <div class="check-item">
+                            <input type="checkbox" id="ranaware-check-s10-6" onchange="updateProgress('ranaware-s10')">
+                            <label for="ranaware-check-s10-6" class="label-text">6. Lanzar impresión (supervisada).</label>
+                        </div>
+                        <div class="check-item">
+                            <input type="checkbox" id="ranaware-check-s10-7" onchange="updateProgress('ranaware-s10')">
+                            <label for="ranaware-check-s10-7" class="label-text">7. ¡TESTEAR! Probar el ensamble de las piezas.</label>
+                        </div>
+                    </div>
+
+                    <!-- Entregables -->
+                    <hr>
+                    <div>
+                        <label for="ranaware-altura-s10" class="label-text">1. Altura de Capa (Draft):</label>
+                        <input type="text" id="ranaware-altura-s10" class="input-field" placeholder="Ej: 0.30 mm">
+                    </div>
+                    <div>
+                        <label for="ranaware-relleno-s10" class="label-text">2. Relleno (Infill):</label>
+                        <input type="text" id="ranaware-relleno-s10" class="input-field" placeholder="Ej: 10%">
+                    </div>
+                    <div>
+                        <label for="ranaware-tiempo-s10" class="label-text">3. Tiempo Estimado:</label>
+                        <input type="text" id="ranaware-tiempo-s10" class="input-field" placeholder="Ej: 1h 10m">
+                    </div>
+                    <div>
+                        <label for="ranaware-resultado-s10" class="label-text">4. Resultado del Test (¡Lo más importante!):</label>
+                        <textarea id="ranaware-resultado-s10" rows="2" class="input-field" placeholder="Ej: 'Las dos piezas encajan, pero la bisagra se rompió. Holgura de +0.5mm estuvo bien, pero necesita más material (Fillet) en la unión.'"></textarea>
+                    </div>
+                </form>
+            </article>
+        </div>
+
+        <!-- Guía y Próximos Pasos -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+            <!-- Guía Técnica -->
+            <section class="card p-6 md:p-8">
+                <h2 class="text-2xl font-bold text-green-700 mb-4">Guía Técnica: El Triángulo del Slicer (Draft)</h2>
+                <p class="mb-4">Para una impresión de prueba (Draft), no buscamos belleza, buscamos **velocidad** y **validación funcional**.</p>
+                
+                <div class="space-y-4">
+                    <div class="flex items-center gap-4 p-3 bg-green-50 rounded-lg">
+                        <svg class="h-10 w-10 text-green-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></svg>
+                        <div>
+                            <h4 class="font-bold">1. Altura de Capa (Layer Height)</h4>
+                            <p class="text-sm">Pónganla ALTA (Ej: 0.28mm - 0.32mm). Capas más gruesas = impresión mucho más rápida.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 p-3 bg-green-50 rounded-lg">
+                        <svg class="h-10 w-10 text-green-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+                        <div>
+                            <h4 class="font-bold">2. Relleno (Infill)</h4>
+                            <p class="text-sm">Pónganlo BAJO (Ej: 10% - 15%). Solo queremos que la pieza mantenga su forma, no que resista un martillo.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 p-3 bg-green-50 rounded-lg">
+                        <svg class="h-10 w-10 text-green-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l-7 7 7 7"/></svg>
+                        <div>
+                            <h4 class="font-bold">3. Orientación (¡Clave!)</h4>
+                            <p class="text-sm">Pongan la pieza "acostada" en su cara más plana. Eviten soportes a toda costa (ahorran tiempo y material).</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Próxima Semana -->
+            <section class="card p-6 md:p-8 bg-gray-800 text-white">
+                <h2 class="text-2xl font-bold text-yellow-300 mb-4">Próxima Parada: Sesión 11</h2>
+                <p class="mb-4"><strong>Tema del Sílabo:</strong> Integración de Tecnologías de Fabricación Digital.</p>
+                <p class="mb-4"><strong>Hito del Proyecto:</strong> Iteración (V3) y Post-Procesado.</p>
+                <p classs="mb-4">La próxima semana, tomarán el *feedback* de la impresión de prueba de HOY y lo usarán para crear la **Versión 3 (V3)** en el CAD. Arreglarán las tolerancias, reforzarán las uniones débiles, etc.</p>
+                <p class="mt-4">Mientras el modelo V3 se imprime (esta vez con más calidad), aprenderemos sobre **"Post-Procesamiento"** (mencionado en el sílabo S10) y la **"Integración"** (S11): cómo remover soportes limpiamente, lijar la pieza, y cómo nuestras piezas 3D pueden integrarse con otras tecnologías (como uniones de corte láser o electrónica).</p>
+            </section>
+        </div>
+    </main>
+
+    <footer class="text-center p-8 mt-8 text-gray-500 text-sm">
+        <p>Instituto de Educación Superior Tecnológico Público "Carlos Salazar Romero"</p>
+        <p>Unidad Didáctica: Fabricación Digital | 2025-II</p>
+    </footer>
+
+    <script>
+        function updateProgress(groupId) {
+            // groupId será 'monobits-s10' o 'ranaware-s10'
+            const form = document.getElementById(`form-${groupId}`);
+            if (!form) {
+                console.error(`Form con ID 'form-${groupId}' no encontrado.`);
+                return;
+            }
+
+            const checkboxes = form.querySelectorAll(`input[type='checkbox']`);
+            const totalTasks = checkboxes.length;
+            let completedTasks = 0;
+
+            checkboxes.forEach(cb => {
+                if (cb.checked) {
+                    completedTasks++;
+                }
+            });
+
+            const progressPercentage = (totalTasks > 0) ? (completedTasks / totalTasks) * 100 : 0;
+            
+            const progressBar = document.getElementById(`progress-bar-${groupId}`);
+            const progressText = document.getElementById(`progress-text-${groupId}`);
+
+            if (progressBar) {
+                progressBar.style.width = `${progressPercentage}%`;
+            }
+            if (progressText) {
+                progressText.innerText = `${Math.round(progressPercentage)}%`;
+            }
+        }
+    </script>
+
+</body>
+</html>
