@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fabricación Digital - Sesión 11</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f7f6;
+        }
+        .card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .progress-bar-bg {
+            background-color: #e0e0e0;
+            border-radius: 999px;
+            height: 10px;
+        }
+        .progress-bar {
+            background-color: #007aff;
+            height: 10px;
+            border-radius: 999px;
+            transition: width 0.5s ease-in-out;
+        }
+        .input-field {
+            width: 100%;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 6px;
+        }
+        .label-text {
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.9rem;
+        }
+        .check-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .check-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #007aff;
+        }
+        
+        /* Animación Ciclo */
+        @keyframes draw-arrow {
+            from { stroke-dashoffset: 100; }
+            to { stroke-dashoffset: 0; }
+        }
+        .cycle-arrow {
+            stroke-dasharray: 100;
+            animation: draw-arrow 1.5s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- Header -->
+    <header class="bg-gray-900 text-white p-8 md:p-12 relative overflow-hidden">
+        <div class="relative z-10">
+            <h1 class="text-3xl md:text-5xl font-bold">Fabricación Digital: Guía de Proyecto</h1>
+            <p class="text-xl md:text-2xl mt-2 text-blue-300">Sesión 11: Iteración (V3) e Integración</p>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto p-4 md:p-8">
+
+        <!-- Conexión con el Sílabo -->
+        <section class="card p-6 md:p-8 mb-8">
+            <h2 class="text-2xl font-bold text-blue-700 mb-4">Conexión con el Sílabo: Iteración e Integración</h2>
+            <p class="mb-6">El sílabo de hoy (S11) menciona la <strong>"Integración de Tecnologías"</strong>, y el sílabo anterior (S10) menciona <strong>"Técnicas de acabado y post-procesamiento"</strong>. Hoy hacemos ambas.</p>
+            <p class="mb-4"><strong>Iteración:</strong> Es el ciclo de mejorar un diseño basándose en pruebas físicas. Lo que aprendieron del V2.1 (Draft) lo usarán para crear el V3 (Calidad).</p>
+            <p class="mb-4"><strong>Integración:</strong> No es solo 3D+Láser. Es 3D + *Cualquier cosa*. Su pieza debe "integrarse" con un lápiz, una laptop o incluso tornillos. Sus pruebas de tolerancia *son* pruebas de integración.</p>
+            <p class="mb-4"><strong>Post-Procesamiento:</strong> Una pieza 3D no sale perfecta de la máquina. Hay que remover soportes, lijar bordes. Hoy aprenderán a "acabar" su pieza V2.1.</p>
+            
+            <div class="text-center p-4 bg-blue-50 rounded-lg">
+                <h3 class="font-bold text-lg text-blue-900 mb-4">El Ciclo de Iteración ("Falla Rápido")</h3>
+                <svg width="100%" height="150" viewBox="0 0 400 100" xmlns="http://www.w3.org/2000/svg">
+                    <title>Ciclo de Iteración</title>
+                    <!-- 1. CAD (V2) -->
+                    <rect x="10" y="30" width="80" height="40" rx="5" fill="#e0f2fe"/>
+                    <text x="50" y="55" font-size="12" text-anchor="middle" fill="#0c4a6e">CAD (V2)</text>
+                    
+                    <!-- Flecha 1 -->
+                    <path d="M95 50 H 135" fill="none" stroke="#0ea5e9" stroke-width="2" class="cycle-arrow"/>
+                    <text x="115" y="45" font-size="10" fill="#0ea5e9">Slicer</text>
+
+                    <!-- 2. Print (V2.1 Draft) -->
+                    <rect x="140" y="30" width="80" height="40" rx="5" fill="#fef9c3"/>
+                    <text x="180" y="55" font-size="12" text-anchor="middle" fill="#713f12">Print (V2.1)</text>
+
+                    <!-- Flecha 2 -->
+                    <path d="M225 50 H 265" fill="none" stroke="#0ea5e9" stroke-width="2" class="cycle-arrow"/>
+                    <text x="245" y="45" font-size="10" fill="#0ea5e9">Test</text>
+
+                    <!-- 3. Fail/Feedback -->
+                    <rect x="270" y="30" width="80" height="40" rx="5" fill="#fee2e2"/>
+                    <text x="310" y="50" font-size="12" text-anchor="middle" fill="#7f1d1d">¡Fallo!</text>
+                    <text x="310" y="65" font-size="10" text-anchor="middle" fill="#7f1d1d">(Suelto/Roto)</text>
+
+                    <!-- Flecha 4 (Loop) -->
+                    <path d="M355 50 H 380 V 80 H 20 V 50 H 5" fill="none" stroke="#ef4444" stroke-width="3" stroke-dasharray="5 5"/>
+                    <text x="200" y="95" font-size="12" fill="#ef4444" text-anchor="middle">ITERAR: Volver al CAD (V3)</text>
+                </svg>
+            </div>
+        </section>
+
+        <!-- Hito de la Sesión 11 -->
+        <section class="mb-8">
+            <h2 class="text-3xl font-bold mb-4">Hito de la Sesión 11: Iterar (V3) y Post-Procesar (V2.1)</h2>
+            <p class="text-lg mb-6">El hito de hoy es doble: 1. Aplicar el feedback en el CAD para crear el V3. 2. Lanzar la impresión V3 en modo CALIDAD. 3. Mientras imprime, tomar la pieza V2.1 y aprender a post-procesarla.</p>
+        </section>
+
+        <!-- Trackers de Proyecto -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            
+            <!-- Grupo MonoBits -->
+            <article class="card p-6 md:p-8" id="grupo-monobits-s11">
+                <h3 class="text-3xl font-bold mb-2 flex items-center gap-2">🐒 MonoBits</h3>
+                <p class="text-sm italic text-gray-500 mb-4">"Saltamos entre bugs y bananas."</p>
+                <p class="mb-4">Progreso del Hito S11: <span id="progress-text-monobits-s11">0%</span></p>
+                <div class="progress-bar-bg mb-6">
+                    <div id="progress-bar-monobits-s11" class="progress-bar" style="width: 0%;"></div>
+                </div>
+
+                <form id="form-monobits-s11" class="space-y-6">
+                    <!-- Tareas del Hito -->
+                    <div class="space-y-4">
+                        <div class="check-item">
+                            <input type="checkbox" id="monobits-check-s11-1" onchange="updateProgress('monobits-s11')">
+                            <label for="monobits-check-s11-1" class="label-text">1. Analizar V2.1: Holgura excesiva.</label>
+                        </div>
+                        <div class="check-item">
+                            <input type="checkbox" id="monobits-check-s11-2" onchange="updateProgress('monobits-s11')">
+                            <label for="monobits-check-s11-2" class="label-text">2. Abrir Fusion 360 y modificar el diseño (V3).</label>
+                        </div>
+                        <div class="check-item">
+                            <input type="checkbox" id="monobits-check-s11-3" onchange="updateProgress('monobits-s11')">
+                            <label for="monobits-check-s11-3" class="label-text">3. Laminar (Slice) V3 en modo "Calidad".</glabel>
+                        </div>
+                        <div class="check-item">
+                            <input type="checkbox" id="monobits-check-s11-4" onchange="updateProgress('monobits-s11')">
+                            <label for="monobits-check-s11-4" class="label-text">4. Lanzar impresión V3 (supervisada).</label>
+                        </div>
+                        <div class="check-item">
+                            <input type="checkbox" id="monobits-check-s11-5" onchange="updateProgress('monobits-s11')">
+                            <label for="monobits-check-s11-5" class="label-text">5. (Mientras imprime) Tomar V2.1 y remover soportes/brim.</label>
+                        </div>
+                        <div class="check-item">
+                            <input type="checkbox" id="monobits-check-s11-6" onchange="updateProgress('monobits-s11')">
+                            <label for="monobits-check-s11-6" class="label-text">6. Lijar bordes ásperos de V2.1.</label>
+                        </div>
+                    </div>
+
+                    <!-- Entregables -->
+                    <hr>
+                    <div>
+                        <label for="monobits-cambio-s11" class="label-text">1. Cambio Clave en V3:</label>
+                        <input type="text" id="monobits-cambio-s11" class="input-field" placeholder="Ej: Holgura reducida de +0.4mm a +0.2mm">
+                    </div>
+                    <div>
+                        <label for="monobits-calidad-s11" class="label-text">2. Parámetros Slicer (Calidad):</LAbel>
+                        <input type="text" id="monobits-calidad-s11" class="input-field" placeholder="Ej: Altura capa: 0.16mm, Relleno: 20%">
+                    </div>
+                    <div>
+                        <label for="monobits-foto-s11" class="label-text">3. Link a Foto de V2.1 Post-Procesada:</label>
+                        <input type="url" id="monobits-foto-s11" class="input-field" placeholder="https://drive.google.com/.../v2_lijada.jpg">
+                    </div>
+                </form>
+            </article>
+
+            <!-- Grupo RanaWare -->
+            <article class="card p-6 md:p-8" id="grupo-ranaware-s11">
+                <h3 class="text-3xl font-bold mb-2 flex items-center gap-2">🐸 RanaWare</h3>
+                <p class="text-sm italic text-gray-500 mb-4">"Croamos código, brincamos errores."</p>
+                <p class="mb-4">Progreso del Hito S11: <span id="progress-text-ranaware-s11">0%</span></p>
+                <div class="progress-bar-bg mb-6">
+                    <div id="progress-bar-ranaware-s11" class="progress-bar" style="width: 0%;"></div>
+                </div>
+
+                <form id="form-ranaware-s11" class="space-y-6">
+                    <!-- Tareas del Hito -->
+                    <div class="space-y-4">
+                        <div class="check-item">
+                            <input type="checkbox" id="ranaware-check-s11-1" onchange="updateProgress('ranaware-s11')">
+                            <label for="ranaware-check-s11-1" class="label-text">1. Analizar V2.1: Bisagra rota (débil).</label>
+                        </div>
+                        <div class="check-item">
+                            <input type="checkbox" id="ranaware-check-s11-2" onchange="updateProgress('ranaware-s11')">
+                            <label for="ranaware-check-s11-2" class="label-text">2. Abrir Fusion 360 y modificar el diseño (V3).</label>
+                        </div>
+                        <div class="check-item">
+                            <input type="checkbox" id="ranaware-check-s11-3" onchange="updateProgress('ranaware-s11')">
+                            <label for="ranaware-check-s11-3" class="label-text">3. Laminar (Slice) V3 en modo "Calidad".</label>
+                        </div>
+                        <div class="check-item">
+                            <input type="checkbox" id="ranaware-check-s11-4" onchange="updateProgress('ranaware-s11')">
+                            <label for="ranaware-check-s11-4" class="label-text">4. Lanzar impresión V3 (supervisada).</label>
+                        </div>
+                        <div class="check-item">
+                            <input type="checkbox" id="ranaware-check-s11-5" onchange="updateProgress('ranaware-s11')">
+                            <label for="ranaware-check-s11-5" class="label-text">5. (Mientras imprime) Tomar V2.1 y remover soportes/brim.</label>
+                        </div>
+                        <div class="check-item">
+                            <input type="checkbox" id="ranaware-check-s11-6" onchange="updateProgress('ranaware-s11')">
+                            <label for="ranaware-check-s11-6" class="label-text">6. Lijar bordes ásperos de V2.1.</label>
+                        </div>
+                    </div>
+
+                    <!-- Entregables -->
+                    <hr>
+                    <div>
+                        <label for="ranaware-cambio-s11" class="label-text">1. Cambio Clave en V3:</label>
+                        <input type="text" id="ranaware-cambio-s11" class="input-field" placeholder="Ej: Añadido Redondeo (Fillet) de 3mm en la bisagra">
+                    </div>
+                    <div>
+                        <label for="ranaware-calidad-s11" class="label-text">2. Parámetros Slicer (Calidad):</label>
+                        <input type="text" id="ranaware-calidad-s11" class="input-field" placeholder="Ej: Altura capa: 0.16mm, Relleno: 25%">
+                    </div>
+                    <div>
+                        <label for="ranaware-foto-s11" class="label-text">3. Link a Foto de V2.1 Post-Procesada:</label>
+                        <input type="url" id="ranaware-foto-s11" class="input-field" placeholder="https://drive.google.com/.../v2_lijada.jpg">
+                    </div>
+                </form>
+            </article>
+        </div>
+
+        <!-- Guía y Próximos Pasos -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+            <!-- Guía Técnica -->
+            <section class="card p-6 md:p-8">
+                <h2 class="text-2xl font-bold text-green-700 mb-4">Guía Técnica: Post-Procesamiento</h2>
+                <p class="mb-4">¡Felicidades, tu pieza está impresa! Ahora empieza el trabajo de verdad.</p>
+                <div class="space-y-4">
+                    <div class="flex items-center gap-4">
+                        <svg width="60" height="60" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><title>Remover Soportes</title><path d="M20 80 H 80 V 60 H 70 V 40 H 60 V 20 H 40 V 40 H 30 V 60 H 20 Z" fill="#93c5fd" stroke="#3b82f6" stroke-width="2"/><path d="M30 60 H 70" fill="none" stroke="#ef4444" stroke-width="2" stroke-dasharray="4 4"/><text x="50" y="95" font-size="10" text-anchor="middle">Soportes</Capa></svg>
+                        <div>
+                            <h4 class="font-bold">1. Remover Soportes</h4>
+                            <p class="text-sm">Usa pinzas de punta fina o un alicate de corte. Hazlo con cuidado para no marcar la pieza.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <svg width="60" height="60" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><title>Lijado</title><path d="M20 70 H 80 V 80 H 20 Z" fill="#fca5a5" stroke="#b91c1c" stroke-width="2" rx="3"/><path d="M20 60 H 80 V 70 H 20 Z" fill="#fef08a"/><path d="M25 65 h 10" stroke="#713f12" stroke-width="2"/><path d="M40 65 h 10" stroke="#713f12" stroke-width="2"/><path d="M55 65 h 10" stroke="#713f12" stroke-width="2"/><text x="50" y="95" font-size="10" text-anchor="middle">Lijado</text></svg>
+                        <div>
+                            <h4 class="font-bold">2. Lijado</h4>
+                            <p class="text-sm">Empieza con lija gruesa (grano 120) para quitar marcas de soporte y termina con lija fina (grano 220 o 400) para un acabado suave.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                         <svg width="60" height="60" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><title>Integración</title><path d="M30 20 L 70 20 L 70 50 L 30 50 Z" fill="#93c5fd" stroke="#3b82f6" stroke-width="2" rx="3"/><circle cx="50" cy="35" r="5" fill="white" stroke="#3b82f6" stroke-width="2"/><path d="M45 60 L 55 60 L 55 80 L 45 80 Z" fill="#9ca3af" stroke="#4b5563" stroke-width="2"/><path d="M40 60 H 60" fill="none" stroke="#4b5563" stroke-width="3"/><text x="50" y="95" font-size="10" text-anchor="middle">Integración</text></svg>
+                        <div>
+                            <h4 class="font-bold">3. Integración (Hardware)</h4>
+                            <p class="text-sm">Si tu diseño lo requiere, este es el momento de añadir insertos de calor, tornillos o tuercas.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Próxima Semana -->
+            <section class="card p-6 md:p-8 bg-gray-800 text-white">
+                <h2 class="text-2xl font-bold text-yellow-300 mb-4">Próxima Parada: Sesión 12</h2>
+                <p class="mb-4"><strong>Tema del Sílabo:</strong> Fabricación Digital Avanzada (Impresión 4D, Tendencias).</p>
+                <p class="mb-4"><strong>Hito del Proyecto:</strong> Prueba Final (V3) y Materiales.</p>
+                <p classs="mb-4">La próxima semana, probaremos la impresión V3 de alta calidad. ¿Funcionó la iteración? ¿La tolerancia es correcta? ¿La bisagra resiste?</p>
+                <p class="mt-4">Mientras hacemos la prueba final, conectaremos con el sílabo discutiendo **materiales avanzados**. ¿Qué pasaría si su pieza fuera de filamento flexible (TPU)? ¿O de filamento con madera? ¿O de PETG resistente al calor?</p>
+            </section>
+        </div>
+    </main>
+
+    <footer class="text-center p-8 mt-8 text-gray-500 text-sm">
+        <p>Instituto de Educación Superior Tecnológico Público "Carlos Salazar Romero"</p>
+        <p>Unidad Didáctica: Fabricación Digital | 2025-II</p>
+    </footer>
+
+    <script>
+        function updateProgress(groupId) {
+            // groupId será 'monobits-s11' o 'ranaware-s11'
+            const form = document.getElementById(`form-${groupId}`);
+            if (!form) {
+                console.error(`Form con ID 'form-${groupId}' no encontrado.`);
+                return;
+            }
+
+            const checkboxes = form.querySelectorAll(`input[type='checkbox']`);
+            const totalTasks = checkboxes.length;
+            let completedTasks = 0;
+
+            checkboxes.forEach(cb => {
+                if (cb.checked) {
+                    completedTasks++;
+                }
+            });
+
+            const progressPercentage = (totalTasks > 0) ? (completedTasks / totalTasks) * 100 : 0;
+            
+            const progressBar = document.getElementById(`progress-bar-${groupId}`);
+            const progressText = document.getElementById(`progress-text-${groupId}`);
+
+            if (progressBar) {
+                progressBar.style.width = `${progressPercentage}%`;
+            }
+            if (progressText) {
+                progressText.innerText = `${Math.round(progressPercentage)}%`;
+            }
+        }
+    </script>
+
+</body>
+</html>
