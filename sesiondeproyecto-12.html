@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fabricación Digital - Sesión 12</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f7f6;
+        }
+        .card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .progress-bar-bg {
+            background-color: #e0e0e0;
+            border-radius: 999px;
+            height: 10px;
+        }
+        .progress-bar {
+            background-color: #007aff;
+            height: 10px;
+            border-radius: 999px;
+            transition: width 0.5s ease-in-out;
+        }
+        .input-field {
+            width: 100%;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 6px;
+        }
+        .label-text {
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.9rem;
+        }
+        .check-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .check-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #007aff;
+        }
+        .select-field {
+            width: 100%;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 6px;
+            background-color: white;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- Header -->
+    <header class="bg-gray-900 text-white p-8 md:p-12 relative overflow-hidden">
+        <div class="relative z-10">
+            <h1 class="text-3xl md:text-5xl font-bold">Fabricación Digital: Guía de Proyecto</h1>
+            <p class="text-xl md:text-2xl mt-2 text-blue-300">Sesión 12: Validación Funcional (V3) y Materiales Avanzados</p>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto p-4 md:p-8">
+
+        <!-- Conexión con el Sílabo -->
+        <section class="card p-6 md:p-8 mb-8">
+            <h2 class="text-2xl font-bold text-blue-700 mb-4">Conexión con el Sílabo: Fabricación Avanzada = Materiales</h2>
+            <p class="mb-6">El sílabo de hoy (S12) menciona <strong>"Fabricación Digital Avanzada"</strong>. Esto no es solo ciencia ficción (como la "Impresión 4D"). Para nosotros, "avanzado" significa usar el material *correcto* para el trabajo *correcto*.</p>
+            <p class="mb-6">Hemos validado la <strong>FORMA</strong> con PLA (Polylactic Acid). Ahora, debemos validar la <strong>FUNCIÓN</strong>. ¿Y si su prototipo necesita ser flexible, resistente al calor o ultra-fuerte? Ahí es donde entran los materiales avanzados.</p>
+            
+            <div class="flex flex-col md:flex-row justify-around items-center gap-6 p-4 bg-blue-50 rounded-lg">
+                <!-- SVG 1: PLA -->
+                <div class="text-center">
+                    <svg width="120" height="120" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <title>PLA: Rígido pero Frágil</title>
+                        <rect x="20" y="20" width="60" height="60" rx="5" fill="#93c5fd" stroke="#3b82f6" stroke-width="2"/>
+                        <path d="M70 30 L 85 15" stroke="#ef4444" stroke-width="3"/>
+                        <path d="M75 25 L 80 20" stroke="#ef4444" stroke-width="3"/>
+                        <text x="50" y="95" font-size="10" fill="#1e3a8a" text-anchor="middle">1. PLA (Rígido / Frágil)</text>
+                    </svg>
+                </div>
+                
+                <!-- SVG 2: PETG -->
+                <div class="text-center">
+                    <svg width="120" height="120" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <title>PETG: Fuerte / Resistente</title>
+                        <rect x="20" y="20" width="60" height="60" rx="5" fill="#a5f3fc" stroke="#0891b2" stroke-width="2" opacity="0.8"/>
+                        <!-- Sol (Calor) -->
+                        <circle cx="85" cy="15" r="10" fill="#facc15"/>
+                        <path d="M85 28 L 85 35" fill="none" stroke="#facc15" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M75 15 L 68 15" fill="none" stroke="#facc15" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M78 22 L 73 27" fill="none" stroke="#facc15" stroke-width="2" stroke-linecap="round"/>
+                        <text x="50" y="95" font-size="10" fill="#1e3a8a" text-anchor="middle">2. PETG (Fuerte / Calor)</text>
+                    </svg>
+                </div>
+                
+                <!-- SVG 3: TPU -->
+                <div class="text-center">
+                    <svg width="120" height="120" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                         <title>TPU: Flexible</title>
+                        <path d="M20 20 C 30 60, 40 80, 50 80 S 70 60, 80 20 L 80 80 L 20 80 Z" fill="#d8b4fe" stroke="#7e22ce" stroke-width="2"/>
+                         <text x="50" y="95" font-size="10" fill="#1e3a8a" text-anchor="middle">3. TPU (Flexible)</text>
+                    </svg>
+                </div>
+            </div>
+        </section>
+
+        <!-- Hito de la Sesión 12 -->
+        <section class="mb-8">
+            <h2 class="text-3xl font-bold mb-4">Hito de la Sesión 12: Prueba de Fuego (V3) y "Design Freeze"</h2>
+            <p class="text-lg mb-6">¡El momento de la verdad! Probaremos la impresión V3 de alta calidad. ¿Funcionó la iteración? ¿La tolerancia es perfecta? ¿La bisagra resiste? Si la respuesta es SÍ, declaramos un **"Design Freeze" (Diseño Congelado)**.</p>
+        </section>
+
+        <!-- Trackers de Proyecto -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            
+            <!-- Grupo MonoBits -->
+            <article class="card p-6 md:p-8" id="grupo-monobits-s12">
+                <h3 class="text-3xl font-bold mb-2 flex items-center gap-2">🐒 MonoBits</h3>
+                <p class="text-sm italic text-gray-500 mb-4">"Saltamos entre bugs y bananas."</p>
+                <p class="mb-4">Progreso del Hito S12: <span id="progress-text-monobits-s12">0%</span></p>
+                <div class="progress-bar-bg mb-6">
+                    <div id="progress-bar-monobits-s12" class="progress-bar" style="width: 0%;"></div>
+                </div>
+
+                <form id="form-monobits-s12" class="space-y-6">
+                    <!-- Tareas del Hito -->
+                    <div class="space-y-4">
+                        <div class="check-item">
+                            <input type="checkbox" id="monobits-check-s12-1" onchange="updateProgress('monobits-s12')">
+                            <label for="monobits-check-s12-1" class="label-text">1. Recoger impresión V3 (Calidad).</label>
+                        </div>
+                        <div class="check-item">
+                            <input type="checkbox" id="monobits-check-s12-2" onchange="updateProgress('monobits-s12')">
+                            <label for="monobits-check-s12-2" class="label-text">2. Post-procesar (remover soportes/brim si los hay).</label>
+                        </div>
+                        <div class="check-item">
+                            <input type="checkbox" id="monobits-check-s12-3" onchange="updateProgress('monobits-s12')">
+                            <label for="monobits-check-s12-3" class="label-text">3. <strong>¡Prueba de Fuego!</strong> Testear el encaje del lápiz.</label>
+                        </div>
+                        <div class="check-item">
+                            <input type="checkbox" id="monobits-check-s12-4" onchange="updateProgress('monobits-s12')">
+                            <label for="monobits-check-s12-4" class="label-text">4. Investigar 1-2 materiales avanzados (Ej. TPU).</label>
+                        </div>
+                        <div class="check-item">
+                            <input type="checkbox" id="monobits-check-s12-5" onchange="updateProgress('monobits-s12')">
+                            <label for="monobits-check-s12-5" class="label-text">5. Declarar "Design Freeze" (Diseño Congelado).</label>
+                        </div>
+                    </div>
+
+                    <!-- Entregables -->
+                    <hr>
+                    <div>
+                        <label for="monobits-resultado-s12" class="label-text">1. Resultado del Test V3 (¡CRÍTICO!):</label>
+                        <textarea id="monobits-resultado-s12" rows="2" class="input-field" placeholder="Ej: '¡ÉXITO! La holgura de +0.2mm es perfecta. El lápiz entra a presión y se sostiene.' o 'FALLO: Aún queda suelto. Necesitamos V3.1 con +0.15mm.'"></textarea>
+                    </div>
+                    <div>
+                        <label for="monobits-material-s12" class="label-text">2. Material Avanzado Sugerido:</label>
+                        <input type="text" id="monobits-material-s12" class="input-field" placeholder="Ej: TPU (Flexible), para un agarre más cómodo.">
+                    </div>
+                    <div>
+                        <label for="monobits-freeze-s12" class="label-text">3. ¿Diseño Congelado?</label>
+                        <select id="monobits-freeze-s12" class="select-field">
+                            <option value="si">Sí, V3 es la Versión Final.</option>
+                            <option value="no">No, requiere un micro-ajuste (V3.1).</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="monobits-link-final-s12" class="label-text">4. Link al Archivo Fuente (V-Final):</label>
+                        <input type="url" id="monobits-link-final-s12" class="input-field" placeholder="https://drive.google.com/.../grip_V-FINAL.f3d">
+                    </div>
+                </form>
+            </article>
+
+            <!-- Grupo RanaWare -->
+            <article class="card p-6 md:p-8" id="grupo-ranaware-s12">
+                <h3 class="text-3xl font-bold mb-2 flex items-center gap-2">🐸 RanaWare</h3>
+                <p class="text-sm italic text-gray-500 mb-4">"Croamos código, brincamos errores."</p>
+                <p class="mb-4">Progreso del Hito S12: <span id="progress-text-ranaware-s12">0%</span></p>
+                <div class="progress-bar-bg mb-6">
+                    <div id="progress-bar-ranaware-s12" class="progress-bar" style="width: 0%;"></div>
+                </div>
+
+                <form id="form-ranaware-s12" class="space-y-6">
+                    <!-- Tareas del Hito -->
+                    <div class="space-y-4">
+                        <div class="check-item">
+                            <input type="checkbox" id="ranaware-check-s12-1" onchange="updateProgress('ranaware-s12')">
+                            <label for="ranaware-check-s12-1" class="label-text">1. Recoger impresión V3 (Calidad).</label>
+                        </div>
+                        <div class="check-item">
+                            <input type="checkbox" id="ranaware-check-s12-2" onchange="updateProgress('ranaware-s12')">
+                            <label for="ranaware-check-s12-2" class="label-text">2. Post-procesar (remover soportes/brim si los hay).</label>
+                        </div>
+                        <div class="check-item">
+                            <input type="checkbox" id="ranaware-check-s12-3" onchange="updateProgress('ranaware-s12')">
+                            <label for="ranaware-check-s12-3" class="label-text">3. <strong>¡Prueba de Fuego!</strong> Testear la resistencia de la bisagra.</label>
+                        </div>
+                        <div class="check-item">
+                            <input type="checkbox" id="ranaware-check-s12-4" onchange="updateProgress('ranaware-s12')">
+                            <label for="ranaware-check-s12-4" class="label-text">4. Investigar 1-2 materiales avanzados (Ej. PETG).</label>
+                        </div>
+                        <div class="check-item">
+                            <input type="checkbox" id="ranaware-check-s12-5" onchange="updateProgress('ranaware-s12')">
+                            <label for="ranaware-check-s12-5" class="label-text">5. Declarar "Design Freeze" (Diseño Congelado).</label>
+                        </div>
+                    </div>
+
+                    <!-- Entregables -->
+                    <hr>
+                    <div>
+                        <label for="ranaware-resultado-s12" class="label-text">1. Resultado del Test V3 (¡CRÍTICO!):</label>
+                        <textarea id="ranaware-resultado-s12" rows="2" class="input-field" placeholder="Ej: '¡ÉXITO! El fillet de 3mm aguantó 10 flexiones sin problemas.' o 'FALLO: Sigue siendo el punto débil. Necesitamos V3.1 con un rediseño de la unión.'"></textarea>
+                    </div>
+                    <div>
+                        <label for="ranaware-material-s12" class="label-text">2. Material Avanzado Sugerido:</label>
+                        <input type="text" id="ranaware-material-s12" class="input-field" placeholder="Ej: PETG, para resistir el calor de la laptop y ser más duradero.">
+                    </div>
+                    <div>
+                        <label for="ranaware-freeze-s12" class="label-text">3. ¿Diseño Congelado?</label>
+                        <select id="ranaware-freeze-s12" class="select-field">
+                            <option value="si">Sí, V3 es la Versión Final.</option>
+                            <option value="no">No, requiere un micro-ajuste (V3.1).</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="ranaware-link-final-s12" class="label-text">4. Link al Archivo Fuente (V-Final):</label>
+                        <input type="url" id="ranaware-link-final-s12" class="input-field" placeholder="https://drive.google.com/.../soporte_V-FINAL.f3d">
+                    </div>
+                </form>
+            </article>
+        </div>
+
+        <!-- Guía y Próximos Pasos -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+            <!-- Guía Técnica -->
+            <section class="card p-6 md:p-8">
+                <h2 class="text-2xl font-bold text-green-700 mb-4">Guía Técnica: ¿PLA, PETG o TPU?</h2>
+                <div class="space-y-4">
+                    <div class="p-3 bg-green-50 rounded-lg border border-green-200">
+                        <h4 class="font-bold text-green-800">PLA (El Estándar)</h4>
+                        <ul class="list-disc list-inside text-sm">
+                            <li><strong>Pro:</strong> Fácil de imprimir, rígido, biodegradable.</li>
+                            <li><strong>Contra:</strong> Frágil (quebradizo), baja resistencia al calor (se deforma > 60°C).</li>
+                            <li><strong>Ideal para:</strong> Prototipos rápidos, figuras, objetos que no sufrirán estrés.</li>
+                        </ul>
+                    </div>
+                    <div class="p-3 bg-green-50 rounded-lg border border-green-200">
+                        <h4 class="font-bold text-green-800">PETG (El Resistente)</h4>
+                        <ul class="list-disc list-inside text-sm">
+                            <li><strong>Pro:</strong> Muy fuerte (dúctil), resistente al calor (>80°C), apto para alimentos.</li>
+                            <li><strong>Contra:</strong> Tiende a "babear" (stringing) al imprimir.</li>
+                            <li><strong>Ideal para:</strong> Piezas funcionales, soportes (como el de RanaWare), cosas para exterior.</li>
+                        </ul>
+                    </div>
+                    <div class="p-3 bg-green-50 rounded-lg border border-green-200">
+                        <h4 class="font-bold text-green-800">TPU (El Flexible)</h4>
+                        <ul class="list-disc list-inside text-sm">
+                            <li><strong>Pro:</strong> ¡Es flexible! Como la goma. Increíblemente duradero.</li>
+                            <li><strong>Contra:</strong> Muy lento de imprimir, difícil en impresoras "Bowden".</li>
+                            <li><strong>Ideal para:</strong> Grips (como el de MonoBits), fundas de móvil, llantas.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Próxima Semana -->
+            <section class="card p-6 md:p-8 bg-gray-800 text-white">
+                <h2 class="text-2xl font-bold text-yellow-300 mb-4">Próxima Parada: Sesión 13</h2>
+                <p class="mb-4"><strong>Tema del Sílabo:</strong> Proyecto de Fabricación Digital - Diseño.</p>
+                <p class="mb-4"><strong>Hito del Proyecto:</strong> ¡Diseño Congelado (Design Freeze)!</p>
+                <p class="mb-4">La próxima semana, asumimos que su "Design Freeze" está hecho (o hacen el último micro-ajuste V3.1).</p>
+                <p class="mt-4">Comenzaremos a preparar la **Presentación Final**. El sílabo (S13-S15) se enfoca en el "Proyecto Final". ¡Estamos en la recta final! Empezaremos a documentar el viaje: del Problema -> Boceto -> V1 -> V2 (Fallo) -> V3 (Éxito).</p>
+            </section>
+        </div>
+    </main>
+
+    <footer class="text-center p-8 mt-8 text-gray-500 text-sm">
+        <p>Instituto de Educación Superior Tecnológico Público "Carlos Salazar Romero"</p>
+        <p>Unidad Didáctica: Fabricación Digital | 2025-II</p>
+    </footer>
+
+    <script>
+        function updateProgress(groupId) {
+            // groupId será 'monobits-s12' o 'ranaware-s12'
+            const form = document.getElementById(`form-${groupId}`);
+            if (!form) {
+                console.error(`Form con ID 'form-${groupId}' no encontrado.`);
+                return;
+            }
+
+            const checkboxes = form.querySelectorAll(`input[type='checkbox']`);
+            const totalTasks = checkboxes.length;
+            let completedTasks = 0;
+
+            checkboxes.forEach(cb => {
+                if (cb.checked) {
+                    completedTasks++;
+                }
+            });
+
+            const progressPercentage = (totalTasks > 0) ? (completedTasks / totalTasks) * 100 : 0;
+            
+            const progressBar = document.getElementById(`progress-bar-${groupId}`);
+            const progressText = document.getElementById(`progress-text-${groupId}`);
+
+            if (progressBar) {
+                progressBar.style.width = `${progressPercentage}%`;
+            }
+            if (progressText) {
+                progressText.innerText = `${Math.round(progressPercentage)}%`;
+            }
+        }
+    </script>
+</body>
+</html>
+
